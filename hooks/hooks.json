@@ -1,0 +1,19 @@
+{
+  "PreToolUse": [
+    {
+      "name": "secret-scanner",
+      "event": "PreToolUse",
+      "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/secret-scanner.sh",
+      "enabledByDefault": true,
+      "filePattern": ".*"
+    },
+    {
+      "name": "aws-api-write-guard",
+      "event": "PreToolUse",
+      "matcher": "mcp__.*",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/aws-api-write-guard.sh",
+      "enabledByDefault": true
+    }
+  ]
+}
