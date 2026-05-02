@@ -34,6 +34,7 @@ Delegate to the `claude-aws-architect-orchestrator-agent` subagent. The subagent
 - This command does not bypass the orchestrator: never call MCP servers or sibling specialists directly from the command body.
 - This command does not invent a feature slug. If the prompt does not name an existing feature, the orchestrator allocates a fresh slug and creates `.claude/specs/<slug>/` on first artefact write.
 - This command does not write artefacts on a shallow turn.
+- For purely read-only knowledge lookups ("what is X", CLI reference, comparisons, onboarding pointers, "what should I learn next"), prefer `/aws-kb` — it routes to the kb-navigator with a tighter response template and no spec-artefact writes. The orchestrator may suggest `/aws-kb` once when a shallow prompt has no SDLC-artefact intent.
 
 ## Override flags
 
