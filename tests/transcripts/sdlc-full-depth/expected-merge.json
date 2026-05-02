@@ -1,5 +1,9 @@
 {
-  "specialists": ["claude-aws-architect-discovery-agent"],
+  "specialists": [
+    "claude-aws-architect-discovery-agent",
+    "claude-aws-architect-solution-architect-agent",
+    "claude-aws-architect-implementation-agent"
+  ],
   "open_questions": [],
   "priority_rules_applied": []
 }

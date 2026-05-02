@@ -1,1 +1,1 @@
-Design a multi-tenant document-ingestion service on AWS with per-tenant data isolation, sub-second p95 retrieval latency, and a 99.9% monthly availability target. Produce the requirements.md draft for this feature.
+Design an event-driven order-processing pipeline on AWS that ingests checkout events from a public API, validates and enriches them, persists immutable history, and triggers fulfilment. Produce requirements, architecture with a C4 layered diagram, per-component contracts, an IaC bundle, a cost ROM, IAM roles, and an acceptance test sketch. Target region us-east-1.
