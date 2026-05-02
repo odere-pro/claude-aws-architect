@@ -12,7 +12,7 @@ are configured, added, and updated for `claude-aws-architect`.
 
 ## 1. Where MCP servers live
 
-```
+```text
 .mcp.json                  # plugin-root manifest (the contract)
 scripts/doctor.sh          # local resolvability probe (uvx --help / curl)
 tests/gates/gate-12-mcp-json.sh   # CI schema + roster gate
@@ -84,11 +84,11 @@ Required fields: `command`, `args`, `version`, `timeoutMs`.
   the operational source of truth.
 - `timeoutMs` per SPEC-v4 O2:
 
-  | Workload                                  | Default `timeoutMs` |
-  | ----------------------------------------- | ------------------- |
-  | Read-only queries                         | 30000               |
-  | Validation / scan operations              | 60000               |
-  | AWS API calls (read-only)                 | 30000               |
+  | Workload                     | Default `timeoutMs` |
+  | ---------------------------- | ------------------- |
+  | Read-only queries            | 30000               |
+  | Validation / scan operations | 60000               |
+  | AWS API calls (read-only)    | 30000               |
 
 ### 3.2 HTTP server
 
@@ -166,14 +166,14 @@ implicitly the first time the plugin queries the knowledge base.
 
 ### 4.3 Per-server credentials
 
-| Server                      | Credentials needed                          |
-| --------------------------- | ------------------------------------------- |
-| `kb`                        | None — public AWS docs endpoint.            |
-| `iac`                       | None for validation; AWS creds for samples. |
-| `cost`                      | AWS creds in pricing region (`us-east-1`).  |
-| `sec`                       | AWS creds with WAF security read scope.     |
-| `iam`                       | AWS creds with IAM read + `iam:Simulate*`.  |
-| `cw`                        | AWS creds with CloudWatch read scope.       |
+| Server | Credentials needed                          |
+| ------ | ------------------------------------------- |
+| `kb`   | None — public AWS docs endpoint.            |
+| `iac`  | None for validation; AWS creds for samples. |
+| `cost` | AWS creds in pricing region (`us-east-1`).  |
+| `sec`  | AWS creds with WAF security read scope.     |
+| `iam`  | AWS creds with IAM read + `iam:Simulate*`.  |
+| `cw`   | AWS creds with CloudWatch read scope.       |
 
 The plugin never embeds AWS credentials. Use the standard SDK chain
 (`AWS_PROFILE`, IRSA, `aws sso login`, etc.). The `aws-secret-scanner`
@@ -313,14 +313,14 @@ your new server needs a marker name.
 
 Existing markers, by category:
 
-| Category   | Marker                       | Meaning                                       |
-| ---------- | ---------------------------- | --------------------------------------------- |
-| Docs       | `grounding-deferred`         | Discovery couldn't ground a claim.            |
-| IaC        | `validation-advisory`        | IaC validation downgraded; contract still emits. |
-| Cost       | `grounding-deferred` (ROM)   | Cost estimate is a range, not a quote.        |
-| Security   | `automated-assessment-unavailable` | Checklist-only; no live findings.       |
-| IAM        | `least-privilege-deferred`   | Simulate-loop skipped; advisory only.         |
-| Operations | `observability-incomplete`   | Test design only; no alarm/log evidence.      |
+| Category   | Marker                             | Meaning                                          |
+| ---------- | ---------------------------------- | ------------------------------------------------ |
+| Docs       | `grounding-deferred`               | Discovery couldn't ground a claim.               |
+| IaC        | `validation-advisory`              | IaC validation downgraded; contract still emits. |
+| Cost       | `grounding-deferred` (ROM)         | Cost estimate is a range, not a quote.           |
+| Security   | `automated-assessment-unavailable` | Checklist-only; no live findings.                |
+| IAM        | `least-privilege-deferred`         | Simulate-loop skipped; advisory only.            |
+| Operations | `observability-incomplete`         | Test design only; no alarm/log evidence.         |
 
 Reuse an existing marker if your server fits the category.
 
@@ -328,29 +328,29 @@ Reuse an existing marker if your server fits the category.
 
 ## 9. Reference — v0.1.0 roster
 
-| Short | Logical                     | Transport | Pkg/URL                                               | Ver    | Timeout | Power(s) referencing      |
-| ----- | --------------------------- | --------- | ----------------------------------------------------- | ------ | ------- | ------------------------- |
-| `kb`  | aws-knowledge               | http      | `https://knowledge-mcp.global.api.aws`                | 0.1.0  | 30000ms | cdk, cost, security       |
-| `iac` | aws-iac                     | stdio     | `awslabs.aws-iac-mcp-server`                          | 1.0.17 | 60000ms | cdk                       |
-| `cost`| aws-pricing                 | stdio     | `awslabs.aws-pricing-mcp-server`                      | 1.0.28 | 30000ms | cdk, cost                 |
-| `sec` | well-architected-security   | stdio     | `awslabs.well-architected-security-mcp-server`        | 0.1.7  | 60000ms | security                  |
-| `iam` | iam                         | stdio     | `awslabs.iam-mcp-server`                              | 1.0.18 | 30000ms | security                  |
-| `cw`  | cloudwatch                  | stdio     | `awslabs.cloudwatch-mcp-server`                       | 0.0.26 | 30000ms | (none yet — v0.2 ops Power) |
+| Short  | Logical                   | Transport | Pkg/URL                                        | Ver    | Timeout | Power(s) referencing        |
+| ------ | ------------------------- | --------- | ---------------------------------------------- | ------ | ------- | --------------------------- |
+| `kb`   | aws-knowledge             | http      | `https://knowledge-mcp.global.api.aws`         | 0.1.0  | 30000ms | cdk, cost, security         |
+| `iac`  | aws-iac                   | stdio     | `awslabs.aws-iac-mcp-server`                   | 1.0.17 | 60000ms | cdk                         |
+| `cost` | aws-pricing               | stdio     | `awslabs.aws-pricing-mcp-server`               | 1.0.28 | 30000ms | cdk, cost                   |
+| `sec`  | well-architected-security | stdio     | `awslabs.well-architected-security-mcp-server` | 0.1.7  | 60000ms | security                    |
+| `iam`  | iam                       | stdio     | `awslabs.iam-mcp-server`                       | 1.0.18 | 30000ms | security                    |
+| `cw`   | cloudwatch                | stdio     | `awslabs.cloudwatch-mcp-server`                | 0.0.26 | 30000ms | (none yet — v0.2 ops Power) |
 
 ---
 
 ## 10. Troubleshooting
 
-| Symptom                                                    | Likely cause                                                      | Fix                                                                                          |
-| ---------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `gate-12: missing required servers: <key>`                 | Roster reduced without bumping gate 12.                           | Re-add or update gate 12's `REQUIRED` array in the same PR.                                  |
-| `gate-12: unexpected servers: <key>`                       | New server added without bumping gate 12.                         | Add the key to gate 12's `REQUIRED` array (§5.2 step 3).                                     |
-| `gate-12: <key>: missing 'version' field`                  | Version pinned in `args` but not mirrored in the `version` field. | Add the `version` field; keep it equal to the version inside `args`.                         |
-| `doctor.sh: <pkg> not resolvable via uvx`                  | Version yanked or never published.                                | Roll back to the prior pin or pick the next valid release; update both `args` and `version`. |
-| `doctor.sh: aws sts get-caller-identity failed`            | No AWS credentials in the shell.                                  | `aws sso login` / set `AWS_PROFILE`; doctor will not run live AWS-call servers without it.   |
-| Tool name `mcp__plugin_…__<tool>` exceeds 64 chars at use  | New short key too long, or wrapped tool name too long.            | Shorten the short key (§2); per SPEC-v4 O3 the chain must stay under 64.                     |
-| Skill/agent references a missing server                    | Short key renamed without updating consumers.                     | `grep -rn "<old-key>"` and update all references atomically (§6.4 — don't rename).           |
-| Server hits its `timeoutMs`                                | Network slowness or upstream rate-limit.                          | Confirm with two-or-more consecutive failures before raising; see §6.2.                      |
+| Symptom                                                   | Likely cause                                                      | Fix                                                                                          |
+| --------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `gate-12: missing required servers: <key>`                | Roster reduced without bumping gate 12.                           | Re-add or update gate 12's `REQUIRED` array in the same PR.                                  |
+| `gate-12: unexpected servers: <key>`                      | New server added without bumping gate 12.                         | Add the key to gate 12's `REQUIRED` array (§5.2 step 3).                                     |
+| `gate-12: <key>: missing 'version' field`                 | Version pinned in `args` but not mirrored in the `version` field. | Add the `version` field; keep it equal to the version inside `args`.                         |
+| `doctor.sh: <pkg> not resolvable via uvx`                 | Version yanked or never published.                                | Roll back to the prior pin or pick the next valid release; update both `args` and `version`. |
+| `doctor.sh: aws sts get-caller-identity failed`           | No AWS credentials in the shell.                                  | `aws sso login` / set `AWS_PROFILE`; doctor will not run live AWS-call servers without it.   |
+| Tool name `mcp__plugin_…__<tool>` exceeds 64 chars at use | New short key too long, or wrapped tool name too long.            | Shorten the short key (§2); per SPEC-v4 O3 the chain must stay under 64.                     |
+| Skill/agent references a missing server                   | Short key renamed without updating consumers.                     | `grep -rn "<old-key>"` and update all references atomically (§6.4 — don't rename).           |
+| Server hits its `timeoutMs`                               | Network slowness or upstream rate-limit.                          | Confirm with two-or-more consecutive failures before raising; see §6.2.                      |
 
 ---
 

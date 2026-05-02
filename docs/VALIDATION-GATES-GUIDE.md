@@ -34,13 +34,13 @@ Design contract:
 
 ## 2. Gate categories (SPEC-v4 §11)
 
-| Category                  | Range  | What they assert                                                                |
-| ------------------------- | ------ | ------------------------------------------------------------------------------- |
-| §11.A Deterministic       | 1–18   | Schema, layout, contract conformance — runnable offline.                        |
-| §11.B Runtime (replay)    | 19–27  | Transcript-replay assertions about orchestrator behaviour. Live model required. |
-| §11.C Cross-platform      | 28–29  | §11.A passes on `ubuntu-latest` and `macos-latest`.                             |
-| §11.D Install-safety      | 30–33  | install/uninstall/dry-run roundtrips on clean and dirty trees.                  |
-| §11.E Release             | 34     | Dogfood meta-spec passes every §11.A and §11.B gate before tagging v0.1.0.      |
+| Category               | Range | What they assert                                                                |
+| ---------------------- | ----- | ------------------------------------------------------------------------------- |
+| §11.A Deterministic    | 1–18  | Schema, layout, contract conformance — runnable offline.                        |
+| §11.B Runtime (replay) | 19–27 | Transcript-replay assertions about orchestrator behaviour. Live model required. |
+| §11.C Cross-platform   | 28–29 | §11.A passes on `ubuntu-latest` and `macos-latest`.                             |
+| §11.D Install-safety   | 30–33 | install/uninstall/dry-run roundtrips on clean and dirty trees.                  |
+| §11.E Release          | 34    | Dogfood meta-spec passes every §11.A and §11.B gate before tagging v0.1.0.      |
 
 The scripts under `tests/gates/` cover §11.A and §11.D today.
 §11.B lives under `tests/run-transcripts.sh` and §11.E is asserted
@@ -52,35 +52,35 @@ by the release runbook.
 
 ### 3.1 §11.A — Deterministic
 
-| #  | File                                                                                        | Asserts                                                                                                          |
-| -- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| 1  | [`gate-01-doctor.sh`](../tests/gates/gate-01-doctor.sh)                                     | `scripts/doctor.sh` exits 0.                                                                                     |
-| 2  | [`gate-02-plugin-json.sh`](../tests/gates/gate-02-plugin-json.sh)                           | `.claude-plugin/plugin.json` parses; `name` + `engines.claude-code` present.                                     |
-| 3  | [`gate-03-no-absolute-paths.sh`](../tests/gates/gate-03-no-absolute-paths.sh)               | No absolute paths anywhere in the plugin tree.                                                                   |
-| 4  | [`gate-04-shellcheck.sh`](../tests/gates/gate-04-shellcheck.sh)                             | `shellcheck` clean across every bash script.                                                                     |
-| 5  | [`gate-05-yaml-frontmatter.sh`](../tests/gates/gate-05-yaml-frontmatter.sh)                 | Every Markdown with `---` frontmatter parses as YAML.                                                            |
-| 6  | [`gate-06-powers.sh`](../tests/gates/gate-06-powers.sh)                                     | Every `powers/*.power.json` matches §9.1 schema.                                                                 |
-| 7  | [`gate-07-hooks-json.sh`](../tests/gates/gate-07-hooks-json.sh)                             | Every `hooks/hooks.json` entry matches §9.2 schema.                                                              |
-| 8  | [`gate-08-rules.sh`](../tests/gates/gate-08-rules.sh)                                       | Every rule file matches §6.1 (frontmatter + 2–6 bullets, ≤200 words, no example code).                           |
-| 9  | [`gate-09-agents.sh`](../tests/gates/gate-09-agents.sh)                                     | Every agent file matches §5.1 (frontmatter + H2 ordering + section constraints).                                 |
-| 10 | [`gate-10-skills.sh`](../tests/gates/gate-10-skills.sh)                                     | Every skill matches §4.3 (frontmatter + ordered sections incl. mandatory **Gotchas** + no example bodies).       |
-| 11 | [`gate-11-hook-scripts.sh`](../tests/gates/gate-11-hook-scripts.sh)                         | Every hook script matches §7.3 (header comment + exit codes + side-effect scope + bash-safety boilerplate).      |
-| 12 | [`gate-12-mcp-json.sh`](../tests/gates/gate-12-mcp-json.sh)                                 | `.mcp.json` exact-matches the §3.1 server set; each entry has pinned `version` and `timeoutMs`.                  |
-| 13 | [`gate-13-init-idempotent.sh`](../tests/gates/gate-13-init-idempotent.sh)                   | Re-running `init.sh` is idempotent (no errors, no duplicate writes).                                             |
-| 14 | [`gate-14-markdown.sh`](../tests/gates/gate-14-markdown.sh)                                 | `markdownlint-cli2 --config .markdownlint.jsonc` and `prettier --check` pass on every Markdown.                  |
-| 15 | [`gate-15-trademark.sh`](../tests/gates/gate-15-trademark.sh)                               | `README.md` contains a top-level `## Trademark notice` with the four required bullets (§15.4).                   |
-| 16 | [`gate-16-skill-description.sh`](../tests/gates/gate-16-skill-description.sh)               | Every `SKILL.md` description ≤300 chars, ≥3 trigger keywords, no banned prefix.                                  |
-| 17 | [`gate-17-skill-line-budget.sh`](../tests/gates/gate-17-skill-line-budget.sh)               | Every `SKILL.md` body (excluding frontmatter) is ≤500 lines.                                                     |
-| 18 | [`gate-18-tool-name-budget.sh`](../tests/gates/gate-18-tool-name-budget.sh)                 | Longest `mcp__plugin_<plugin>_<server>__<tool>` < 64 chars (Bedrock limit, O3).                                  |
+| #   | File                                                                          | Asserts                                                                                                     |
+| --- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| 1   | [`gate-01-doctor.sh`](../tests/gates/gate-01-doctor.sh)                       | `scripts/doctor.sh` exits 0.                                                                                |
+| 2   | [`gate-02-plugin-json.sh`](../tests/gates/gate-02-plugin-json.sh)             | `.claude-plugin/plugin.json` parses; `name` + `engines.claude-code` present.                                |
+| 3   | [`gate-03-no-absolute-paths.sh`](../tests/gates/gate-03-no-absolute-paths.sh) | No absolute paths anywhere in the plugin tree.                                                              |
+| 4   | [`gate-04-shellcheck.sh`](../tests/gates/gate-04-shellcheck.sh)               | `shellcheck` clean across every bash script.                                                                |
+| 5   | [`gate-05-yaml-frontmatter.sh`](../tests/gates/gate-05-yaml-frontmatter.sh)   | Every Markdown with `---` frontmatter parses as YAML.                                                       |
+| 6   | [`gate-06-powers.sh`](../tests/gates/gate-06-powers.sh)                       | Every `powers/*.power.json` matches §9.1 schema.                                                            |
+| 7   | [`gate-07-hooks-json.sh`](../tests/gates/gate-07-hooks-json.sh)               | Every `hooks/hooks.json` entry matches §9.2 schema.                                                         |
+| 8   | [`gate-08-rules.sh`](../tests/gates/gate-08-rules.sh)                         | Every rule file matches §6.1 (frontmatter + 2–6 bullets, ≤200 words, no example code).                      |
+| 9   | [`gate-09-agents.sh`](../tests/gates/gate-09-agents.sh)                       | Every agent file matches §5.1 (frontmatter + H2 ordering + section constraints).                            |
+| 10  | [`gate-10-skills.sh`](../tests/gates/gate-10-skills.sh)                       | Every skill matches §4.3 (frontmatter + ordered sections incl. mandatory **Gotchas** + no example bodies).  |
+| 11  | [`gate-11-hook-scripts.sh`](../tests/gates/gate-11-hook-scripts.sh)           | Every hook script matches §7.3 (header comment + exit codes + side-effect scope + bash-safety boilerplate). |
+| 12  | [`gate-12-mcp-json.sh`](../tests/gates/gate-12-mcp-json.sh)                   | `.mcp.json` exact-matches the §3.1 server set; each entry has pinned `version` and `timeoutMs`.             |
+| 13  | [`gate-13-init-idempotent.sh`](../tests/gates/gate-13-init-idempotent.sh)     | Re-running `init.sh` is idempotent (no errors, no duplicate writes).                                        |
+| 14  | [`gate-14-markdown.sh`](../tests/gates/gate-14-markdown.sh)                   | `markdownlint-cli2 --config .markdownlint.jsonc` and `prettier --check` pass on every Markdown.             |
+| 15  | [`gate-15-trademark.sh`](../tests/gates/gate-15-trademark.sh)                 | `README.md` contains a top-level `## Trademark notice` with the four required bullets (§15.4).              |
+| 16  | [`gate-16-skill-description.sh`](../tests/gates/gate-16-skill-description.sh) | Every `SKILL.md` description ≤300 chars, ≥3 trigger keywords, no banned prefix.                             |
+| 17  | [`gate-17-skill-line-budget.sh`](../tests/gates/gate-17-skill-line-budget.sh) | Every `SKILL.md` body (excluding frontmatter) is ≤500 lines.                                                |
+| 18  | [`gate-18-tool-name-budget.sh`](../tests/gates/gate-18-tool-name-budget.sh)   | Longest `mcp__plugin_<plugin>_<server>__<tool>` < 64 chars (Bedrock limit, O3).                             |
 
 ### 3.2 §11.D — Install-safety
 
-| #  | File                                                                                        | Asserts                                                                                                       |
-| -- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| 30 | [`gate-30-clean-roundtrip.sh`](../tests/gates/gate-30-clean-roundtrip.sh)                   | `install.sh --symlink` → `uninstall.sh` on a clean tree → byte-identical to pre-install.                      |
-| 31 | [`gate-31-dirty-roundtrip.sh`](../tests/gates/gate-31-dirty-roundtrip.sh)                   | Same on a dirty tree with consumer-authored content under `.claude/specs|steering|hooks/` — preserved exactly. |
-| 32 | [`gate-32-install-idempotent.sh`](../tests/gates/gate-32-install-idempotent.sh)             | Two consecutive `install.sh --symlink` runs produce a byte-identical manifest.                                |
-| 33 | [`gate-33-dryrun-matches-real.sh`](../tests/gates/gate-33-dryrun-matches-real.sh)           | `uninstall.sh --dry-run` enumerates exactly the files the real `uninstall.sh` would remove.                   |
+| #   | File                                                                              | Asserts                                                                                                                   |
+| --- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| 30  | [`gate-30-clean-roundtrip.sh`](../tests/gates/gate-30-clean-roundtrip.sh)         | `install.sh --symlink` → `uninstall.sh` on a clean tree → byte-identical to pre-install.                                  |
+| 31  | [`gate-31-dirty-roundtrip.sh`](../tests/gates/gate-31-dirty-roundtrip.sh)         | Same on a dirty tree with consumer-authored content under `.claude/specs`, `.claude/steering`, `.claude/hooks` preserved. |
+| 32  | [`gate-32-install-idempotent.sh`](../tests/gates/gate-32-install-idempotent.sh)   | Two consecutive `install.sh --symlink` runs produce a byte-identical manifest.                                            |
+| 33  | [`gate-33-dryrun-matches-real.sh`](../tests/gates/gate-33-dryrun-matches-real.sh) | `uninstall.sh --dry-run` enumerates exactly the files the real `uninstall.sh` would remove.                               |
 
 ### 3.3 Numbering policy
 
@@ -320,16 +320,16 @@ Before opening a gate PR:
 
 ## 9. Troubleshooting
 
-| Symptom                                                  | Likely cause                                                                       | Fix                                                                                            |
-| -------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Gate passes locally on macOS, fails on Ubuntu            | bash 3.2 vs 5 difference (`mapfile`, `[[ =~ ]]` quirks, GNU-only flags).           | Use `read_into` instead of `mapfile`; feature-detect GNU-only options; see common.sh helpers.  |
-| `gate-04 shellcheck`: `SC2086: Double quote to prevent…` | Unquoted variable expansion.                                                       | Quote the expansion or annotate with a `# shellcheck disable=` line scoped to one statement.   |
-| Gate exits 0 but should have failed                      | Helper invocation order — `gate_warn` then forgetting the trailing `gate_fail`.    | Track violations in a counter and call `gate_fail` once at the end if `failed > 0`.            |
+| Symptom                                                  | Likely cause                                                                       | Fix                                                                                                                                          |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Gate passes locally on macOS, fails on Ubuntu            | bash 3.2 vs 5 difference (`mapfile`, `[[ =~ ]]` quirks, GNU-only flags).           | Use `read_into` instead of `mapfile`; feature-detect GNU-only options; see common.sh helpers.                                                |
+| `gate-04 shellcheck`: `SC2086: Double quote to prevent…` | Unquoted variable expansion.                                                       | Quote the expansion or annotate with a `# shellcheck disable=` line scoped to one statement.                                                 |
+| Gate exits 0 but should have failed                      | Helper invocation order — `gate_warn` then forgetting the trailing `gate_fail`.    | Track violations in a counter and call `gate_fail` once at the end if `failed > 0`.                                                          |
 | `gate-12 unexpected servers`                             | Roster changed but `REQUIRED=()` array in the gate script not updated.             | Bump the array atomically with the `.mcp.json` edit (see [MCP-SERVERS-GUIDE.md §5.2](./MCP-SERVERS-GUIDE.md#52-authoring-steps-v02-server)). |
-| `gate-14 prettier --check` fails                         | Markdown formatting drift.                                                         | `pnpm prettier --write '**/*.md'` then re-run.                                                 |
-| `gate-13 init not idempotent`                            | `init.sh` writes are not safe-to-rerun.                                            | Guard writes with `[[ -f $f ]]` or use `install -m`-style overwrite-with-same-content.         |
-| Gate passes but covers the wrong thing                   | Assertion drifted from spec wording.                                               | Re-read SPEC-v4 §11 entry; update header comment + assertion + spec in one PR.                 |
-| `run-all.sh` skips the new gate                          | Filename doesn't match `gate-*.sh`, or missing executable bit (script still runs). | Rename to `gate-NN-<slug>.sh`; the runner uses `bash`, but executable bit is convention.       |
+| `gate-14 prettier --check` fails                         | Markdown formatting drift.                                                         | `pnpm prettier --write '**/*.md'` then re-run.                                                                                               |
+| `gate-13 init not idempotent`                            | `init.sh` writes are not safe-to-rerun.                                            | Guard writes with `[[ -f $f ]]` or use `install -m`-style overwrite-with-same-content.                                                       |
+| Gate passes but covers the wrong thing                   | Assertion drifted from spec wording.                                               | Re-read SPEC-v4 §11 entry; update header comment + assertion + spec in one PR.                                                               |
+| `run-all.sh` skips the new gate                          | Filename doesn't match `gate-*.sh`, or missing executable bit (script still runs). | Rename to `gate-NN-<slug>.sh`; the runner uses `bash`, but executable bit is convention.                                                     |
 
 ---
 

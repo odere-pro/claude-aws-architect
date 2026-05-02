@@ -12,7 +12,7 @@ update Powers shipped by `claude-aws-architect`.
 
 ## 1. Where Powers live
 
-```
+```text
 powers/
 ├── claude-aws-architect-cdk.power.json
 ├── claude-aws-architect-cost.power.json
@@ -33,15 +33,15 @@ powers/
 Every `powers/<name>.power.json` is a single JSON object with these
 required keys:
 
-| Key           | Type     | Constraint                                                         |
-| ------------- | -------- | ------------------------------------------------------------------ |
+| Key           | Type     | Constraint                                                                |
+| ------------- | -------- | ------------------------------------------------------------------------- |
 | `name`        | string   | Matches filename without `.power.json`. Prefixed `claude-aws-architect-`. |
-| `version`     | string   | SemVer (e.g. `0.1.0`).                                             |
-| `description` | string   | One sentence. Plain text. No trailing period required.             |
-| `mcpServers`  | string[] | ≥1 entry. Each name must exist in `.mcp.json`.                     |
-| `skills`      | string[] | Each name must exist as `skills/<name>/`.                          |
-| `hooks`       | string[] | Each name must match a `hooks[].name` in `hooks/hooks.json`.       |
-| `commands`    | string[] | Each name must exist as `commands/<name>.md` (no `.md` suffix).    |
+| `version`     | string   | SemVer (e.g. `0.1.0`).                                                    |
+| `description` | string   | One sentence. Plain text. No trailing period required.                    |
+| `mcpServers`  | string[] | ≥1 entry. Each name must exist in `.mcp.json`.                            |
+| `skills`      | string[] | Each name must exist as `skills/<name>/`.                                 |
+| `hooks`       | string[] | Each name must match a `hooks[].name` in `hooks/hooks.json`.              |
+| `commands`    | string[] | Each name must exist as `commands/<name>.md` (no `.md` suffix).           |
 
 Minimal template:
 
@@ -166,12 +166,12 @@ at minimum gate 6.
 
 ### 4.1 What counts as a change
 
-| Change                                      | Bump        |
-| ------------------------------------------- | ----------- |
-| Typo in `description`                       | patch       |
-| Added a skill / hook / command / MCP server | minor       |
-| Removed a skill / hook / command / MCP server | major     |
-| Renamed the Power                           | new file + deprecation |
+| Change                                        | Bump                   |
+| --------------------------------------------- | ---------------------- |
+| Typo in `description`                         | patch                  |
+| Added a skill / hook / command / MCP server   | minor                  |
+| Removed a skill / hook / command / MCP server | major                  |
+| Renamed the Power                             | new file + deprecation |
 
 A removed reference is breaking for any consumer that loaded the
 Power as a unit, so it is always a major bump.
@@ -222,23 +222,23 @@ Renaming changes the user-visible identifier. Treat as a deprecation:
 
 ## 6. Reference — Powers shipped at v0.1.0
 
-| File                                                  | MCPs              | Hooks                                        | Commands                          | Pillar focus                                              |
-| ----------------------------------------------------- | ----------------- | -------------------------------------------- | --------------------------------- | --------------------------------------------------------- |
-| [`claude-aws-architect-cdk.power.json`](../powers/claude-aws-architect-cdk.power.json)         | `iac`, `cost`, `kb` | `aws-secret-scanner`, `aws-api-write-guard` | `aws`, `aws-spec`, `aws-doctor` | CDK authoring + ROM cost + reliability + op excellence    |
-| [`claude-aws-architect-cost.power.json`](../powers/claude-aws-architect-cost.power.json)       | `cost`, `kb`       | `aws-secret-scanner`                         | `aws`, `aws-spec`                | Cost-only review                                          |
-| [`claude-aws-architect-security.power.json`](../powers/claude-aws-architect-security.power.json) | `sec`, `iam`, `kb` | `aws-secret-scanner`, `aws-api-write-guard` | `aws`, `aws-spec`, `aws-doctor` | Security-only review                                      |
+| File                                                                                             | MCPs                | Hooks                                       | Commands                        | Pillar focus                                           |
+| ------------------------------------------------------------------------------------------------ | ------------------- | ------------------------------------------- | ------------------------------- | ------------------------------------------------------ |
+| [`claude-aws-architect-cdk.power.json`](../powers/claude-aws-architect-cdk.power.json)           | `iac`, `cost`, `kb` | `aws-secret-scanner`, `aws-api-write-guard` | `aws`, `aws-spec`, `aws-doctor` | CDK authoring + ROM cost + reliability + op excellence |
+| [`claude-aws-architect-cost.power.json`](../powers/claude-aws-architect-cost.power.json)         | `cost`, `kb`        | `aws-secret-scanner`                        | `aws`, `aws-spec`               | Cost-only review                                       |
+| [`claude-aws-architect-security.power.json`](../powers/claude-aws-architect-security.power.json) | `sec`, `iam`, `kb`  | `aws-secret-scanner`, `aws-api-write-guard` | `aws`, `aws-spec`, `aws-doctor` | Security-only review                                   |
 
 ---
 
 ## 7. Troubleshooting
 
-| Symptom                                                 | Likely cause                                              | Fix                                                                     |
-| ------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------- |
-| `gate-06: invalid JSON`                                 | Trailing comma, missing quote, syntax error.              | `jq . powers/<file>.power.json` to locate.                              |
-| `gate-06: name '<x>' does not match filename '<y>'`     | File renamed but `name` field not updated (or vice versa). | Make filename and `name` match.                                          |
-| `gate-06: '<key>' must be an array, got <type>`         | Wrote a string where an array is required.                | Wrap in `[ … ]` even if there is one entry.                             |
-| Power loads but a referenced skill/hook does nothing    | Name typo — gate 6 does not yet cross-check existence.    | Re-run §3.2 manual checks.                                              |
-| MCP server name unknown at runtime                      | `mcpServers` entry not in `.mcp.json`.                    | Add the server to `.mcp.json` first or correct the name.                |
+| Symptom                                              | Likely cause                                               | Fix                                                      |
+| ---------------------------------------------------- | ---------------------------------------------------------- | -------------------------------------------------------- |
+| `gate-06: invalid JSON`                              | Trailing comma, missing quote, syntax error.               | `jq . powers/<file>.power.json` to locate.               |
+| `gate-06: name '<x>' does not match filename '<y>'`  | File renamed but `name` field not updated (or vice versa). | Make filename and `name` match.                          |
+| `gate-06: '<key>' must be an array, got <type>`      | Wrote a string where an array is required.                 | Wrap in `[ … ]` even if there is one entry.              |
+| Power loads but a referenced skill/hook does nothing | Name typo — gate 6 does not yet cross-check existence.     | Re-run §3.2 manual checks.                               |
+| MCP server name unknown at runtime                   | `mcpServers` entry not in `.mcp.json`.                     | Add the server to `.mcp.json` first or correct the name. |
 
 ---
 
