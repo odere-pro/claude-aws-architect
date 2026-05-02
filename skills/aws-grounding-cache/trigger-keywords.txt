@@ -1,0 +1,31 @@
+# Keywords that should activate the aws-grounding-cache skill.
+# One per line. Comments allowed (lines starting with #).
+# The skill-description gate cross-checks this list against SKILL.md
+# frontmatter to ensure ≥3 keywords appear in the description.
+ledger
+grounding ledger
+grounding cache
+cache
+short-key
+short key
+sha-1
+collision
+ttl
+expire
+expiration
+stale
+redact
+redaction
+secret
+dedupe
+deduplication
+mcp citation
+citation
+insert
+write
+read
+pricing
+quota
+api shape
+region
+immutable
