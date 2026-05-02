@@ -2,6 +2,8 @@
 
 <p>
   <a href="https://github.com/odere-pro/claude-aws-architect/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/odere-pro/claude-aws-architect?style=flat-square&color=blue"></a>
+  <a href="https://github.com/odere-pro/claude-aws-architect/releases"><img alt="Release" src="https://img.shields.io/github/v/release/odere-pro/claude-aws-architect?include_prereleases&style=flat-square&label=release&color=informational"></a>
+  <a href="https://github.com/odere-pro/claude-aws-architect/blob/main/.claude-plugin/plugin.json"><img alt="Plugin version" src="https://img.shields.io/badge/plugin-v0.1.0-orange?style=flat-square"></a>
   <a href="https://github.com/odere-pro/claude-aws-architect/blob/main/.claude-plugin/plugin.json"><img alt="Claude Code engine" src="https://img.shields.io/badge/claude--code-%3E%3D2.0.0-7c3aed?style=flat-square&logo=anthropic&logoColor=white"></a>
   <a href="https://modelcontextprotocol.io"><img alt="MCP servers" src="https://img.shields.io/badge/MCP%20servers-6-2ea44f?style=flat-square"></a>
   <img alt="AWS" src="https://img.shields.io/badge/AWS-Well--Architected-FF9900?style=flat-square&logo=amazonwebservices&logoColor=white">
@@ -17,9 +19,24 @@
   <a href="https://github.com/odere-pro/claude-aws-architect/blob/main/.github/dependabot.yml"><img alt="Dependabot" src="https://img.shields.io/badge/dependabot-enabled-025E8C?style=flat-square&logo=dependabot&logoColor=white"></a>
 </p>
 
-A Claude Code plugin for AWS Well-Architected SDLC. Designs systems on AWS — requirements, architecture, IaC, cost, security, observability — with every factual claim grounded against AWS docs via MCP.
+A [Claude Code](https://claude.ai/code) plugin for AWS Well-Architected SDLC. Designs systems on AWS — requirements, architecture, IaC, cost, security, observability — with every factual claim grounded against AWS docs via MCP.
 
 > **Status: pre-release scaffold (v0.1.0 in development).** This README documents the v0.1.0 design intent. Some commands, agents, hooks, and powers are still landing — see [docs/plan/PR-PLAN.md](./docs/plan/PR-PLAN.md) for build status.
+
+---
+
+## What's inside
+
+| Layer        | Surface                                                                                                                                            | Count |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | :---: |
+| **MCP**      | `kb`, `iac`, `cost`, `sec`, `iam`, `cw` — see [MCP-SERVERS-GUIDE.md](./docs/MCP-SERVERS-GUIDE.md)                                                  |   6   |
+| **Skills**   | 6 workflow + 6 WAF pillar                                                                                                                          |  12   |
+| **Agents**   | 1 L4 orchestrator + 3 L3 specialists (`discovery`, `solution-architect`, `implementation`)                                                         |   4   |
+| **Commands** | `/aws`, `/aws-spec`, `/aws-doctor`                                                                                                                 |   3   |
+| **Powers**   | `claude-aws-architect-{cdk,cost,security}` — see [POWERS-GUIDE.md](./docs/POWERS-GUIDE.md)                                                         |   3   |
+| **Rules**    | 9 file-scoped instruction rules under `rules/`                                                                                                     |   9   |
+| **Hooks**    | 2 PreToolUse default-on (`aws-secret-scanner`, `aws-api-write-guard`) + 4 PostToolUse default-off                                                  |   6   |
+| **Gates**    | 18 deterministic + 9 runtime + 2 cross-platform + 4 install-safety + 1 release — see [VALIDATION-GATES-GUIDE.md](./docs/VALIDATION-GATES-GUIDE.md) |  34   |
 
 ---
 
@@ -36,7 +53,7 @@ Install these before running the plugin. `/aws-doctor` will fail loudly if any a
 | `d2`         | Renders `diagrams.d2` artefacts              | [d2lang.com](https://d2lang.com)                          |
 | `shellcheck` | Required only if you run gates locally       | `brew install shellcheck` / `apt-get install shellcheck`  |
 
-**OS:** macOS or Linux. Windows/WSL deferred. **AWS credentials:** any `AWS_PROFILE` or SSO session with `ReadOnlyAccess`-equivalent scope.
+**OS:** macOS or Linux (both verified in CI via `install-matrix.yml`). Windows/WSL deferred. **AWS credentials:** any `AWS_PROFILE` or SSO session with `ReadOnlyAccess`-equivalent scope.
 
 ---
 
@@ -50,7 +67,7 @@ Install these before running the plugin. `/aws-doctor` will fail loudly if any a
 
 `/aws-doctor` should print all green. If it does not, fix the prerequisite it flags before continuing.
 
-> Manual / CI / air-gapped install: see [`docs/install.md`](./docs/install.md).
+> Manual / CI / air-gapped install (`scripts/install.sh --symlink` or `--copy`): see [`docs/install.md`](./docs/install.md).
 
 ---
 
@@ -66,7 +83,10 @@ The orchestrator fans out parallel specialists, grounds every factual claim agai
 - `.claude/specs/<feature>/design.md`
 - `.claude/specs/<feature>/tasks.md`
 - `.claude/specs/<feature>/contracts/<component>.md`
-- `.claude/specs/<feature>/diagrams.d2`
+- `.claude/specs/<feature>/diagrams.d2` (C4 levels 1–3 + sequence diagrams)
+- `.claude/specs/<feature>/.grounding-ledger.json` (every `<server>:<short-key>` citation)
+
+Worked example: [`templates/examples/order-processing-pipeline/`](./templates/examples/order-processing-pipeline/) (event-driven order pipeline, four components, all WAF pillars PASS).
 
 ---
 
@@ -94,6 +114,8 @@ Deep dives live under [`docs/`](./docs/). Start here:
 | Manual install / CI       | [install.md](./docs/install.md)                                                                              |
 | Lifecycle scripts         | [scripts.md](./docs/scripts.md)                                                                              |
 | Architecture & spec       | [SPEC.md](./SPEC.md), [docs/plan/SPEC-v4.md](./docs/plan/SPEC-v4.md)                                         |
+| Threat model              | [docs/threat-model.md](./docs/threat-model.md)                                                               |
+| Architectural decisions   | [docs/adr/](./docs/adr/) (A1–A7)                                                                             |
 | Contributor workflow      | [docs/plan/PR-PLAN.md](./docs/plan/PR-PLAN.md), [docs/plan/PR-CONVENTIONS.md](./docs/plan/PR-CONVENTIONS.md) |
 
 ---
