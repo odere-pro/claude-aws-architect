@@ -120,3 +120,25 @@ jobs:
 
       - name: Run all deterministic gates with brew bash (5+)
         run: bash tests/gates/run-all.sh --keep-going
+
+  transcript-validate:
+    name: transcript fixture schema (Linux)
+    runs-on: ubuntu-latest
+    # Per SPEC §10: this is the runtime-gate harness skeleton. PR 3 ships
+    # validate-only mode (asserts every fixture conforms to the schema in
+    # tests/transcripts/README.md). Execution mode (--execute) lands in PR 18
+    # with the orchestrator wiring; until then this job only validates format.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install jq
+        run: |
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y jq
+          fi
+          jq --version
+
+      - name: Validate every transcript fixture
+        run: bash tests/run-transcripts.sh --keep-going
