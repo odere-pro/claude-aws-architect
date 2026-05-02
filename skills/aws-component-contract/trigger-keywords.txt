@@ -1,0 +1,33 @@
+# Keywords that should activate the aws-component-contract skill.
+# One per line. Comments allowed (lines starting with #).
+# The skill-description gate cross-checks this list against SKILL.md
+# frontmatter to ensure ≥3 keywords appear in the description.
+component
+contract
+component contract
+contracts
+frontmatter
+talks-to
+talks to
+integration
+integration link
+integration links
+integration points
+observability
+observability triple
+metric
+log
+trace
+sequence
+acceptance criteria
+purpose
+interface
+c4
+c4 l3
+component view
+status
+draft
+review
+accepted
+implemented
+slug
