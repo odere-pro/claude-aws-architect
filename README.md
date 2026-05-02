@@ -49,9 +49,7 @@ The orchestrator fans out parallel specialists (discovery → solution-architect
 
 ## Powers
 
-> Land in PR 24.
-
-Powers are declarative bundles (MCP servers + skills + hooks + commands) for focused workflows.
+Powers are declarative bundles (MCP servers + skills + hooks + commands) for focused workflows. Each bundle is a single JSON file under `powers/<name>.power.json`.
 
 | Power                           | Bundles                                                                    |
 | ------------------------------- | -------------------------------------------------------------------------- |
