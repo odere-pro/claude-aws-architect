@@ -1,0 +1,67 @@
+---
+component: TODO-component-slug
+kind: TODO-kind-from-closed-vocabulary
+version: 0.1.0
+status: draft
+talks-to: []
+grounded-by:
+  - TODO:server:short-key
+---
+
+## Purpose
+
+One paragraph: what this component does and why it exists in the design.
+
+## Interface
+
+### Inputs
+
+- Source channel and event/request shape.
+- Encoding and schema reference.
+
+### Outputs
+
+- Destination channel and event/response shape.
+- Encoding and schema reference.
+
+### Errors
+
+- Named error types and their recovery semantics.
+- HTTP status codes or domain error enum, as relevant.
+
+## Sequence
+
+Narrative or pseudo-sequence describing how the component handles a representative request. Reference the `seq-component` tag in `diagrams.d2` if a sequence diagram exists.
+
+## Component view (C4 L3)
+
+References `c4-l3-<container>` in `diagrams.d2`. In-prose context for what readers should look for in the diagram.
+
+## Acceptance criteria
+
+- Latency budget (e.g., p99 < 800ms).
+- Error rate (e.g., <0.5% over 10 minutes).
+- Throughput floor (e.g., ≥100 req/s sustained).
+- IaC repo path (filled in by the implementation agent).
+- Test coverage minimum (e.g., 80% on business logic).
+
+## Observability
+
+### Metric
+
+- TODO: name a concrete metric, source, and threshold (e.g., `Duration.p99` from `AWS/Lambda`, alerts at >800ms).
+
+### Log
+
+- TODO: name a log destination and the structured fields (e.g., `/aws/lambda/<fn-name>`, fields `correlation_id`, `event_type`, `error_code`, `latency_ms`).
+- TODO: state the level discipline (errors at ERROR, warnings at WARN).
+
+### Trace
+
+- TODO: name the tracer, propagation mechanism, and sampling rule (e.g., AWS X-Ray with active tracing, propagated via `X-Amzn-Trace-Id`, sampling 5% healthy + 100% errors).
+
+## Integration points
+
+For each slug in `talks-to`, narrate the protocol, event shape, retry semantics, and idempotency strategy.
+
+- **TODO: sibling-slug** — protocol, event shape, retry, idempotency.
