@@ -1,0 +1,40 @@
+# Keywords that should activate the aws-waf-security-skill skill.
+# One per line. Comments allowed (lines starting with #).
+# The skill-description gate cross-checks this list against SKILL.md
+# frontmatter to ensure ≥3 keywords appear in the description.
+security
+well-architected
+well architected
+waf
+iam
+least-privilege
+least privilege
+policy
+role
+wildcard
+encryption
+encryption at rest
+encryption in transit
+tls
+kms
+key
+secret
+secrets
+secrets manager
+identity
+identity perimeter
+perimeter
+network exposure
+public access
+threat model
+threat
+risk
+incident response
+guardduty
+security hub
+review
+review block
+design question
+anti-pattern
+antipattern
+checklist
