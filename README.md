@@ -12,16 +12,16 @@ A Claude Code plugin for AWS Well-Architected SDLC. Designs systems on AWS — r
 
 ## Install
 
-> **Not yet shippable**: install scripts land in PR 27. Until then, this section describes the intended UX.
+**Preferred — Claude Code plugin marketplace (one-liner, in-session):**
 
-From the consuming project root:
-
-```bash
-# Clone and symlink the plugin into your project's .claude/plugins/
-git clone https://github.com/odere-pro/claude-aws-architect.git ~/.claude/plugins/claude-aws-architect
-~/.claude/plugins/claude-aws-architect/scripts/install.sh --symlink
-~/.claude/plugins/claude-aws-architect/scripts/init.sh --aws-profile default --aws-region us-east-1
+```text
+/plugin marketplace add odere-pro/claude-aws-architect
+/plugin install claude-aws-architect@odere-pro/claude-aws-architect
 ```
+
+Then run `/aws-doctor` to verify the environment. The marketplace flow handles plugin registration, updates, and removal natively — you never touch `~/.claude/plugins/` by hand.
+
+For the manual / shell flow (CI, air-gapped, or pre-marketplace setups), see [`docs/install.md`](./docs/install.md).
 
 ## Quickstart
 
@@ -41,11 +41,15 @@ The orchestrator fans out parallel specialists (discovery → solution-architect
 
 ## Commands
 
-| Command                                                | Purpose                                                                                                                                                                  |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/aws <feature-prompt>`                                | L4 orchestrator entry point. Vibe-classifies depth and either answers directly (shallow) or fans out L3 specialists in parallel and merges their outputs (full).         |
-| `/aws-spec <feature> [--validate \| --list \| --show]` | Read-only validator over `.claude/specs/<feature>/`. Checks frontmatter, citations, component-contract one-to-one mapping, diagram layer tags, and re-runs plugin gates. |
-| `/aws-doctor [--json]`                                 | Wraps `scripts/doctor.sh`: verifies `uvx`, `aws` CLI, `AWS_PROFILE`/`AWS_REGION`, MCP package resolution, `sts:GetCallerIdentity`, and minimum-IAM presence.             |
+Three slash commands. Short forms (`/aws-*`) work in any session where the plugin is loaded; if another plugin defines a colliding command, fall back to the fully namespaced form (`/claude-aws-architect:aws-*`).
+
+| Short form                                             | Fully namespaced                                               | Purpose                                                                                                                                                      |
+| ------------------------------------------------------ | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/aws <feature-prompt>`                                | `/claude-aws-architect:aws <feature-prompt>`                   | L4 orchestrator. Vibe-classifies depth and either answers directly (shallow) or fans out L3 specialists in parallel and merges their outputs (full).         |
+| `/aws-spec <feature> [--validate \| --list \| --show]` | `/claude-aws-architect:aws-spec <feature> [--validate \| ...]` | Read-only validator over `.claude/specs/<feature>/`: frontmatter, citations, contract one-to-one mapping, diagram layer tags, plugin gates.                  |
+| `/aws-doctor [--json]`                                 | `/claude-aws-architect:aws-doctor [--json]`                    | Wraps `scripts/doctor.sh`: verifies `uvx`, `aws` CLI, `AWS_PROFILE`/`AWS_REGION`, MCP package resolution, `sts:GetCallerIdentity`, and minimum-IAM presence. |
+
+Lifecycle scripts (`install.sh`, `init.sh`, `uninstall.sh`) intentionally have **no slash command** — they are plugin-lifecycle actions, not interactive ones. See [`docs/scripts.md`](./docs/scripts.md) for invocation, flags, exit codes, and idempotency contracts.
 
 ## Powers
 
@@ -92,23 +96,27 @@ Nine file-scoped instruction rules under `rules/` raise accuracy of AWS code:
 
 ## Troubleshooting
 
-> Land in PR 27.
+Inside Claude Code:
+
+```text
+/aws-doctor --json
+```
+
+Outside Claude Code (CI, shell, scripted health checks):
 
 ```bash
 ~/.claude/plugins/claude-aws-architect/scripts/doctor.sh --json
 ```
 
-Common failure modes are documented in [SUPPORT.md](./SUPPORT.md).
+Exit codes 0/1/2/3/4/5 documented in [SUPPORT.md](./SUPPORT.md). Full script reference: [`docs/scripts.md`](./docs/scripts.md).
 
 ## Uninstall
-
-> Land in PR 27.
 
 ```bash
 ~/.claude/plugins/claude-aws-architect/scripts/uninstall.sh
 ```
 
-Never deletes `.claude/specs/`, `.claude/steering/`, or consumer-authored hooks.
+Replays the `.claude/.claude-aws-architect-installed.jsonl` manifest in reverse. Never deletes `.claude/specs/`, `.claude/steering/`, or consumer-authored hooks. See [`docs/scripts.md`](./docs/scripts.md) for `--dry-run` and the gate-33 byte-equality contract.
 
 ## MCP server roster
 
