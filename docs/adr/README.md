@@ -1,6 +1,6 @@
 # Architecture Decision Records
 
-This directory holds the v0.1.0 ADRs for `claude-aws-architect`. Each ADR captures the **rationale** behind a decision recorded declaratively in [`docs/plan/SPEC-v4.md`](../plan/SPEC-v4.md). The SPEC remains the source of truth for *what* the plugin does; the ADRs explain *why* a particular path was taken and what alternatives were rejected.
+This directory holds the v0.1.0 ADRs for `claude-aws-architect`. Each ADR captures the **rationale** behind a decision recorded declaratively in [`docs/plan/SPEC-v4.md`](../plan/SPEC-v4.md). The SPEC remains the source of truth for _what_ the plugin does; the ADRs explain _why_ a particular path was taken and what alternatives were rejected.
 
 ## Index
 

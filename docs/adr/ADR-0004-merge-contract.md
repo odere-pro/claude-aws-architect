@@ -35,7 +35,7 @@ The orchestrator merges parallel L3 specialist outputs per a **fixed conflict-re
 
 **Every conflict** resolved by the priority rules is logged in the grounding ledger as a `conflict-resolution` entry with: timestamp, specialists involved, options considered, rule applied, chosen option. Conflicts raised to the user are logged as `unresolved`.
 
-The orchestrator's Quality Checks (§5.1 H2.9) include the post-condition: *every specialist disagreement appears either in `## Open Questions` or in the conflict-resolution log; none are silently dropped.*
+The orchestrator's Quality Checks (§5.1 H2.9) include the post-condition: _every specialist disagreement appears either in `## Open Questions` or in the conflict-resolution log; none are silently dropped._
 
 ## Alternatives considered
 
@@ -44,7 +44,7 @@ The orchestrator's Quality Checks (§5.1 H2.9) include the post-condition: *ever
 - **Always raise to user.** Rejected: the §5.6 verb-of-inquiry case (shallow answers) would flood the user with arbitration prompts on every minor disagreement, defeating the vibe-first promise.
 - **LLM-judged merge.** Rejected for v0.1.0: introduces an additional opaque arbitration step whose failure modes are harder to test than a rule table. Could be considered as a tiebreaker layer at v0.2+ if the priority order leaves consistent gaps.
 - **Severity-graded merge** (CRITICAL/HIGH/etc. levels per finding). Rejected as orthogonal to priority rules. The security-finding rule already encodes the only severity the merge contract needs at v0.1.0; specialists may still emit severity inside their own outputs.
-- **Merge by phase** (resolve all security first, then all factual, then all design). Considered and partially adopted: the priority order is *evaluated* in that sequence per disagreement, but the merged output is composed once at the end rather than emitted in waves.
+- **Merge by phase** (resolve all security first, then all factual, then all design). Considered and partially adopted: the priority order is _evaluated_ in that sequence per disagreement, but the merged output is composed once at the end rather than emitted in waves.
 
 ## Consequences
 
@@ -66,5 +66,5 @@ The orchestrator's Quality Checks (§5.1 H2.9) include the post-condition: *ever
 
 - The cost-engineer specialist (v0.2) ships. Outcome: confirm rule 3 fires correctly under the new specialist set; update the gate-3 fixture.
 - A new specialist class arrives that the priority list doesn't address (e.g. a reliability-engineer with availability-blocking findings analogous to security). Outcome: a new ADR superseding this one, extending the priority list rather than reordering it.
-- Real-user data shows `## Open Questions` regularly contains items the priority rules *should* have resolved. Outcome: tighten the rule definitions (e.g. clarify what counts as a "grounded-by citation" beating an un-grounded claim).
+- Real-user data shows `## Open Questions` regularly contains items the priority rules _should_ have resolved. Outcome: tighten the rule definitions (e.g. clarify what counts as a "grounded-by citation" beating an un-grounded claim).
 - Transcript-replay regressions (§10) show silent drops slipping past the quality check. Outcome: add a deterministic gate beyond the Quality Checks self-assertion.

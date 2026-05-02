@@ -1,0 +1,1 @@
+Design a public-facing event-ingestion API on AWS that accepts up to 5,000 events/second per tenant. Produce design.md and per-component contracts. Surface every disagreement between specialists explicitly; do not silently pick.

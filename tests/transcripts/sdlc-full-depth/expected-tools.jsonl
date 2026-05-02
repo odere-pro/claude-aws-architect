@@ -1,0 +1,14 @@
+{"step": 1, "tool": "Agent", "fan_out_index": 1}
+{"step": 1, "tool": "Agent", "fan_out_index": 2}
+{"step": 1, "tool": "Agent", "fan_out_index": 3}
+{"step": 2, "tool": "mcp__plugin_claude-aws-architect_kb__search_documentation", "server": "kb"}
+{"step": 3, "tool": "mcp__plugin_claude-aws-architect_kb__read_documentation", "server": "kb"}
+{"step": 4, "tool": "mcp__plugin_claude-aws-architect_iac__search_cdk_documentation", "server": "iac"}
+{"step": 5, "tool": "mcp__plugin_claude-aws-architect_iac__validate_cloudformation_template", "server": "iac"}
+{"step": 6, "tool": "mcp__plugin_claude-aws-architect_cost__get_pricing", "server": "cost"}
+{"step": 7, "tool": "mcp__plugin_claude-aws-architect_iam__simulate_principal_policy", "server": "iam"}
+{"step": 8, "tool": "mcp__plugin_claude-aws-architect_cw__get_recommended_metric_alarms", "server": "cw"}
+{"step": 9, "tool": "Write"}
+{"step": 10, "tool": "Write"}
+{"step": 11, "tool": "Write"}
+{"step": 12, "tool": "Write"}

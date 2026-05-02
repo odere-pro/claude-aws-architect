@@ -1,0 +1,11 @@
+# sdlc-full-depth full-depth turn — every artefact named by F5 and F6 must exist.
+# Paths are relative to .claude/specs/<feature>/.
+requirements.md
+design.md
+tasks.md
+diagrams.d2
+contracts/checkout-ingest-api.md
+contracts/order-validator.md
+contracts/order-history-store.md
+contracts/fulfilment-dispatcher.md
+.grounding-ledger.json
