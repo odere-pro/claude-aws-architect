@@ -15,5 +15,39 @@
       "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/aws-api-write-guard.sh",
       "enabledByDefault": true
     }
+  ],
+  "PostToolUse": [
+    {
+      "name": "on-cdk-write",
+      "event": "PostToolUse",
+      "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/on-cdk-write.sh",
+      "enabledByDefault": false,
+      "filePattern": "(.*/(bin|lib|cdk|infrastructure|iac)/.*\\.(ts|js|py)$|.*cdk\\.json$|.*cdk\\.context\\.json$)"
+    },
+    {
+      "name": "on-iam-write",
+      "event": "PostToolUse",
+      "matcher": "Write|Edit|MultiEdit",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/on-iam-write.sh",
+      "enabledByDefault": false,
+      "filePattern": "(.*/(iam|policies)/.*\\.json$|.*(policy|role|trust-policy|iam-).*\\.json$)"
+    },
+    {
+      "name": "on-bedrock-prompt-write",
+      "event": "PostToolUse",
+      "matcher": "Write|Edit|MultiEdit",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/on-bedrock-prompt-write.sh",
+      "enabledByDefault": false,
+      "filePattern": "(.*/(prompts|bedrock-prompts|agentcore)/.*\\.(json|yaml|yml|md)$|.*(prompt-|bedrock-).*\\.(json|yaml|yml|md)$)"
+    },
+    {
+      "name": "aws-test-coverage",
+      "event": "PostToolUse",
+      "matcher": "Write|Edit|MultiEdit",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/aws-test-coverage.sh",
+      "enabledByDefault": false,
+      "filePattern": ".*\\.(ts|tsx|js|jsx|py)$"
+    }
   ]
 }
