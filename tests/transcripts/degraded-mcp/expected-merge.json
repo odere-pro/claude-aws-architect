@@ -1,0 +1,6 @@
+{
+  "specialists": ["claude-aws-architect-discovery-agent"],
+  "open_questions": ["availability-target-ground-truth"],
+  "priority_rules_applied": [],
+  "degraded_signals": ["grounding-deferred:kb"]
+}

@@ -1,0 +1,10 @@
+# merge-conflict (PR 20): validates §5.5 priority rules under a planted
+# disagreement between solution-architect and implementation specialists
+# (e.g. solution-architect proposes API Gateway + Lambda; implementation
+# proposes ALB + Fargate). The orchestrator must surface the unresolved
+# choice under ## Open Questions in design.md, and resolved disagreements
+# (e.g. security-blocking finding overriding a non-secure default) must
+# log a conflict-resolution entry in the grounding ledger.
+design.md
+contracts/event-ingestion-api.md
+.grounding-ledger.json

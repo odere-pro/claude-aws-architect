@@ -1,0 +1,18 @@
+# iteration-cap (PR 20): validates O4 — the orchestrator halts at the
+# `max-iterations: 3` cap declared in its frontmatter when specialists
+# do not converge. The prompt is intentionally over-constrained
+# (mutually incompatible NFRs: 50ms global p99 read, single-region
+# strong consistency, multi-region active-active writes with no
+# conflict resolution, $500/mo cost ceiling) so specialists keep
+# raising disagreements through three iterations. The run must:
+#   - emit exactly three iterations of fan-out (≥2 specialists per
+#     iteration, all in single-message batches per N13);
+#   - NOT exceed three iterations (no fourth fan-out batch);
+#   - terminate with an `iteration-cap-reached` marker;
+#   - surface every unresolved disagreement under ## Open Questions;
+#   - log the unresolved conflicts in the grounding ledger as
+#     `unresolved` entries.
+# A partial design.md is produced alongside the marker; specialists do
+# not silently truncate.
+design.md
+.grounding-ledger.json

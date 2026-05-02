@@ -1,0 +1,14 @@
+{
+  "specialists": [
+    "claude-aws-architect-solution-architect-agent",
+    "claude-aws-architect-implementation-agent"
+  ],
+  "open_questions": [
+    "consistency-vs-multi-region-writes",
+    "latency-vs-cost-ceiling",
+    "conflict-resolution-strategy"
+  ],
+  "priority_rules_applied": [],
+  "iteration_cap_marker": "iteration-cap-reached",
+  "iterations_observed": 3
+}

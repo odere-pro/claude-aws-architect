@@ -1,0 +1,1 @@
+Draft requirements.md for a customer-feedback ingestion pipeline on AWS targeting 99.9% monthly availability and end-to-end p95 latency under one second.
