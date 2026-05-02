@@ -1,0 +1,116 @@
+name: Bug report
+description: A deterministic gate fails, the plugin breaks Claude Code, or behaviour diverges from what SUPPORT.md or SPEC.md documents.
+title: "bug: <one-line summary>"
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. A few ground rules before you start:
+
+        - **Security issues** belong in a private advisory, not a public issue. See [SECURITY.md](../blob/main/SECURITY.md).
+        - **Questions and confusing UX** belong in [Discussions](https://github.com/odere-pro/claude-aws-architect/discussions).
+        - This plugin is community-maintained, best-effort. Severity and triage rules live in [SUPPORT.md](../blob/main/SUPPORT.md).
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Preflight
+      options:
+        - label: I searched [open and closed issues](https://github.com/odere-pro/claude-aws-architect/issues?q=is%3Aissue) and this is not a duplicate.
+          required: true
+        - label: This is not a security vulnerability (those go in a private advisory per SECURITY.md).
+          required: true
+        - label: I am running the latest tagged release on `main`, or I have explained below why I am not.
+          required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: One paragraph describing the actual behaviour. Include the exact command, agent, skill, or hook that triggered it.
+      placeholder: |
+        Ran `/aws-cdk-init` against an empty repo. The aws-cdk-skill emitted a stack but the deterministic-tag gate did not run.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: One paragraph describing the expected behaviour and where it is documented (SPEC, SUPPORT, README, skill description, etc.).
+      placeholder: |
+        Per the deterministic-tag gate, every emitted stack should fail-closed if a required tag is missing. Documented in SPEC.md §11.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Step-by-step. Include the smallest input that reproduces the problem. If the repro requires private code, redact it but keep the structural shape.
+      placeholder: |
+        1. `git clone <example repo or minimal fixture>`
+        2. Run `<command>`
+        3. Observe `<symptom>`
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs / output
+      description: Paste the failing output. Wrap long traces in a collapsible `<details>` block. Redact secrets and account identifiers.
+      render: shell
+
+  - type: input
+    id: plugin-version
+    attributes:
+      label: Plugin version
+      description: Tag, commit SHA, or `unreleased` if running off a branch.
+      placeholder: "v0.1.0 / commit abc123 / unreleased"
+    validations:
+      required: true
+
+  - type: input
+    id: claude-code-version
+    attributes:
+      label: Claude Code version
+      placeholder: "claude-code 1.4.2"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS (Apple Silicon)
+        - macOS (Intel)
+        - Linux (Ubuntu)
+        - Linux (other)
+        - Windows (WSL2)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: mcp-state
+    attributes:
+      label: MCP servers and pinned versions
+      description: Paste the relevant `.mcp.json` entries (or the output of `claude mcp list`). Helps catch version-skew bugs.
+      render: json
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Suggested severity
+      description: See SUPPORT.md for the rubric. The maintainer makes the final call during triage.
+      options:
+        - Critical — plugin breaks Claude Code, exposes secrets, or corrupts user data
+        - High — a deterministic gate fails for a real-world repo, or a degraded mode breaks
+        - Medium — polish, ergonomics, error-message clarity
+        - Low — style, typos, minor docs
+    validations:
+      required: true

@@ -1,0 +1,86 @@
+name: Feature request
+description: Propose a new agent, skill, hook, gate, or behaviour change.
+title: "feat: <one-line summary>"
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests are triaged into `v0.2`, `v1.0`, or `wontfix`. `wontfix` always carries a one-line rationale — see [SUPPORT.md](../blob/main/SUPPORT.md).
+
+        For open-ended exploration of an idea before it has a concrete shape, [Discussions](https://github.com/odere-pro/claude-aws-architect/discussions) is the better venue.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Preflight
+      options:
+        - label: I searched [open and closed issues](https://github.com/odere-pro/claude-aws-architect/issues?q=is%3Aissue) and this is not a duplicate.
+          required: true
+        - label: I have read the relevant section of SPEC.md (or confirmed there is no relevant section).
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user-visible problem does this solve? Avoid jumping to a solution — describe the pain.
+      placeholder: |
+        When dogfooding the cost-optimization skill against a multi-account repo, the skill cannot tell which account a CDK stack targets, so its recommendations conflate prod and dev.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Concrete behaviour you want. If you have a SPEC section in mind, cite it; if not, sketch where it would belong.
+      placeholder: |
+        Add an `aws-account-context` skill that reads `cdk.context.json` and surfaces the resolved account id to downstream skills.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What did you try, find in another tool, or rule out? "None" is a valid answer.
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface area
+      multiple: true
+      options:
+        - Agent
+        - Skill
+        - Power
+        - Hook
+        - Script
+        - Rule
+        - Gate (deterministic)
+        - MCP server
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target-version
+    attributes:
+      label: Target version (suggestion)
+      description: Maintainer makes the final call during triage.
+      options:
+        - v0.2 — fits within the next minor
+        - v1.0 — needs design work or a SPEC update
+        - Unsure
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope-and-risk
+    attributes:
+      label: Scope and risk
+      description: What could this break? What gates, skills, or agents would need to change in lockstep?
+      placeholder: |
+        Touches the deterministic-tag gate; would need an ADR if it changes the gate contract.
