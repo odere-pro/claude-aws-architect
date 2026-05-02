@@ -1,0 +1,58 @@
+# claude-aws-architect — local consumer settings
+
+> Copy this file to `claude-aws-architect.local.md` (no `.example`) and edit
+> the values that apply to this consumer project. The committed `.example`
+> file declares every supported field; the local file overrides defaults.
+
+## AWS environment
+
+- **Default region**: TODO (e.g., a single region slug for single-region work).
+- **Default account**: TODO (account alias or numeric id; never paste a
+  long-lived access key here).
+- **Allowed regions**: TODO (list of region slugs the orchestrator may
+  reference; out-of-list regions raise an Open Question).
+- **Data residency**: TODO (one of the documented residency tiers).
+
+## Cost and budget posture
+
+- **Monthly cost ceiling (USD)**: TODO (orchestrator surfaces a warning when
+  a design's ROM exceeds this number).
+- **Allow Spot capacity**: TODO (`true` / `false`; default `false` until the
+  workload-class table marks the workload as Spot-eligible).
+- **Pricing-model preference**: TODO (`on-demand`, `reserved`, `savings-plan`,
+  or `evaluate`; default `evaluate`).
+
+## Security posture
+
+- **Read-only AWS API mode**: `true` (default; consumers opt out per request).
+- **Wildcard IAM allowed**: `false` (default; only the read-only carveout
+  recognised by the IAM rule may relax this).
+- **Allow live MCP write-class tool calls**: `false` (default; the
+  `aws-api-write-guard` hook blocks write-class calls regardless of this
+  flag — this setting is advisory only).
+
+## Observability defaults
+
+- **Default log retention (days)**: TODO.
+- **Default tracing**: TODO (e.g., AWS X-Ray active tracing; sampling rule).
+- **Required metric namespaces**: TODO (list of namespaces to assert in
+  every component contract).
+
+## Spec authoring defaults
+
+- **Default feature slug prefix**: TODO (e.g., a team or product code; left
+  empty by default).
+- **Required `grounded-by` minimum on `requirements.md`**: TODO (integer ≥ 1;
+  default 1).
+- **Default per-pillar review status floor**: TODO (`PASS`, `DEFER`, or
+  `GAP`; default `PASS` — designs at `GAP` are blocked from advancing past
+  `draft`).
+
+## Notes
+
+- Every value above is read by the orchestrator at run time and surfaced in
+  the merged output's degraded-signals section if it conflicts with a
+  specialist's grounded recommendation.
+- Secrets do **not** belong in this file. The `secret-scanner` hook blocks
+  any write that contains an AWS access key, session token, private key
+  block, or KMS CMK ARN.

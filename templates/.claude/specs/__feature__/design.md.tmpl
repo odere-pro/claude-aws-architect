@@ -1,0 +1,95 @@
+---
+feature: TODO-feature-slug
+created: TODO-iso-8601-date
+updated: TODO-iso-8601-date
+status: draft
+grounded-by:
+  - TODO:server:short-key
+---
+
+# Design — TODO-feature-name
+
+One paragraph: how the system meets the requirements. Name the dominant
+architectural choice (event-driven, request/response, batch, hybrid) and
+the AWS services that compose it.
+
+## Architecture overview
+
+- **Pattern**: TODO (e.g., event-driven via queue, synchronous request/response).
+- **Boundary**: TODO (which existing systems this feature interacts with).
+- **Region strategy**: TODO (single-region default, multi-region rationale,
+  region tier per the carbon-tier policy).
+- **Data classification**: TODO (public, internal, confidential, regulated).
+
+Reference the layered diagram at `diagrams.d2`:
+
+- `c4-l1` — system context.
+- `c4-l2` — runtime containers.
+- `c4-l3-<container>` — internals of each container.
+- `seq-system`, `seq-component`, `seq-error` — sequence views.
+
+## Components
+
+For each component, link to its contract under `contracts/<slug>.md`. Every
+component named here must have a matching contract file.
+
+- **TODO-component-slug** — one-line purpose. See `contracts/TODO-component-slug.md`.
+- **TODO-component-slug** — one-line purpose. See `contracts/TODO-component-slug.md`.
+
+## Design choices
+
+For each non-trivial decision, state the option chosen, the alternatives
+considered, the rule that resolved any conflict, and a `grounded-by`
+citation for the factual claim that motivated the choice.
+
+- **Decision: TODO-name**
+  - Chosen: TODO option.
+  - Alternatives: TODO options weighed.
+  - Rationale: TODO (cite the priority rule applied if specialists disagreed).
+  - grounded-by: `TODO:server:short-key`
+
+## Per-pillar review
+
+The per-pillar Well-Architected review block. Each subsection records the
+PASS/DEFER/GAP rollup from the matching pillar skill plus its top finding.
+
+### Operational excellence
+
+- Status: TODO (PASS / DEFER / GAP).
+- Top finding: TODO.
+
+### Security
+
+- Status: TODO.
+- Top finding: TODO.
+
+### Reliability
+
+- Status: TODO.
+- Top finding: TODO.
+
+### Performance efficiency
+
+- Status: TODO.
+- Top finding: TODO.
+
+### Cost optimization
+
+- Status: TODO.
+- Top finding: TODO.
+
+### Sustainability
+
+- Status: TODO.
+- Top finding: TODO.
+
+## Open questions
+
+- TODO: surfaced disagreement between specialists, raised options, citations
+  on each side. Remove once resolved into a Design choice above.
+
+## Degraded signals
+
+- TODO: any markers carried forward from specialists (for example
+  `grounding-deferred`, `cost-rom-only`, `iam-advisory-only`,
+  `observability-incomplete`). Remove once the degradation is cleared.
