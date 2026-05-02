@@ -110,13 +110,16 @@ Deep dives live under [`docs/`](./docs/). Start here:
 | ------------------------- | ------------------------------------------------------------------------------------------------------------ |
 | Powers (workflow bundles) | [powers-guide.md](./docs/powers-guide.md)                                                                    |
 | MCP servers (`.mcp.json`) | [mcp-servers-guide.md](./docs/mcp-servers-guide.md)                                                          |
-| Validation gates          | [validation-gates-guide.md](./docs/validation-gates-guide.md)                                                |
+| Validation gates (author) | [validation-gates-guide.md](./docs/validation-gates-guide.md)                                                |
+| Testing & drift detection | [testing.md](./docs/testing.md)                                                                              |
 | Manual install / CI       | [install.md](./docs/install.md)                                                                              |
 | Lifecycle scripts         | [scripts.md](./docs/scripts.md)                                                                              |
 | Architecture & spec       | [SPEC.md](./SPEC.md), [docs/plan/SPEC-v4.md](./docs/plan/SPEC-v4.md)                                         |
 | Threat model              | [docs/threat-model.md](./docs/threat-model.md)                                                               |
 | Architectural decisions   | [docs/adr/](./docs/adr/) (A1–A7)                                                                             |
 | Contributor workflow      | [docs/plan/PR-PLAN.md](./docs/plan/PR-PLAN.md), [docs/plan/PR-CONVENTIONS.md](./docs/plan/PR-CONVENTIONS.md) |
+
+> **What's covered, what's not.** The gates above are **structural, not semantic** — file-shape, schema, lint, install-safety, and (when the transcript executor runs) routing assertions. There is **no live-model eval** in this repo today, so editing the body of a skill / agent / command / hook prompt passes CI as long as format and budget gates stay green. Treat prompt edits like a database migration: explicit pre-merge testing, explicit reviewer sign-off. Full breakdown and drift-closure roadmap in [`docs/testing.md`](./docs/testing.md).
 
 ---
 
