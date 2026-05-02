@@ -44,7 +44,7 @@ The following are not in scope here; report them to the upstream maintainer:
 
 ## Threat model
 
-Documented in `docs/threat-model.md` (lands in PR 28a). Four threat classes enumerated:
+Documented in [`docs/threat-model.md`](./docs/threat-model.md). Four threat classes enumerated:
 
 1. **Prompt injection via MCP server output** — mitigated by file-scoped rules + merge-contract Open Questions.
 2. **Hook script abuse** — mitigated by `set -euo pipefail`, quoted variables, scope confinement.
@@ -54,6 +54,6 @@ Documented in `docs/threat-model.md` (lands in PR 28a). Four threat classes enum
 ## Supply chain
 
 - All `.mcp.json` server entries pin an explicit `version`. Version bumps land as separate `feat(deps)` PRs with rationale.
-- GitHub Actions in `.github/workflows/` pin to commit SHAs (lands PR 28a).
-- Dependabot monitors GitHub Actions deps; nightly version-skew check on MCP packages opens issues automatically (lands PR 28a).
+- GitHub Actions in `.github/workflows/` pin every `uses:` reference to a full commit SHA, not a tag.
+- Dependabot ([`.github/dependabot.yml`](./.github/dependabot.yml)) monitors GitHub Actions deps weekly. The nightly [`mcp-version-skew`](./.github/workflows/mcp-version-skew.yml) workflow checks every uvx-pinned MCP package against PyPI and opens (or updates) a tracking issue when a stable release drifts.
 - No npm dependencies. No code signing at v0.1.0; deferred per ADR A6 (lands PR 32).
