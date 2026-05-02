@@ -30,7 +30,9 @@ while IFS= read -r line; do
   entry_json="${line#*$'\t'}"
   total=$((total + 1))
   for key in name event matcher command enabledByDefault; do
-    if [[ "$(echo "$entry_json" | jq -r ".$key // \"__MISSING__\"")" == "__MISSING__" ]]; then
+    # `has(key)` is used instead of `// "__MISSING__"` because jq's `//`
+    # treats `false` as null and would falsely flag enabledByDefault: false.
+    if [[ "$(echo "$entry_json" | jq -r "has(\"$key\")")" != "true" ]]; then
       gate_warn "$GATE" "entry missing required key '$key': $entry_json"
       failed=$((failed + 1))
     fi
