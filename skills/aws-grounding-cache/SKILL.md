@@ -19,7 +19,7 @@ Trigger conditions:
 - A short-key needs to be derived for a new query.
 - A short-key collision was detected at write-time.
 - An entry's TTL has elapsed and the agent is deciding whether to re-fetch or surface a stale-data marker.
-- The discovery agent is logging a `conflict-resolution` entry produced by the merge contract.
+- The orchestrator is flushing a `conflict_resolution` entry produced by the merge contract (the orchestrator is the writer; this skill provides the schema and the write path).
 
 ## Procedure
 

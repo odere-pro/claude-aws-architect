@@ -1,0 +1,35 @@
+# Keywords that should activate the aws-sdlc-workflow skill.
+# One per line. Comments allowed (lines starting with #).
+# The skill-description gate cross-checks this list against SKILL.md
+# frontmatter to ensure ≥3 keywords appear in the description.
+sdlc
+workflow
+vibe
+discovery
+design
+plan
+validate
+escalation
+escalate
+depth
+shallow
+full
+fan-out
+fanout
+parallel
+specialist
+specialists
+merge
+conflict
+conflict resolution
+priority
+open questions
+orchestrate
+orchestrator
+phase
+phases
+clarification
+artefact
+requirements.md
+design.md
+tasks.md
