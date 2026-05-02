@@ -1,0 +1,53 @@
+{
+  "entries": {
+    "kb:11a02bb1": {
+      "server": "kb",
+      "tool": "read_documentation",
+      "query": "claude code plugin architecture slash command agent fan-out",
+      "retrieved": "2026-05-02T12:00:01Z",
+      "result_summary": "Claude Code plugins compose slash commands, agents, skills, hooks, and MCP servers; agents may issue parallel Agent calls in a single turn for fan-out, with the orchestrator merging returns deterministically.",
+      "ttl-class": "api-shape"
+    },
+    "kb:22b03cc2": {
+      "server": "kb",
+      "tool": "read_documentation",
+      "query": "aws well-architected framework six pillars sdlc artefacts requirements design tasks",
+      "retrieved": "2026-05-02T12:00:08Z",
+      "result_summary": "AWS Well-Architected framework defines six pillars — operational excellence, security, reliability, performance efficiency, cost optimization, sustainability — and prescribes a per-pillar review block alongside the SDLC artefact set produced for any feature.",
+      "ttl-class": "immutable"
+    },
+    "iac:33c04dd3": {
+      "server": "iac",
+      "tool": "validate_cloudformation_template",
+      "query": "claude-aws-architect dogfood iac validation contract sections",
+      "retrieved": "2026-05-02T12:00:15Z",
+      "result_summary": "CloudFormation pre-deploy validation is the canonical hand-off between the solution-architect's component shape and the implementation agent's IaC section; cfn-lint and cfn-guard cover the deterministic gates.",
+      "ttl-class": "api-shape"
+    },
+    "cost:44d05ee4": {
+      "server": "cost",
+      "tool": "get_pricing",
+      "query": "plugin runtime cost claude code on-device zero infrastructure",
+      "retrieved": "2026-05-02T12:00:22Z",
+      "result_summary": "claude-aws-architect runs on the consumer's machine inside Claude Code; zero AWS infrastructure cost; only consumer-side AWS API call costs apply, all read-class at v0.1.0.",
+      "ttl-class": "pricing"
+    },
+    "iam:55e06ff5": {
+      "server": "iam",
+      "tool": "simulate_principal_policy",
+      "query": "minimum iam policy for read-class mcp access claude-aws-architect doctor",
+      "retrieved": "2026-05-02T12:00:29Z",
+      "result_summary": "doctor.sh asserts the minimum-IAM policy reference under skills/aws-iam-skill/references/minimum-iam-policy.json; simulate_principal_policy confirms read-class actions are sufficient for the v0.1.0 surface; no write actions required.",
+      "ttl-class": "immutable"
+    },
+    "cw:66f07aa6": {
+      "server": "cw",
+      "tool": "get_recommended_metric_alarms",
+      "query": "deterministic transcript harness exit code rollup observability",
+      "retrieved": "2026-05-02T12:00:36Z",
+      "result_summary": "tests/run-transcripts.sh exit code is the canonical rollup for routing and merge-contract violations; per-fixture diagnostic snapshots cover --validate and --execute modes.",
+      "ttl-class": "api-shape"
+    }
+  },
+  "conflict_resolution": []
+}
