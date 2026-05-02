@@ -1,0 +1,6 @@
+search_documentation
+read_documentation
+recommend
+list_regions
+get_regional_availability
+retrieve_agent_sops

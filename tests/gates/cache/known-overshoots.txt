@@ -1,0 +1,39 @@
+# Tool-name budget overshoots accepted as known deviations.
+# Format: <server-key>:<tool-name>
+# One entry per line. Lines starting with `#` are comments.
+#
+# These are upstream-controlled tool names from awslabs.* MCP server packages
+# that exceed O3's 64-character `mcp__plugin_<plugin>_<server>__<tool>` budget.
+# The plugin cannot rename them without forking the upstream package.
+#
+# Each entry SHOULD be reviewed when an upstream package version is bumped:
+# the upstream may have shortened the name, or the plugin may have stopped
+# using the tool, in which case the entry can be removed.
+#
+# Each entry MUST cite which agent or skill currently relies on the tool, so
+# we know what regresses if the upstream renames or removes it. For PR 2
+# (initial gate landing) no agents/skills exist yet, so the citation is
+# "no current dependency" and the line is a placeholder for the budget check.
+
+# === iac (aws-iac, awslabs.aws-iac-mcp-server) ===
+# Used by: solution-architect agent (lands PR 19), implementation agent (PR 21)
+iac:get_cloudformation_pre_deploy_validation_instructions
+iac:check_cloudformation_template_compliance
+iac:troubleshoot_cloudformation_deployment
+iac:search_cloudformation_documentation
+iac:search_cdk_samples_and_constructs
+iac:validate_cloudformation_template
+iac:read_iac_documentation_page
+
+# === cost (aws-pricing, awslabs.aws-pricing-mcp-server) ===
+# Used by: implementation agent (lands PR 21)
+cost:get_pricing_service_attributes
+cost:get_pricing_service_codes
+cost:analyze_terraform_project
+
+# === cw (cloudwatch, awslabs.cloudwatch-mcp-server) ===
+# Used by: implementation agent (lands PR 21)
+cw:get_recommended_metric_alarms
+cw:get_logs_insight_query_results
+cw:execute_log_insights_query
+cw:execute_cwl_insights_batch

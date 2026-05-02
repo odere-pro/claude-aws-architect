@@ -1,0 +1,12 @@
+get_metric_data
+get_metric_metadata
+get_recommended_metric_alarms
+analyze_metric
+get_active_alarms
+get_alarm_history
+describe_log_groups
+analyze_log_group
+execute_log_insights_query
+execute_cwl_insights_batch
+get_logs_insight_query_results
+cancel_logs_insight_query

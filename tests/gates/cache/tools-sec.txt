@@ -1,0 +1,6 @@
+CheckSecurityServices
+GetSecurityFindings
+GetStoredSecurityContext
+CheckStorageEncryption
+ListServicesInRegion
+CheckNetworkSecurity
