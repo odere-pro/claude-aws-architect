@@ -20,12 +20,13 @@ Each scenario includes:
 
 ## Index
 
-| Power                                                                                    | Focus                                                               | Playbook                                                   |
-| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------- |
-| [`claude-aws-architect-kb`](../../powers/claude-aws-architect-kb.power.json)             | Read-only lookup, CLI reference, SOPs, onboarding, next-step recs   | [kb-power-playbook.md](./kb-power-playbook.md)             |
-| [`claude-aws-architect-cdk`](../../powers/claude-aws-architect-cdk.power.json)           | CDK authoring + reliability + ops + cost ROM                        | [cdk-power-playbook.md](./cdk-power-playbook.md)           |
-| [`claude-aws-architect-cost`](../../powers/claude-aws-architect-cost.power.json)         | Pricing-model review, right-sizing, storage tiers, tagging          | [cost-power-playbook.md](./cost-power-playbook.md)         |
-| [`claude-aws-architect-security`](../../powers/claude-aws-architect-security.power.json) | WAF security pillar, IAM least-privilege, encryption, identity edge | [security-power-playbook.md](./security-power-playbook.md) |
+| Power                                                                                        | Focus                                                                  | Playbook                                                       |
+| -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------- |
+| [`claude-aws-architect-kb`](../../powers/claude-aws-architect-kb.power.json)                 | Read-only lookup, CLI reference, SOPs, onboarding, next-step recs      | [kb-power-playbook.md](./kb-power-playbook.md)                 |
+| [`claude-aws-architect-cdk`](../../powers/claude-aws-architect-cdk.power.json)               | CDK authoring + reliability + ops + cost ROM                           | [cdk-power-playbook.md](./cdk-power-playbook.md)               |
+| [`claude-aws-architect-cost`](../../powers/claude-aws-architect-cost.power.json)             | Pricing-model review, right-sizing, storage tiers, tagging             | [cost-power-playbook.md](./cost-power-playbook.md)             |
+| [`claude-aws-architect-security`](../../powers/claude-aws-architect-security.power.json)     | WAF security pillar, IAM least-privilege, encryption, identity edge    | [security-power-playbook.md](./security-power-playbook.md)     |
+| [`claude-aws-architect-bedrock-ai`](../../powers/claude-aws-architect-bedrock-ai.power.json) | Amazon Bedrock + AWS AI: FMs, RAG / KBs, Agents, Guardrails, licensing | [bedrock-ai-power-playbook.md](./bedrock-ai-power-playbook.md) |
 
 ---
 

@@ -1,0 +1,75 @@
+# Keywords that should activate the aws-bedrock-ai skill.
+# One per line. Comments allowed (lines starting with #).
+# Used by gate 16 to validate description quality.
+bedrock
+amazon bedrock
+foundation model
+fm
+llm
+claude
+anthropic
+nova
+amazon nova
+titan
+amazon titan
+llama
+meta llama
+mistral
+mixtral
+cohere
+command r
+ai21
+jamba
+stability
+stable diffusion
+knowledge base
+knowledge bases
+rag
+retrieval augmented generation
+bedrock kb
+agents for bedrock
+agentcore
+guardrails
+prompt management
+flows
+custom model import
+fine-tuning
+distillation
+batch inference
+provisioned throughput
+on-demand
+cross-region inference
+inference profile
+latency-optimised
+model evaluation
+model access
+model id
+foundation model id
+sagemaker
+comprehend
+textract
+rekognition
+transcribe
+translate
+polly
+kendra
+q business
+q developer
+licensing
+acceptable use policy
+aup
+data privacy
+data residency
+vpc endpoint
+privatelink
+kms
+cmk
+opensearch serverless
+aoss
+aurora pgvector
+pinecone
+redis enterprise
+mongodb atlas
+genai
+generative ai
+ai

@@ -30,11 +30,11 @@ A [Claude Code](https://claude.ai/code) plugin for AWS Well-Architected SDLC. De
 | Layer        | Surface                                                                                                                                            | Count |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | :---: |
 | **MCP**      | `kb`, `iac`, `cost`, `sec`, `iam`, `cw` — see [mcp-servers-guide.md](./docs/mcp-servers-guide.md)                                                  |   6   |
-| **Skills**   | 7 workflow + 6 WAF pillar                                                                                                                          |  13   |
+| **Skills**   | 8 workflow + 6 WAF pillar                                                                                                                          |  14   |
 | **Agents**   | 1 L4 orchestrator + 3 L3 SDLC specialists (`discovery`, `solution-architect`, `implementation`) + 1 read-only `kb-navigator`                       |   5   |
 | **Commands** | `/aws`, `/aws-spec`, `/aws-doctor`, `/aws-kb`                                                                                                      |   4   |
-| **Powers**   | `claude-aws-architect-{cdk,cost,security,kb}` — see [powers-guide.md](./docs/powers-guide.md)                                                      |   4   |
-| **Rules**    | 10 file-scoped instruction rules under `rules/`                                                                                                    |  10   |
+| **Powers**   | `claude-aws-architect-{cdk,cost,security,kb,bedrock-ai}` — see [powers-guide.md](./docs/powers-guide.md)                                           |   5   |
+| **Rules**    | 11 file-scoped instruction rules under `rules/`                                                                                                    |  11   |
 | **Hooks**    | 2 PreToolUse default-on (`aws-secret-scanner`, `aws-api-write-guard`) + 4 PostToolUse default-off                                                  |   6   |
 | **Gates**    | 18 deterministic + 9 runtime + 2 cross-platform + 4 install-safety + 1 release — see [validation-gates-guide.md](./docs/validation-gates-guide.md) |  34   |
 

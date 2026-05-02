@@ -1,0 +1,16 @@
+{
+  "name": "claude-aws-architect-bedrock-ai",
+  "version": "0.1.0",
+  "description": "Amazon Bedrock and AWS AI power: bundles the kb knowledge MCP, cost pricing MCP, IAM MCP, and well-architected-security MCP with the aws-bedrock-ai skill, the routing/grounding/cache and security pillar skills, both default hooks, and the /aws, /aws-spec, /aws-doctor, /aws-kb commands for designing Bedrock workloads (foundation-model selection, Knowledge Bases / RAG, Agents, Guardrails, provisioned throughput, cross-region inference, fine-tuning, custom-model import, KMS, VPC endpoints, licensing, regional GA).",
+  "mcpServers": ["kb", "cost", "iam", "sec"],
+  "skills": [
+    "aws-bedrock-ai",
+    "aws-mcp-routing",
+    "aws-spec-grounding",
+    "aws-grounding-cache",
+    "aws-component-contract",
+    "aws-waf-security-skill"
+  ],
+  "hooks": ["aws-secret-scanner", "aws-api-write-guard"],
+  "commands": ["aws", "aws-spec", "aws-doctor", "aws-kb"]
+}
