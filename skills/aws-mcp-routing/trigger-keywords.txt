@@ -1,0 +1,26 @@
+# Keywords that should activate the aws-mcp-routing skill.
+# One per line. Comments allowed (lines starting with #).
+# Used by gate 16 to validate description quality.
+mcp
+routing
+route
+server selection
+selection
+tool selection
+fallback
+degraded mode
+degraded
+timeout
+rate limit
+aws-knowledge
+aws-iac
+aws-pricing
+well-architected-security
+iam
+cloudwatch
+kb
+iac
+cost
+sec
+cw
+grounding
