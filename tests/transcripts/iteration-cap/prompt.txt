@@ -1,0 +1,1 @@
+Design a globally distributed key-value store on AWS that simultaneously meets a 50ms global p99 read latency target, single-region strong consistency, multi-region active-active writes with no conflict resolution, and a monthly cost ceiling of $500. Resolve any specialist disagreement by re-running the affected specialists until consensus is reached.

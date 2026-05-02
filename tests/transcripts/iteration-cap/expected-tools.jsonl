@@ -1,0 +1,6 @@
+{"step": 1, "tool": "Agent", "fan_out_index": 1}
+{"step": 1, "tool": "Agent", "fan_out_index": 2}
+{"step": 2, "tool": "Agent", "fan_out_index": 1}
+{"step": 2, "tool": "Agent", "fan_out_index": 2}
+{"step": 3, "tool": "Agent", "fan_out_index": 1}
+{"step": 3, "tool": "Agent", "fan_out_index": 2}

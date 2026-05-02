@@ -1,0 +1,19 @@
+{
+  "specialists": [
+    "claude-aws-architect-solution-architect-agent",
+    "claude-aws-architect-implementation-agent"
+  ],
+  "open_questions": ["compute-platform"],
+  "priority_rules_applied": [
+    {
+      "rule": "security-correctness",
+      "chosen": "private-subnet-default",
+      "rejected": "public-subnet-default"
+    },
+    {
+      "rule": "factual-correctness",
+      "chosen": "kb-cited-quota",
+      "rejected": "pretrained-quota"
+    }
+  ]
+}

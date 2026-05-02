@@ -1,0 +1,9 @@
+# degraded-mcp (PR 20): validates §3.5 fallback labelling under a
+# simulated `kb` MCP failure. The runner injects a 5xx for the second
+# `kb` call. The discovery agent must emit a `grounding-deferred`
+# marker on the affected claim, surface it inline in requirements.md,
+# log it to .grounding-ledger.json under a conflict_resolution-style
+# entry, and the orchestrator must propagate it under
+# ## Degraded signals in the merged response. The run does not abort.
+requirements.md
+.grounding-ledger.json
