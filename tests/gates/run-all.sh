@@ -2,9 +2,6 @@
 # Run every deterministic gate in tests/gates/, in numerical order.
 # Exits 0 only if every gate passes; non-zero on first failure (unless
 # --keep-going is passed).
-#
-# Gates 1 (doctor.sh) and 13 (init.sh idempotency) are deferred until PR 27,
-# when those scripts land. They are skipped here with an INFO line.
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -23,8 +20,6 @@ Usage: run-all.sh [--keep-going]
 Runs every gate-NN-*.sh script in numerical order. By default exits non-zero
 on the first failure. With --keep-going, runs all gates and exits non-zero
 only if any failed.
-
-Gates 1 and 13 are deferred to PR 27 (depend on init.sh / doctor.sh).
 EOF
       exit 0
       ;;
@@ -44,10 +39,6 @@ if [[ ${#gates[@]} -eq 0 ]]; then
   echo "No gate scripts found under tests/gates/" >&2
   exit 1
 fi
-
-# Note deferred gates
-gate_info "00" "gate-01 (doctor.sh exits 0): DEFERRED — lands with PR 27"
-gate_info "00" "gate-13 (init.sh idempotency): DEFERRED — lands with PR 27"
 
 failed_gates=()
 for gate in "${gates[@]}"; do

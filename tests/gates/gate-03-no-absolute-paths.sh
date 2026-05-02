@@ -35,6 +35,7 @@ done
 files=()
 read_into files < <(find . \
   -path ./.git -prune -o \
+  -path ./.claude -prune -o \
   -path ./docs -prune -o \
   -path ./tests/gates -prune -o \
   -path ./node_modules -prune -o \
