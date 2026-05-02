@@ -1,0 +1,55 @@
+# Keywords that should activate the aws-waf-cost-optimization-skill skill.
+# One per line. Comments allowed (lines starting with #).
+# Used by gate 16 to validate description quality.
+cost
+cost optimization
+cost-optimization
+cost optimisation
+waf-cost
+well-architected
+well-architected cost
+pricing
+pricing model
+pricing-model
+on-demand
+reserved instance
+reserved-instance
+savings plan
+savings-plan
+savings plans
+spot
+spot instance
+right-sizing
+right size
+right-size
+idle
+idle resources
+idle resource
+storage tiering
+lifecycle
+s3 lifecycle
+glacier
+data egress
+egress
+data-egress
+data transfer
+nat gateway
+vpc endpoint
+cost allocation
+tag-based cost allocation
+allocation
+tagging
+budget
+budget alarm
+budgets
+cost explorer
+compute optimizer
+trusted advisor
+cost anomaly
+unit economics
+fargate
+lambda
+ec2
+fixed cost
+variable cost
+forecast
