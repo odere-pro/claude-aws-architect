@@ -1,0 +1,74 @@
+# Per-feature C4 + sequence diagrams.
+# One file per feature at .claude/specs/<feature>/diagrams.d2.
+# Required layers: c4-l1, c4-l2, one c4-l3-<container> per L2 container,
+# seq-system, seq-component, seq-error.
+
+layers: {
+  c4-l1: {
+    # System context. One box for the system; surrounding actors and external systems.
+    user: User
+    system: TODO-feature-name {
+      shape: rectangle
+    }
+    external-service: External Dependency
+    user -> system: uses
+    system -> external-service: depends on
+  }
+
+  c4-l2: {
+    # Containers. The major runtime/process boundaries inside the system.
+    # Each container here MUST have a matching c4-l3-<container> layer below.
+    # The template ships with one container; add more by adding both a node
+    # here AND a c4-l3-<new-container> layer further down.
+    handler: Handler (Lambda or ECS service)
+    user: User
+    user -> handler: HTTP
+  }
+
+  c4-l3-handler: {
+    # Components inside the handler container.
+    # The container itself is the layer; only its internal components appear here.
+    request-validator: Request validator
+    domain-service: Domain service
+    persistence-port: Persistence port
+    request-validator -> domain-service: validated request
+    domain-service -> persistence-port: persist
+  }
+
+  seq-system: {
+    # Happy-path sequence across the L1 boundary.
+    shape: sequence_diagram
+    user: User
+    system: System
+    user -> system: TODO: representative request
+    system -> user: TODO: successful response
+  }
+
+  seq-component: {
+    # Representative sequence inside a single container (usually the handler).
+    shape: sequence_diagram
+    api: API
+    validator: Request validator
+    domain: Domain service
+    store: Store
+    api -> validator: TODO: incoming payload
+    validator -> domain: validated request
+    domain -> store: persist
+    store -> domain: persisted
+    domain -> api: TODO: result
+  }
+
+  seq-error: {
+    # Dominant failure mode and recovery sequence.
+    shape: sequence_diagram
+    user: User
+    api: API
+    handler: Handler
+    queue: DLQ
+    user -> api: request
+    api -> handler: dispatch
+    handler -> handler: TODO: failure mode (timeout, 5xx, quota exceeded, etc.)
+    handler -> queue: dead-letter on max retry
+    api -> user: TODO: error response shape
+  }
+}
