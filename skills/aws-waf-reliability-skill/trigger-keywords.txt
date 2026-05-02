@@ -1,0 +1,64 @@
+# Keywords that should activate the aws-waf-reliability-skill skill.
+# One per line. Comments allowed (lines starting with #).
+# The skill-description gate cross-checks this list against SKILL.md
+# frontmatter to ensure ≥3 keywords appear in the description.
+reliability
+well-architected
+well architected
+waf
+recovery
+recovery objective
+recovery objectives
+rto
+rpo
+disaster recovery
+dr
+backup
+restore
+pilot light
+warm standby
+active-active
+active-passive
+multi-az
+single-az
+availability zone
+multi-region
+failover
+fallback
+retry
+retries
+exponential backoff
+jitter
+timeout
+timeouts
+idempotency
+idempotent
+circuit breaker
+bulkhead
+throttling
+quota
+service quota
+limit
+headroom
+auto-scaling
+scaling
+capacity
+health check
+deep health check
+shallow health check
+dependency
+dependency mapping
+failure mode
+failure-mode
+fma
+blast radius
+chaos
+chaos engineering
+resilience
+resiliency
+review
+review block
+design question
+anti-pattern
+antipattern
+checklist
