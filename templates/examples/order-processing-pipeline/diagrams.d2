@@ -1,0 +1,116 @@
+# C4 + sequence diagrams for the order-processing-pipeline example.
+# Required layers per skills/aws-layered-diagram: c4-l1, c4-l2, one
+# c4-l3-<container> per L2 container, seq-system, seq-component, seq-error.
+
+layers: {
+  c4-l1: {
+    # System context. The pipeline as one box with surrounding actors.
+    storefront: Storefront (existing)
+    pipeline: Order processing pipeline {
+      shape: rectangle
+    }
+    fulfilment: Fulfilment system (existing)
+    storefront -> pipeline: POST /checkout (HTTPS)
+    pipeline -> fulfilment: order.accepted events (EventBridge)
+  }
+
+  c4-l2: {
+    # Containers — one box per component named in design.md.
+    storefront: Storefront
+    api: checkout-ingest-api
+    validator: order-validator
+    store: order-history-store
+    dispatcher: fulfilment-dispatcher
+    fulfilment-bus: Fulfilment EventBridge bus
+    storefront -> api: POST /checkout
+    api -> validator: SQS message (ingest queue)
+    validator -> store: PutItem
+    store -> dispatcher: DynamoDB Streams (NEW_IMAGE)
+    dispatcher -> fulfilment-bus: PutEvents (order.accepted)
+  }
+
+  c4-l3-checkout-ingest-api: {
+    # Internals of the checkout-ingest-api container.
+    waf: AWS WAF (rate-based + managed core)
+    api-gw: API Gateway REST API
+    request-validator: Request validator (JSON schema)
+    sqs-integration: SQS service integration (Lambda-free)
+    waf -> api-gw: filtered request
+    api-gw -> request-validator: validate body
+    request-validator -> sqs-integration: SendMessage
+  }
+
+  c4-l3-order-validator: {
+    # Internals of the order-validator container.
+    sqs-source: SQS event-source mapping
+    handler: Lambda handler (arm64 Graviton, 512 MB)
+    schema-check: JSON schema validator
+    enricher: Customer-tier enricher
+    persister: DynamoDB persister (PutItem only)
+    dlq: Dead-letter queue (schema rejections)
+    sqs-source -> handler: batch records
+    handler -> schema-check: validate
+    schema-check -> enricher: enrich on success
+    schema-check -> dlq: reject on failure
+    enricher -> persister: persist
+  }
+
+  c4-l3-fulfilment-dispatcher: {
+    # Internals of the fulfilment-dispatcher container.
+    stream-source: DynamoDB stream event-source mapping
+    handler: Lambda handler (arm64 Graviton, 256 MB)
+    event-builder: order.accepted event builder
+    bus-publisher: EventBridge PutEvents publisher
+    dlq: Dead-letter queue (PutEvents throttled)
+    stream-source -> handler: batch records
+    handler -> event-builder: build event
+    event-builder -> bus-publisher: publish
+    bus-publisher -> dlq: on throttle / 5xx after retries
+  }
+
+  seq-system: {
+    # Happy-path sequence across the L1 boundary.
+    shape: sequence_diagram
+    storefront: Storefront
+    pipeline: Pipeline
+    fulfilment: Fulfilment
+    storefront -> pipeline: POST /checkout
+    pipeline -> storefront: 202 Accepted (orderId)
+    pipeline -> fulfilment: order.accepted (within 5s)
+  }
+
+  seq-component: {
+    # Representative sequence inside the validator container.
+    shape: sequence_diagram
+    sqs: SQS ingest queue
+    validator: order-validator
+    schema: JSON schema check
+    enricher: Customer-tier enricher
+    store: order-history-store
+    sqs -> validator: ReceiveMessage batch
+    validator -> schema: validate
+    schema -> validator: ok
+    validator -> enricher: lookup tier
+    enricher -> validator: enriched payload
+    validator -> store: PutItem (conditional)
+    store -> validator: 200
+  }
+
+  seq-error: {
+    # Dominant failure mode and recovery sequence.
+    shape: sequence_diagram
+    storefront: Storefront
+    api-gw: API Gateway
+    sqs: SQS ingest queue
+    validator: order-validator
+    dlq: validator DLQ
+    storefront -> api-gw: POST /checkout (malformed body)
+    api-gw -> storefront: 400 Bad Request
+    storefront -> api-gw: POST /checkout (valid body)
+    api-gw -> sqs: SendMessage
+    api-gw -> storefront: 202 Accepted
+    sqs -> validator: ReceiveMessage
+    validator -> validator: schema rejected (post-ingest)
+    validator -> dlq: forward for forensic analysis
+  }
+}

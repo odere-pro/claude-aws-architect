@@ -19,7 +19,7 @@ templates/
 │           ├── diagrams.d2.tmpl
 │           └── contracts/
 │               └── __slug__.md.tmpl            # one per component named in design.md
-└── examples/                                   # captured smoke artefacts (lands in a follow-up PR)
+└── examples/                                   # captured smoke artefacts (canonical executable references)
 ```
 
 ## Placeholder convention
@@ -66,10 +66,22 @@ field.
   the `aws-grounding-cache` skill and seeded automatically on first run;
   it is not a consumer-edited artefact.
 
+## Captured examples
+
+`examples/<feature>/` holds canonical, validated artefact sets captured
+from the `/aws` workflow against the corresponding fixture under
+`tests/transcripts/<name>/`. The first such capture is
+`examples/order-processing-pipeline/`, taken from the
+`sdlc-full-depth` fixture; see `examples/README.md` for capture
+methodology and the rationale for treating these directories as
+read-only references.
+
 ## Verification
 
 `tests/gates/run-all.sh` invokes the deterministic gates that scan this
-tree alongside the rest of the plugin. The `.tmpl` extension keeps these
-files outside the markdownlint and prettier matchers (which only inspect
-`*.md`); the embedded YAML frontmatter is still well-formed and the file
-contents are still valid Markdown for human readability.
+tree alongside the rest of the plugin. The `.tmpl` extension keeps the
+template files outside the markdownlint and prettier matchers (which
+only inspect `*.md`); the embedded YAML frontmatter is still well-formed
+and the file contents are still valid Markdown for human readability.
+The captured `examples/<feature>/` artefacts use the real `.md`
+extension and are therefore included in the markdown matchers.
