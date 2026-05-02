@@ -1,6 +1,6 @@
 # Degraded modes
 
-Loaded on demand by the `aws-mcp-routing` skill. Encodes the per-server fallback behaviour from SPEC §3.5. Every degraded response must be labelled in the merged orchestrator output; silent drops violate §5.5.
+Loaded on demand by the `aws-mcp-routing` skill. Encodes the per-server fallback behaviour. Every degraded response must be labelled in the merged orchestrator output; silent drops are forbidden.
 
 ## Labelled markers
 
@@ -25,7 +25,7 @@ When an MCP call fails or times out, the agent emits a marker in its response. T
 
 ### `iac` — aws-iac
 
-- **Symptom**: stdio process timeout (60s budget per O2), validation crash, schema mismatch.
+- **Symptom**: stdio process timeout (60s budget), validation crash, schema mismatch.
 - **Action**: IaC validation step downgrades to advisory. Component contract still emits, with the affected validation section labelled `validation-advisory`. The implementation agent surfaces the marker so a human can re-run validation manually.
 - **Do not**: skip generating the contract because validation failed. The contract is still useful; only the validation section is degraded.
 
@@ -44,7 +44,7 @@ When an MCP call fails or times out, the agent emits a marker in its response. T
 ### `iam` — iam
 
 - **Symptom**: stdio timeout, missing IAM permissions on the caller's principal.
-- **Action**: IAM rule (§6) becomes advisory only; the least-privilege loop is deferred. Marker `iam-advisory-only`.
+- **Action**: the IAM rule that consumes this server becomes advisory only; the least-privilege loop is deferred. Marker `iam-advisory-only`.
 - **Do not**: emit a permissive policy as a fallback. Advisory output documents what the policy SHOULD do; the human applies the change.
 
 ### `cw` — cloudwatch
@@ -59,14 +59,14 @@ When an MCP call fails or times out, the agent emits a marker in its response. T
 2. Call fails or times out.
 3. Specialist emits the appropriate marker (above) in its returned output.
 4. Orchestrator receives the specialist's output, identifies the marker, and propagates it into the merged response under a `## Degraded signals` section.
-5. The user sees the marker and the affected claim. Per §5.5 Quality Check: "every specialist disagreement appears either in `## Open Questions` or in the conflict-resolution log; none are silently dropped." The same applies to degraded signals.
+5. The user sees the marker and the affected claim. The orchestrator's merge contract requires that every specialist signal — including degraded ones — appears either in `## Open Questions` or in the conflict-resolution log. None are silently dropped.
 
 ## Retry policy
 
 The plugin does NOT retry MCP calls automatically at v0.1.0. Reasons:
 
-- Retries hide upstream instability and inflate the per-specialist MCP-call budget per O5.
+- Retries hide upstream instability and inflate the per-specialist MCP-call budget.
 - The 30s and 60s timeouts already account for a single network round-trip.
 - The user's next session can re-attempt the call once the MCP server's transient issue clears; held claims in the ledger flag exactly what to re-fetch.
 
-A v0.2+ enhancement could add a single bounded retry (e.g., one retry on 5xx with exponential back-off capped at 5s), gated by an ADR. Until then: no retries.
+A v0.2+ enhancement could add a single bounded retry (e.g., one retry on 5xx with exponential back-off capped at 5s), gated by an explicit decision record. Until then: no retries.

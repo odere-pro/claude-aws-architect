@@ -1,6 +1,6 @@
 # Selection rules
 
-Loaded on demand by the `aws-mcp-routing` skill. Maps the agent's intent to the correct server and tool. Per §3.5, every routing decision must be auditable; this file is the authoritative source of that mapping.
+Loaded on demand by the `aws-mcp-routing` skill. Maps the agent's intent to the correct server and tool. Every routing decision must be auditable; this file is the authoritative source of that mapping.
 
 ## Category-to-server mapping
 
@@ -10,16 +10,16 @@ Loaded on demand by the `aws-mcp-routing` skill. Maps the agent's intent to the 
 | CloudFormation or CDK validation, scanning, sample retrieval                                   | `iac`  | Includes pre-deploy compliance and synth analysis.                      |
 | Pricing API queries, ROM cost estimation, Bedrock cost patterns                                | `cost` | The cost-engineer (v0.2) and implementation specialist consume this.    |
 | Security pillar reviews, GuardDuty / Security Hub triage, encryption posture, network exposure | `sec`  | Pillar-level security analysis.                                         |
-| IAM read or simulate, least-privilege loop, role/policy enumeration                            | `iam`  | Distinct from `sec`. Mutations gated by hook (PR 25).                   |
+| IAM read or simulate, least-privilege loop, role/policy enumeration                            | `iam`  | Distinct from `sec`. Mutations gated by hook.                           |
 | CloudWatch alarms, log queries, metric data                                                    | `cw`   | Post-deploy observability evidence; never used for design-time choices. |
 
 ## Tool-selection priorities
 
 When multiple tools on the same server could answer the request:
 
-1. **Prefer the narrowest tool.** A targeted query (e.g. read a specific doc page) costs one MCP call; a broad search costs more and consumes the per-specialist budget per O5.
-2. **Prefer cached lookups.** If the answer is in the grounding ledger and the entry is within its TTL per N15 (pricing 30d, quotas 30d, API shapes 90d, region 90d, ARN indefinite), skip the MCP call entirely.
-3. **Prefer read tools over mutate tools.** All v0.1.0 use cases are read-only. Any tool that would mutate AWS state (e.g. `iam.create_role`, `iam.delete_user`) is gated by the `aws-api-write-guard` hook in PR 25 and must not be called by autonomous agents at v0.1.0.
+1. **Prefer the narrowest tool.** A targeted query (e.g. read a specific doc page) costs one MCP call; a broad search costs more and consumes the per-specialist budget (8 calls for discovery, 12 for solution-architect, 16 for implementation).
+2. **Prefer cached lookups.** If the answer is in the grounding ledger and the entry is within its TTL (pricing 30 days, quotas 30 days, API shapes 90 days, region 90 days, ARN indefinite), skip the MCP call entirely.
+3. **Prefer read tools over mutate tools.** All v0.1.0 use cases are read-only. Any tool that would mutate AWS state (e.g. `iam.create_role`, `iam.delete_user`) is gated by the `aws-api-write-guard` hook and must not be called by autonomous agents at v0.1.0.
 
 ## Conflict resolution between servers
 
@@ -36,7 +36,7 @@ Before issuing any MCP call:
 1. The selected server's key appears in `.mcp.json#mcpServers`.
 2. The selected tool name appears in `tests/gates/cache/tools-<server>.txt`.
 3. The fully-qualified `mcp__plugin_<plugin>_<server>__<tool>` length is < 64 characters, OR the `<server>:<tool>` pair appears in `tests/gates/cache/known-overshoots.txt` (in which case the call is permitted but flagged in the ledger).
-4. The agent's MCP-call budget per O5 has not been exhausted.
+4. The agent's MCP-call budget has not been exhausted.
 
 ## Post-call obligations
 
@@ -49,4 +49,4 @@ After every failed MCP call:
 
 1. Consult `degraded-modes.md` for the per-server fallback.
 2. Emit the labelled marker in the agent's response.
-3. Log the failure as a `degraded` entry in the grounding ledger so the orchestrator's merge contract per §5.5 can surface it.
+3. Log the failure as a `degraded` entry in the grounding ledger so the orchestrator's merge contract can surface it.

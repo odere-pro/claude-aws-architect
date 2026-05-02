@@ -1,6 +1,6 @@
 # MCP server roster (v0.1.0)
 
-Loaded on demand by the `aws-mcp-routing` skill. Authoritative source-of-truth for which servers exist, what they do, and what tools they expose. Mirrors `.mcp.json` and SPEC §3.1.
+Loaded on demand by the `aws-mcp-routing` skill. Authoritative source-of-truth for which servers exist, what they do, and what tools they expose. Mirrors `.mcp.json`.
 
 ## Server keys and metadata
 
@@ -13,7 +13,7 @@ Loaded on demand by the `aws-mcp-routing` skill. Authoritative source-of-truth f
 | `iam`  | `iam`                       | stdio     | `awslabs.iam-mcp-server`                       | 1.0.18  | 30000       | Security   |
 | `cw`   | `cloudwatch`                | stdio     | `awslabs.cloudwatch-mcp-server`                | 0.0.26  | 30000       | Operations |
 
-Per §16.2, version pins are mandatory and bumped via `feat(deps)` PRs. Per O2, `timeoutMs` is per-call (not per-session).
+Version pins are mandatory and bumped via `feat(deps)` PRs. `timeoutMs` is per-call, not per-session.
 
 ## Per-server tool catalogue
 
@@ -77,7 +77,7 @@ Tools:
 
 ### `iam` — iam
 
-First-class IAM read and simulate; least-privilege loop. Mutating IAM operations are gated by the `aws-api-write-guard` hook (PR 25).
+First-class IAM read and simulate; least-privilege loop. Mutating IAM operations are gated by the `aws-api-write-guard` hook.
 
 Tools:
 
@@ -108,7 +108,7 @@ Tools:
 
 ## Reserved (v0.2 — do not call)
 
-Per §3.2, four servers are reserved for v0.2. Routing to them at v0.1.0 is forbidden:
+Four servers are reserved for v0.2. Routing to them at v0.1.0 is forbidden:
 
 - `aws-api-mcp-server` (general AWS API operations)
 - `amazon-bedrock-agentcore-mcp-server`
