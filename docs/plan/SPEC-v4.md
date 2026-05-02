@@ -50,14 +50,14 @@ Throughout this plan, `claude-aws-architect` is the literal plugin name. It appe
 - F7. Plugin ships **3 Powers** at v0.1.0 (declarative MCP+skills+hooks+commands bundles): `claude-aws-architect-cdk`, `claude-aws-architect-cost`, `claude-aws-architect-security`. Two additional Powers (`claude-aws-architect-bedrock`, `claude-aws-architect-iac-foundations`) deferred to v0.2.
 - F8. Plugin ships **3 commands** at v0.1.0: `/aws`, `/aws-spec`, `/aws-doctor`. Six additional commands (`/aws-power`, `/aws-hook`, `/aws-doc`, `/aws-price`, `/aws-quota`, `/aws-sec-scan`, `/aws-cdk-check`) deferred to v0.2 pending usage data.
 - F9. Plugin ships **12 new L2 skills** at v0.1.0 covering the orchestrator's substrate (6 workflow skills) and full WAF pillar coverage (6 pillar skills). See §13 for the authoring backlog. Two additional new skills (`aws-hook-authoring`, `aws-power-authoring`) deferred to v0.2.
-- F10. Plugin ships an opt-in **hooks registry** (`hooks/hooks.json`) gated by `.claude/claude-aws-architect.local.md`; default-enabled hooks limited to `secret-scanner` and `aws-api-write-guard`.
+- F10. Plugin ships an opt-in **hooks registry** (`hooks/hooks.json`) gated by `.claude/claude-aws-architect.local.md`; default-enabled hooks limited to `aws-secret-scanner` and `aws-api-write-guard`.
 - F11. Plugin ships a **doctor script** and an **init script** for one-command setup (§8).
 - F12. Plugin ships an **install script** with two modes (`--symlink` default, `--copy`); never overwrites existing consumer files.
 - F13. Plugin ships an **uninstall script** that reverses the install without touching consumer-authored specs, contracts, steering, or hooks.
 - F14. Plugin ships a **hook dispatcher** that resolves `hooks/hooks.json` against consumer settings and invokes matching hook scripts.
 - F15. Plugin ships **1 L4 orchestrator + 3 L3 specialist agents** at v0.1.0 (§5): discovery, solution-architect, implementation. Three additional L3 specialists (cost-engineer, security-engineer, test-engineer) deferred to v0.2 pending merge-contract validation. Each agent declares MCP servers, skills, rules, sibling agents, and output paths in its Dependencies section.
 - F16. Plugin ships **9 file-scoped instruction rules** (§6) under `claude-aws-architect/rules/` lifting accuracy of AWS code, IaC, SDK, CDK, tests, docs, and diagrams.
-- F17. Plugin ships **2 quality-and-security hook scripts** in addition to operational hooks (§7.2): `secret-scanner` and `aws-test-coverage`.
+- F17. Plugin ships **2 quality-and-security hook scripts** in addition to operational hooks (§7.2): `aws-secret-scanner` and `aws-test-coverage`.
 - F18. Plugin defines a **canonical agent declaration contract** (§5.1) that every agent file must satisfy.
 - F19. Plugin defines a **canonical rule declaration contract** (§6.1) that every rule file must satisfy.
 - F20. Plugin defines a **canonical skill declaration contract** (§4.3) that every new skill file must satisfy.
@@ -441,15 +441,15 @@ Every entry declares: `name`, `event` (Claude Code hook event), `matcher`, optio
 
 ### 7.2 Hook script roster (declarative)
 
-| #   | Hook script                  | Event       | Matcher / file scope                              | Mandate (declarative)                                                                                               | Default-enabled |
-| --- | ---------------------------- | ----------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | :-------------: |
-| 1   | `dispatch.sh`                | host-side   | n/a (entry point)                                 | Read consumer settings, resolve matching `hooks.json` entries, invoke each in declared order, aggregate exit codes. |       yes       |
-| 2   | `aws-api-write-guard.sh`     | PreToolUse  | AWS-API MCP write-call tool                       | Detect AWS write verbs; require explicit confirmation when not in read-only mode; block if confirmation absent.     |       yes       |
-| 3   | `secret-scanner.sh`          | PreToolUse  | All file write/edit tools                         | Scan diff for credentials, tokens, AWS keys, private keys; **block** the write on hit; emit redacted finding.       |       yes       |
-| 4   | `on-cdk-write.sh`            | PostToolUse | Writes/edits inside CDK source roots              | Surface CDK-synth-and-Nag-check nudge in response stream; never run synth automatically.                            |       no        |
-| 5   | `on-iam-write.sh`            | PostToolUse | Writes/edits to IAM JSON                          | Validate JSON; run least-privilege heuristic via `iam` MCP; surface findings; never auto-edit.                      |       no        |
-| 6   | `on-bedrock-prompt-write.sh` | PostToolUse | Writes/edits to prompt or AgentCore artefacts     | Check guardrail-binding, model-id pinning, evaluation-hook presence; surface missing fields.                        |       no        |
-| 7   | `aws-test-coverage.sh`       | PostToolUse | Writes/edits to AWS-touching implementation files | Surface matching `*.spec.ts` and `*.test.ts` paths; flag missing tests; flag stale tests by mtime delta.            |       no        |
+| #   | Hook script                      | Event       | Matcher / file scope                              | Mandate (declarative)                                                                                               | Default-enabled |
+| --- | -------------------------------- | ----------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | :-------------: |
+| 1   | `dispatch.sh`                    | host-side   | n/a (entry point)                                 | Read consumer settings, resolve matching `hooks.json` entries, invoke each in declared order, aggregate exit codes. |       yes       |
+| 2   | `aws-api-write-guard.sh`         | PreToolUse  | AWS-API MCP write-call tool                       | Detect AWS write verbs; require explicit confirmation when not in read-only mode; block if confirmation absent.     |       yes       |
+| 3   | `aws-secret-scanner.sh`          | PreToolUse  | All file write/edit tools                         | Scan diff for credentials, tokens, AWS keys, private keys; **block** the write on hit; emit redacted finding.       |       yes       |
+| 4   | `aws-on-cdk-write.sh`            | PostToolUse | Writes/edits inside CDK source roots              | Surface CDK-synth-and-Nag-check nudge in response stream; never run synth automatically.                            |       no        |
+| 5   | `aws-on-iam-write.sh`            | PostToolUse | Writes/edits to IAM JSON                          | Validate JSON; run least-privilege heuristic via `iam` MCP; surface findings; never auto-edit.                      |       no        |
+| 6   | `aws-on-bedrock-prompt-write.sh` | PostToolUse | Writes/edits to prompt or AgentCore artefacts     | Check guardrail-binding, model-id pinning, evaluation-hook presence; surface missing fields.                        |       no        |
+| 7   | `aws-test-coverage.sh`           | PostToolUse | Writes/edits to AWS-touching implementation files | Surface matching `*.spec.ts` and `*.test.ts` paths; flag missing tests; flag stale tests by mtime delta.            |       no        |
 
 ### 7.3 Common hook script contract
 

@@ -45,7 +45,7 @@ Four threat classes are tracked at v0.1.0. Each is enumerated with attack vector
 
 - Hook-script contract (gate 11 in §11.A of SPEC-v4) requires `set -euo pipefail` and shellcheck-clean output. All hook scripts under `hooks/scripts/` are reviewed against this contract in CI.
 - §7.3 of SPEC-v4 confines hook scope to the consumer project root. Paths are quoted, validated against the working tree, and rejected if they resolve outside.
-- Hooks declare `enabledByDefault` explicitly. Only `secret-scanner` and `aws-api-write-guard` are default-on at v0.1.0; the rest are opt-in via `.claude/claude-aws-architect.local.md`.
+- Hooks declare `enabledByDefault` explicitly. Only `aws-secret-scanner` and `aws-api-write-guard` are default-on at v0.1.0; the rest are opt-in via `.claude/claude-aws-architect.local.md`.
 
 **Detection.** `shellcheck` violations are caught in CI. Out-of-tree path attempts produce a hook error that surfaces in the Claude Code transcript; the hook fails closed (non-zero exit, blocking the triggering tool call).
 
@@ -77,9 +77,9 @@ Four threat classes are tracked at v0.1.0. Each is enumerated with attack vector
 
 - The `aws-grounding-cache` skill (§4.2 of SPEC-v4) requires secret-redaction on insert. The redaction-policy reference enumerates eight patterns (AWS access keys, secret keys, session tokens, presigned URL signatures, account IDs, JWTs, API gateway keys, generic high-entropy strings) and an application order that fails the write rather than skipping a pattern.
 - Gate 17 (SKILL.md line budget per §11.A of SPEC-v4) keeps skill instructions short enough that the redaction rule cannot be silently eroded by future additions to the skill body.
-- The `secret-scanner` hook is default-enabled and runs against every Write tool call, providing a second line of defence at the file-write boundary.
+- The `aws-secret-scanner` hook is default-enabled and runs against every Write tool call, providing a second line of defence at the file-write boundary.
 
-**Detection.** `secret-scanner` flags a Write that contains an unredacted secret pattern; the hook fails closed. The grounding-ledger schema validation rejects entries whose `result_summary` field would contain known secret patterns.
+**Detection.** `aws-secret-scanner` flags a Write that contains an unredacted secret pattern; the hook fails closed. The grounding-ledger schema validation rejects entries whose `result_summary` field would contain known secret patterns.
 
 **Residual risk.** A novel secret format that none of the eight patterns recognise will pass redaction. The ledger schema and the redaction policy must be revisited if AWS introduces a new secret format. The redaction pattern list is reviewed at every `feat(deps)` MCP version bump (§16.2 of SPEC-v4).
 

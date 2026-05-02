@@ -28,7 +28,7 @@ inside Claude Code without external scaffolding.
   `templates/examples/order-processing-pipeline/` per §H5; that
   directory is the read-only reference §11 gates point at for any
   consumer asking what a populated spec looks like.
-- The `secret-scanner` and `aws-api-write-guard` PreToolUse hooks
+- The `aws-secret-scanner` and `aws-api-write-guard` PreToolUse hooks
   default-on; both are wired in `hooks/hooks.json` and apply
   inside this repo as well as in any consumer project.
 
@@ -53,6 +53,34 @@ inside Claude Code without external scaffolding.
   `markdownlint-cli2` (gate 14); shellscripts run through
   `shellcheck -x` (gate 4). Both are checked in CI and locally via
   `bash tests/gates/run-all.sh`.
+
+## Naming policy for shipped artefacts
+
+To avoid name collisions when the plugin is installed alongside other
+plugins or a user's global `~/.claude/` config:
+
+- **Slash commands** (`commands/*.md`): `aws` or `aws-<topic>`. Claude
+  Code namespaces these as `claude-aws-architect:<command>` at runtime;
+  the `aws-` filename prefix is the disambiguator when the user invokes
+  by short name.
+- **Skills** (`skills/<dir>/`): `aws-` or `aws-waf-` prefix on the
+  directory name. Same runtime-namespace rationale as commands.
+- **Agents** (`agents/*.md`): `claude-aws-architect-<role>-agent.md`.
+  Heavy prefix is intentional — agent IDs surface in transcripts and
+  the longer name keeps them unambiguous in a multi-plugin session.
+- **Rules** (`rules/*.instructions.md`): `aws-` prefix.
+- **Powers** (`powers/*.power.json`): `claude-aws-architect-` prefix.
+- **Hooks** (`hooks/hooks.json` `name` field AND the matching
+  `hooks/scripts/*.sh` filename): `aws-` prefix on both. The `name`
+  field and the script filename **must match** so log lines are
+  greppable.
+- **Lifecycle scripts** (`scripts/install.sh`, `init.sh`, `doctor.sh`,
+  `uninstall.sh`): keep conventional names. They are plugin-internal,
+  called via absolute path under `${CLAUDE_PLUGIN_ROOT}/scripts/`, and
+  never shadow another plugin's filesystem because each plugin lives
+  in its own directory tree.
+
+When adding a new shipped artefact, match the prefix discipline above.
 
 ## What this file is not
 

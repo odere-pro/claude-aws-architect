@@ -84,7 +84,7 @@ Snapshot updates require explicit `--update-snapshots` and a reviewer comment. T
 | `sdlc-full-depth` | SDLC-artefact intent → full depth; ≥2 parallel `Agent` calls; F5+F6 produced | 17  |
 | `merge-conflict`  | priority rules with planted disagreement                                     | 20  |
 | `degraded-mcp`    | simulated `kb` 5xx → `grounding-deferred` marker                             | 20  |
-| `secret-in-diff`  | secret-scanner hook: planted AWS access key in a write blocks                | 25  |
+| `secret-in-diff`  | aws-secret-scanner hook: planted AWS access key in a write blocks            | 25  |
 | `iteration-cap`   | orchestrator halts at iteration cap with `iteration-cap-reached` marker      | 20  |
 
 ## How execution will work (PR 18+)

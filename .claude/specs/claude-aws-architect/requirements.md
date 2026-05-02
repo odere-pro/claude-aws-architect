@@ -78,7 +78,7 @@ the release-dogfood acceptance check per §13.G.
 
 - **Reliability**: deterministic transcript replay across all five
   fixtures in `tests/transcripts/`.
-- **Security**: no secret leaves the local repo; `secret-scanner`
+- **Security**: no secret leaves the local repo; `aws-secret-scanner`
   hook intercepts on `Write|Edit|MultiEdit|NotebookEdit`;
   `aws-api-write-guard` hook intercepts on `mcp__.*` write verbs.
 - **Cost envelope**: consumer-declared in

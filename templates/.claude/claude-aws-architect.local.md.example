@@ -53,6 +53,6 @@
 - Every value above is read by the orchestrator at run time and surfaced in
   the merged output's degraded-signals section if it conflicts with a
   specialist's grounded recommendation.
-- Secrets do **not** belong in this file. The `secret-scanner` hook blocks
+- Secrets do **not** belong in this file. The `aws-secret-scanner` hook blocks
   any write that contains an AWS access key, session token, private key
   block, or KMS CMK ARN.

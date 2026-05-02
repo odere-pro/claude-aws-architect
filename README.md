@@ -63,14 +63,14 @@ Bedrock and IaC-foundations powers deferred to v0.2.
 
 > Land in PRs 25–26.
 
-| Hook                      | Event       | Default | Purpose                                                |
-| ------------------------- | ----------- | :-----: | ------------------------------------------------------ |
-| `secret-scanner`          | PreToolUse  |   yes   | Block writes containing AWS keys, tokens, private keys |
-| `aws-api-write-guard`     | PreToolUse  |   yes   | Confirm AWS write-verb MCP calls                       |
-| `on-cdk-write`            | PostToolUse |   no    | Surface CDK synth + Nag check nudge                    |
-| `on-iam-write`            | PostToolUse |   no    | Validate IAM JSON; least-privilege heuristic           |
-| `on-bedrock-prompt-write` | PostToolUse |   no    | Check guardrail/model-id binding                       |
-| `aws-test-coverage`       | PostToolUse |   no    | Surface missing AWS-touching tests                     |
+| Hook                          | Event       | Default | Purpose                                                |
+| ----------------------------- | ----------- | :-----: | ------------------------------------------------------ |
+| `aws-secret-scanner`          | PreToolUse  |   yes   | Block writes containing AWS keys, tokens, private keys |
+| `aws-api-write-guard`         | PreToolUse  |   yes   | Confirm AWS write-verb MCP calls                       |
+| `aws-on-cdk-write`            | PostToolUse |   no    | Surface CDK synth + Nag check nudge                    |
+| `aws-on-iam-write`            | PostToolUse |   no    | Validate IAM JSON; least-privilege heuristic           |
+| `aws-on-bedrock-prompt-write` | PostToolUse |   no    | Check guardrail/model-id binding                       |
+| `aws-test-coverage`           | PostToolUse |   no    | Surface missing AWS-touching tests                     |
 
 Opt in/out via `.claude/claude-aws-architect.local.md`.
 
