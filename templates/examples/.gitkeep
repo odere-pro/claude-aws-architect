@@ -1,3 +1,0 @@
-# Captured smoke artefacts (canonical executable references) land in this
-# directory in a follow-up PR. The directory is committed empty so the
-# install script can rely on its presence; do not add unrelated files here.

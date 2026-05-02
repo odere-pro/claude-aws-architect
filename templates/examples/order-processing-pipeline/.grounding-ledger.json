@@ -1,0 +1,53 @@
+{
+  "entries": {
+    "kb:7a3c2f1d": {
+      "server": "kb",
+      "tool": "read_documentation",
+      "query": "api gateway rest service integration sqs us-east-1",
+      "retrieved": "2026-05-02T10:14:03Z",
+      "result_summary": "API Gateway REST APIs support direct SQS service integrations via AWS service proxy without requiring a Lambda intermediary; recommended for low-latency, low-validation ingest paths.",
+      "ttl-class": "api-shape"
+    },
+    "kb:9b2e0c14": {
+      "server": "kb",
+      "tool": "read_documentation",
+      "query": "dynamodb conditional putitem idempotent writes streams new_image",
+      "retrieved": "2026-05-02T10:14:11Z",
+      "result_summary": "DynamoDB conditional PutItem with attribute_not_exists provides exactly-once write semantics on a known primary key; Streams view type NEW_IMAGE emits the new item to consumers within milliseconds.",
+      "ttl-class": "api-shape"
+    },
+    "iac:c021ee4a": {
+      "server": "iac",
+      "tool": "search_cdk_documentation",
+      "query": "aws-cdk-lib aws_apigateway integration sqs request validator",
+      "retrieved": "2026-05-02T10:14:18Z",
+      "result_summary": "aws-cdk-lib exposes AwsIntegration plus RequestValidator on RestApi for service-integration patterns; request validators support body and parameter validation with JSON schema models.",
+      "ttl-class": "api-shape"
+    },
+    "cost:b89d401e": {
+      "server": "cost",
+      "tool": "get_pricing",
+      "query": "lambda dynamodb on-demand sqs eventbridge us-east-1 100rps monthly",
+      "retrieved": "2026-05-02T10:14:25Z",
+      "result_summary": "Combined monthly ROM in us-east-1 at 100 RPS sustained: Lambda compute USD 41, DynamoDB on-demand USD 58, SQS USD 12, API Gateway USD 21, EventBridge USD 6, CloudWatch USD 4 — total USD 142.",
+      "ttl-class": "pricing"
+    },
+    "iam:d4527901": {
+      "server": "iam",
+      "tool": "simulate_principal_policy",
+      "query": "validator role putitem only on order-history-store arn deny update delete",
+      "retrieved": "2026-05-02T10:14:32Z",
+      "result_summary": "Simulation confirms validator role allows dynamodb:PutItem on the table ARN and explicitly denies dynamodb:UpdateItem and dynamodb:DeleteItem; no wildcard actions appear in the resolved policy set.",
+      "ttl-class": "immutable"
+    },
+    "cw:e1ff8b22": {
+      "server": "cw",
+      "tool": "get_recommended_metric_alarms",
+      "query": "lambda dynamodb apigateway recommended alarms us-east-1",
+      "retrieved": "2026-05-02T10:14:39Z",
+      "result_summary": "Recommended alarms: Lambda Errors > 0 over 1m, IteratorAge > 60s over 3m for stream consumers, ApiGateway Latency p99 > 250ms, DynamoDB SystemErrors > 0 over 1m. Each alarm pairs with a single SNS notification target.",
+      "ttl-class": "api-shape"
+    }
+  },
+  "conflict_resolution": []
+}
