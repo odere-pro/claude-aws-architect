@@ -30,11 +30,11 @@ A [Claude Code](https://claude.ai/code) plugin for AWS Well-Architected SDLC. De
 | Layer        | Surface                                                                                                                                            | Count |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | :---: |
 | **MCP**      | `kb`, `iac`, `cost`, `sec`, `iam`, `cw` — see [mcp-servers-guide.md](./docs/mcp-servers-guide.md)                                                  |   6   |
-| **Skills**   | 6 workflow + 6 WAF pillar                                                                                                                          |  12   |
-| **Agents**   | 1 L4 orchestrator + 3 L3 specialists (`discovery`, `solution-architect`, `implementation`)                                                         |   4   |
-| **Commands** | `/aws`, `/aws-spec`, `/aws-doctor`                                                                                                                 |   3   |
-| **Powers**   | `claude-aws-architect-{cdk,cost,security}` — see [powers-guide.md](./docs/powers-guide.md)                                                         |   3   |
-| **Rules**    | 9 file-scoped instruction rules under `rules/`                                                                                                     |   9   |
+| **Skills**   | 7 workflow + 6 WAF pillar                                                                                                                          |  13   |
+| **Agents**   | 1 L4 orchestrator + 3 L3 SDLC specialists (`discovery`, `solution-architect`, `implementation`) + 1 read-only `kb-navigator`                       |   5   |
+| **Commands** | `/aws`, `/aws-spec`, `/aws-doctor`, `/aws-kb`                                                                                                      |   4   |
+| **Powers**   | `claude-aws-architect-{cdk,cost,security,kb}` — see [powers-guide.md](./docs/powers-guide.md)                                                      |   4   |
+| **Rules**    | 10 file-scoped instruction rules under `rules/`                                                                                                    |  10   |
 | **Hooks**    | 2 PreToolUse default-on (`aws-secret-scanner`, `aws-api-write-guard`) + 4 PostToolUse default-off                                                  |   6   |
 | **Gates**    | 18 deterministic + 9 runtime + 2 cross-platform + 4 install-safety + 1 release — see [validation-gates-guide.md](./docs/validation-gates-guide.md) |  34   |
 
@@ -92,11 +92,12 @@ Worked example: [`templates/examples/order-processing-pipeline/`](./templates/ex
 
 ## Commands
 
-| Command       | Purpose                                                                              |
-| ------------- | ------------------------------------------------------------------------------------ |
-| `/aws`        | L4 orchestrator. Classifies depth and either answers directly or fans out L3 agents. |
-| `/aws-spec`   | Read-only validator over `.claude/specs/<feature>/`.                                 |
-| `/aws-doctor` | Verifies prerequisites, MCP package resolution, and AWS credentials.                 |
+| Command       | Purpose                                                                                                                                              |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/aws`        | L4 orchestrator. Classifies depth and either answers directly or fans out L3 agents.                                                                 |
+| `/aws-spec`   | Read-only validator over `.claude/specs/<feature>/`.                                                                                                 |
+| `/aws-doctor` | Verifies prerequisites, MCP package resolution, and AWS credentials.                                                                                 |
+| `/aws-kb`     | Read-only knowledge-base lookup — docs, CLI reference, SOPs, comparisons, onboarding, next-step recs. See [aws-kb-guide.md](./docs/aws-kb-guide.md). |
 
 If another plugin defines a colliding name, use the namespaced form `/claude-aws-architect:<command>`.
 
@@ -106,18 +107,20 @@ If another plugin defines a colliding name, use the namespaced form `/claude-aws
 
 Deep dives live under [`docs/`](./docs/). Start here:
 
-| Topic                     | Guide                                                                                                        |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| Powers (workflow bundles) | [powers-guide.md](./docs/powers-guide.md)                                                                    |
-| MCP servers (`.mcp.json`) | [mcp-servers-guide.md](./docs/mcp-servers-guide.md)                                                          |
-| Validation gates (author) | [validation-gates-guide.md](./docs/validation-gates-guide.md)                                                |
-| Testing & drift detection | [testing.md](./docs/testing.md)                                                                              |
-| Manual install / CI       | [install.md](./docs/install.md)                                                                              |
-| Lifecycle scripts         | [scripts.md](./docs/scripts.md)                                                                              |
-| Architecture & spec       | [SPEC.md](./SPEC.md), [docs/plan/SPEC-v4.md](./docs/plan/SPEC-v4.md)                                         |
-| Threat model              | [docs/threat-model.md](./docs/threat-model.md)                                                               |
-| Architectural decisions   | [docs/adr/](./docs/adr/) (A1–A7)                                                                             |
-| Contributor workflow      | [docs/plan/PR-PLAN.md](./docs/plan/PR-PLAN.md), [docs/plan/PR-CONVENTIONS.md](./docs/plan/PR-CONVENTIONS.md) |
+| Topic                         | Guide                                                                                                        |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Powers (workflow bundles)     | [powers-guide.md](./docs/powers-guide.md)                                                                    |
+| Power playbooks (200/300/500) | [docs/playbooks/](./docs/playbooks/README.md)                                                                |
+| KB navigator (`/aws-kb`)      | [aws-kb-guide.md](./docs/aws-kb-guide.md)                                                                    |
+| MCP servers (`.mcp.json`)     | [mcp-servers-guide.md](./docs/mcp-servers-guide.md)                                                          |
+| Validation gates (author)     | [validation-gates-guide.md](./docs/validation-gates-guide.md)                                                |
+| Testing & drift detection     | [testing.md](./docs/testing.md)                                                                              |
+| Manual install / CI           | [install.md](./docs/install.md)                                                                              |
+| Lifecycle scripts             | [scripts.md](./docs/scripts.md)                                                                              |
+| Architecture & spec           | [SPEC.md](./SPEC.md), [docs/plan/SPEC-v4.md](./docs/plan/SPEC-v4.md)                                         |
+| Threat model                  | [docs/threat-model.md](./docs/threat-model.md)                                                               |
+| Architectural decisions       | [docs/adr/](./docs/adr/) (A1–A7)                                                                             |
+| Contributor workflow          | [docs/plan/PR-PLAN.md](./docs/plan/PR-PLAN.md), [docs/plan/PR-CONVENTIONS.md](./docs/plan/PR-CONVENTIONS.md) |
 
 > **What's covered, what's not.** The gates above are **structural, not semantic** — file-shape, schema, lint, install-safety, and (when the transcript executor runs) routing assertions. There is **no live-model eval** in this repo today, so editing the body of a skill / agent / command / hook prompt passes CI as long as format and budget gates stay green. Treat prompt edits like a database migration: explicit pre-merge testing, explicit reviewer sign-off. Full breakdown and drift-closure roadmap in [`docs/testing.md`](./docs/testing.md).
 
