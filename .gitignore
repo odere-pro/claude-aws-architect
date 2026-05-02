@@ -36,6 +36,8 @@ venv/
 .mypy_cache/
 .ruff_cache/
 
+tmp/
+
 # Per SPEC-v4 §H4 — consumer-local plugin override and per-feature
 # grounding ledgers must not be tracked. The release-dogfood meta-spec
 # under .claude/specs/claude-aws-architect/ keeps its ledger committed
