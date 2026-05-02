@@ -1,0 +1,43 @@
+# Keywords that should activate the aws-waf-performance-efficiency-skill skill.
+# One per line. Comments allowed (lines starting with #).
+# The skill-description gate cross-checks this list against SKILL.md
+# frontmatter to ensure ≥3 keywords appear in the description.
+performance efficiency
+performance
+efficiency
+pe
+well-architected
+well architected
+waf
+latency
+latency target
+latency budget
+throughput
+percentile
+p50
+p95
+p99
+compute
+compute selection
+lambda
+ecs
+fargate
+ec2
+step functions
+caching
+cache
+cloudfront
+elasticache
+dax
+load test
+load-test
+load testing
+benchmark
+right-sizing
+cold start
+review
+review block
+design question
+anti-pattern
+antipattern
+checklist
