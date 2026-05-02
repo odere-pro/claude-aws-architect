@@ -1,0 +1,74 @@
+# Operational Excellence review
+
+> Per-feature OE review block. Append into `design.md` under the
+> `## Per-pillar reviews` section. One block per WAF pillar.
+>
+> **Placeholder convention** (canonical for all WAF pillar review
+> templates): use `TODO:` as a single token style for both structured
+> slots (e.g., `TODO: ISO-8601 date`) and free-prose prompts (e.g.,
+> `TODO: 1–2 sentences capturing …`). Do not mix `<angle-bracket>`
+> tokens into pillar-review templates — those are reserved for
+> contract and diagram templates. The lint catches `TODO`, `TBD`, and
+> `<angle-bracket>` equally at acceptance time.
+
+**Pillar**: Operational Excellence
+**Reviewer**: TODO: agent or human
+**Date**: TODO: ISO-8601 date
+**Status**: draft | passed | passed-with-deferrals | failed
+
+## Summary
+
+TODO: 1–2 sentences capturing the OE health of the design. Mention any
+HIGH gaps that block transition.
+
+## Design questions
+
+Walked: TODO: N of 24 (see `oe-design-questions.md`).
+
+- TODO: list any unanswered questions and the reason (gap, not yet
+  applicable, deferred).
+
+## Anti-patterns matched
+
+TODO: none, or list each `AP-OE-N` matched with severity and evidence.
+
+| ID | Severity | Evidence (file:section) | Notes |
+| -- | -------- | ----------------------- | ----- |
+| AP-OE-? | HIGH \| MEDIUM \| LOW | TODO: file:section | TODO: |
+
+## Checklist outcome
+
+- HIGH gaps: TODO: count
+- MEDIUM gaps: TODO: count
+- LOW gaps: TODO: count
+- DEFER items: TODO: count
+
+### HIGH gaps
+
+TODO: list each HIGH gap, its checklist ID, and the action required to
+resolve. If deferred, name the deferral rationale and timeline.
+
+### MEDIUM gaps
+
+TODO: list each MEDIUM gap, its checklist ID, and recommended action.
+
+### LOW gaps
+
+TODO: list each LOW gap (one-line each).
+
+### Deferrals
+
+TODO: list each DEFER item with its rationale paragraph and re-review
+timeline (e.g., "post-launch milestone, week 2").
+
+## Cross-pillar routing
+
+TODO: list any concerns surfaced during this review that were routed
+to another pillar skill (Security, Reliability, Performance Efficiency,
+Cost, Sustainability) instead of absorbed here.
+
+## Decision
+
+- [ ] PASS — no HIGH gaps; transition allowed.
+- [ ] PASS-WITH-DEFERRALS — HIGH gaps exist but each has explicit, time-bounded deferral; transition conditionally allowed.
+- [ ] FAIL — HIGH gaps exist without deferral; transition blocked.

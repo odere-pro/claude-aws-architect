@@ -1,0 +1,37 @@
+# Keywords that should activate the aws-waf-operational-excellence-skill skill.
+# One per line. Comments allowed (lines starting with #).
+# The skill-description gate cross-checks this list against SKILL.md
+# frontmatter to ensure ≥3 keywords appear in the description.
+operational excellence
+operational
+excellence
+oe
+well-architected
+well architected
+waf
+runbook
+runbooks
+slo
+slos
+sli
+observability
+observability triple
+metric
+log
+trace
+on-call
+oncall
+alerting
+alarm
+alarms
+deployment
+rollback
+change management
+incident response
+post-incident
+review
+review block
+design question
+anti-pattern
+antipattern
+checklist
