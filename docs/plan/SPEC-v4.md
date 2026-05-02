@@ -172,14 +172,14 @@ claude-aws-architect/
 
 Per O2, every server in `.mcp.json` carries a `timeoutMs` value and a pinned version (per §16.2). The version field is omitted from the table below; it lives in `.mcp.json` and is enforced by §11.A gate 12.
 
-| #   | Package (uvx target)                           | Transport | Category   | Timeout (O2) | Purpose                                                    |
-| --- | ---------------------------------------------- | --------- | ---------- | ------------ | ---------------------------------------------------------- |
-| 1   | `awslabs.aws-knowledge-mcp-server` (HTTP)      | http      | Docs       | 30000ms      | Latest AWS docs, API refs, What's New, WAF guidance        |
-| 2   | `awslabs.aws-iac-mcp-server`                   | stdio     | IaC        | 60000ms      | CloudFormation/CDK validation, scanning, samples           |
-| 3   | `awslabs.aws-pricing-mcp-server`               | stdio     | Cost       | 30000ms      | Pricing API + cost estimation                              |
-| 4   | `awslabs.well-architected-security-mcp-server` | stdio     | Security   | 60000ms      | WAF security findings + GuardDuty/Security Hub triage      |
-| 5   | `awslabs.iam-mcp-server`                       | stdio     | Security   | 30000ms      | First-class IAM read + simulate; least-privilege loop      |
-| 6   | `awslabs.cloudwatch-mcp-server`                | stdio     | Operations | 30000ms      | Post-deploy observability evidence: alarms, log queries    |
+| #   | Package (uvx target)                           | Transport | Category   | Timeout (O2) | Purpose                                                 |
+| --- | ---------------------------------------------- | --------- | ---------- | ------------ | ------------------------------------------------------- |
+| 1   | `awslabs.aws-knowledge-mcp-server` (HTTP)      | http      | Docs       | 30000ms      | Latest AWS docs, API refs, What's New, WAF guidance     |
+| 2   | `awslabs.aws-iac-mcp-server`                   | stdio     | IaC        | 60000ms      | CloudFormation/CDK validation, scanning, samples        |
+| 3   | `awslabs.aws-pricing-mcp-server`               | stdio     | Cost       | 30000ms      | Pricing API + cost estimation                           |
+| 4   | `awslabs.well-architected-security-mcp-server` | stdio     | Security   | 60000ms      | WAF security findings + GuardDuty/Security Hub triage   |
+| 5   | `awslabs.iam-mcp-server`                       | stdio     | Security   | 30000ms      | First-class IAM read + simulate; least-privilege loop   |
+| 6   | `awslabs.cloudwatch-mcp-server`                | stdio     | Operations | 30000ms      | Post-deploy observability evidence: alarms, log queries |
 
 ### 3.2 v0.2 candidates (4)
 
@@ -197,14 +197,14 @@ Container-plane (`eks`, `ecs`, `finch`), non-DDB data planes (`postgres`, `mysql
 
 Per-server fallback when an MCP call fails or times out:
 
-| Server                           | Failure mode    | Fallback behaviour                                                                          |
-| -------------------------------- | --------------- | ------------------------------------------------------------------------------------------- |
-| `aws-knowledge`                  | timeout / 5xx   | Discovery agent emits a `grounding-deferred` marker on the claim; orchestrator surfaces it. |
-| `aws-iac`                        | timeout / 5xx   | IaC validation step downgrades to advisory; component contract still emits.                 |
-| `aws-pricing`                    | timeout / 5xx   | Cost-engineer (v0.2) emits ROM range with `grounding-deferred`; user is told it's an estimate. |
-| `well-architected-security`      | timeout / 5xx   | Security-engineer (v0.2) emits checklist-only output; surfaces "automated assessment unavailable". |
-| `iam`                            | timeout / 5xx   | IAM rule (§6) advisory only; least-privilege loop deferred.                                 |
-| `cloudwatch`                     | timeout / 5xx   | Test-engineer (v0.2) emits unit-test design only; observability triple flagged incomplete.  |
+| Server                      | Failure mode  | Fallback behaviour                                                                                 |
+| --------------------------- | ------------- | -------------------------------------------------------------------------------------------------- |
+| `aws-knowledge`             | timeout / 5xx | Discovery agent emits a `grounding-deferred` marker on the claim; orchestrator surfaces it.        |
+| `aws-iac`                   | timeout / 5xx | IaC validation step downgrades to advisory; component contract still emits.                        |
+| `aws-pricing`               | timeout / 5xx | Cost-engineer (v0.2) emits ROM range with `grounding-deferred`; user is told it's an estimate.     |
+| `well-architected-security` | timeout / 5xx | Security-engineer (v0.2) emits checklist-only output; surfaces "automated assessment unavailable". |
+| `iam`                       | timeout / 5xx | IAM rule (§6) advisory only; least-privilege loop deferred.                                        |
+| `cloudwatch`                | timeout / 5xx | Test-engineer (v0.2) emits unit-test design only; observability triple flagged incomplete.         |
 
 All degraded responses are **labelled** in the merged orchestrator output. The orchestrator never silently drops a specialist's signal because of an MCP failure.
 
@@ -222,34 +222,34 @@ Each skill lives at `claude-aws-architect/skills/<name>/SKILL.md` plus optional 
 
 #### Workflow skills (6)
 
-| #   | Skill                    | Tier   | Purpose (declarative)                                                                                                                                     | Required references                                               | Required templates                             | Invoked by                                                           |
-| --- | ------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
-| 1   | `aws-sdlc-workflow`      | v0.1.0 | Drive the vibe → discovery → design → plan → validate procedure end-to-end; orchestrate parallel fan-out and merge.                                       | `phases.md`, `parallel-fanout.md`, `merge-rules.md`               | none                                           | `claude-aws-architect-orchestrator-agent`                            |
-| 2   | `aws-spec-grounding`     | v0.1.0 | Enforce that every factual claim carries ≥1 grounded-by reference and every design opinion carries a rationale; flag both kinds of un-grounded claims.    | `cite-format.md`, `grounded-by-rules.md`, `opinion-vs-fact.md`    | none                                           | Orchestrator, discovery agent, all writers                           |
-| 3   | `aws-grounding-cache`    | v0.1.0 | Maintain `.grounding-ledger.json`: insert, dedupe, expire (TTL per N15), redact secrets; provide short-key derivation with collision extension (N16).     | `ledger-schema.md`, `ttl-policy.md`, `collision-policy.md`        | `grounding-ledger.json.tmpl`                   | `aws-spec-grounding`                                                 |
-| 4   | `aws-component-contract` | v0.1.0 | Author and lint per-component contract files (frontmatter + section ordering + observability triple + integration links).                                 | `contract-schema.md`, `observability-triple.md`                   | `contract.md.tmpl`                             | Solution-architect, implementation, validators                       |
-| 5   | `aws-layered-diagram`    | v0.1.0 | Author one `diagrams.d2` carrying every required layer tag (§9.6); lint orphans, untagged nodes, missing layers.                                          | `c4-and-sequence.md`, `layer-taxonomy.md`                         | `diagrams.d2.tmpl`                             | Solution-architect                                                   |
-| 6   | `aws-mcp-routing`        | v0.1.0 | MCP server selection per request: which server, which tool, fallback per §3.5, rate-limit handling.                                                       | `server-roster.md`, `selection-rules.md`, `degraded-modes.md`     | none                                           | All agents                                                           |
+| #   | Skill                    | Tier   | Purpose (declarative)                                                                                                                                  | Required references                                            | Required templates           | Invoked by                                     |
+| --- | ------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- | ---------------------------- | ---------------------------------------------- |
+| 1   | `aws-sdlc-workflow`      | v0.1.0 | Drive the vibe → discovery → design → plan → validate procedure end-to-end; orchestrate parallel fan-out and merge.                                    | `phases.md`, `parallel-fanout.md`, `merge-rules.md`            | none                         | `claude-aws-architect-orchestrator-agent`      |
+| 2   | `aws-spec-grounding`     | v0.1.0 | Enforce that every factual claim carries ≥1 grounded-by reference and every design opinion carries a rationale; flag both kinds of un-grounded claims. | `cite-format.md`, `grounded-by-rules.md`, `opinion-vs-fact.md` | none                         | Orchestrator, discovery agent, all writers     |
+| 3   | `aws-grounding-cache`    | v0.1.0 | Maintain `.grounding-ledger.json`: insert, dedupe, expire (TTL per N15), redact secrets; provide short-key derivation with collision extension (N16).  | `ledger-schema.md`, `ttl-policy.md`, `collision-policy.md`     | `grounding-ledger.json.tmpl` | `aws-spec-grounding`                           |
+| 4   | `aws-component-contract` | v0.1.0 | Author and lint per-component contract files (frontmatter + section ordering + observability triple + integration links).                              | `contract-schema.md`, `observability-triple.md`                | `contract.md.tmpl`           | Solution-architect, implementation, validators |
+| 5   | `aws-layered-diagram`    | v0.1.0 | Author one `diagrams.d2` carrying every required layer tag (§9.6); lint orphans, untagged nodes, missing layers.                                       | `c4-and-sequence.md`, `layer-taxonomy.md`                      | `diagrams.d2.tmpl`           | Solution-architect                             |
+| 6   | `aws-mcp-routing`        | v0.1.0 | MCP server selection per request: which server, which tool, fallback per §3.5, rate-limit handling.                                                    | `server-roster.md`, `selection-rules.md`, `degraded-modes.md`  | none                         | All agents                                     |
 
 #### WAF pillar skills (6)
 
 These encode pillar-specific review checklists, decision questions, and grounding shortcuts. Each pillar skill is content-heavy (review prompts, anti-patterns, design questions) and code-light. Honours the `claude-aws-architect` name's promise of full Well-Architected coverage.
 
-| #   | Skill                                            | Tier   | Pillar                   | Purpose (declarative)                                                                                                                                                                                                                       | Required references                                            | Required templates              | Invoked by                                       |
-| --- | ------------------------------------------------ | ------ | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------- | ------------------------------------------------ |
-| 7   | `aws-waf-operational-excellence-skill`           | v0.1.0 | Operational Excellence   | Encode design questions, anti-patterns, and review checklists for OE pillar; flag missing runbooks, undefined SLOs, and absent observability triples.                                                                                       | `oe-design-questions.md`, `oe-antipatterns.md`, `oe-checklist.md` | `oe-review.md.tmpl`             | Solution-architect, implementation               |
-| 8   | `aws-waf-security-skill`                         | v0.1.0 | Security                 | Encode design questions, anti-patterns, and review checklists for Security pillar; surface least-privilege violations, encryption gaps, identity-perimeter weaknesses, and incident-response gaps.                                          | `sec-design-questions.md`, `sec-antipatterns.md`, `sec-checklist.md` | `sec-review.md.tmpl`            | Solution-architect, implementation               |
-| 9   | `aws-waf-reliability-skill`                      | v0.1.0 | Reliability              | Encode design questions, anti-patterns, and review checklists for Reliability pillar; flag single-AZ deployments, missing retries, undefined recovery objectives, and absent failure-mode analysis.                                          | `rel-design-questions.md`, `rel-antipatterns.md`, `rel-checklist.md` | `rel-review.md.tmpl`            | Solution-architect, implementation               |
-| 10  | `aws-waf-performance-efficiency-skill`           | v0.1.0 | Performance Efficiency   | Encode design questions, anti-patterns, and review checklists for PE pillar; flag inappropriate compute selection, missing caching layers, undefined latency targets, and absent load-testing strategy.                                      | `pe-design-questions.md`, `pe-antipatterns.md`, `pe-checklist.md` | `pe-review.md.tmpl`             | Solution-architect, implementation               |
-| 11  | `aws-waf-cost-optimization-skill`                | v0.1.0 | Cost Optimization        | Encode design questions, anti-patterns, and review checklists for Cost pillar; flag missing cost ceilings, absent right-sizing review, untagged resources, and ungoverned data-egress paths.                                                | `cost-design-questions.md`, `cost-antipatterns.md`, `cost-checklist.md` | `cost-review.md.tmpl`           | Solution-architect, implementation               |
-| 12  | `aws-waf-sustainability-skill`                   | v0.1.0 | Sustainability           | Encode design questions, anti-patterns, and review checklists for Sustainability pillar; flag inefficient data lifecycles, oversized fleets, and region choices misaligned with carbon footprint goals.                                      | `sus-design-questions.md`, `sus-antipatterns.md`, `sus-checklist.md` | `sus-review.md.tmpl`            | Solution-architect                               |
+| #   | Skill                                  | Tier   | Pillar                 | Purpose (declarative)                                                                                                                                                                                   | Required references                                                     | Required templates    | Invoked by                         |
+| --- | -------------------------------------- | ------ | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | --------------------- | ---------------------------------- |
+| 7   | `aws-waf-operational-excellence-skill` | v0.1.0 | Operational Excellence | Encode design questions, anti-patterns, and review checklists for OE pillar; flag missing runbooks, undefined SLOs, and absent observability triples.                                                   | `oe-design-questions.md`, `oe-antipatterns.md`, `oe-checklist.md`       | `oe-review.md.tmpl`   | Solution-architect, implementation |
+| 8   | `aws-waf-security-skill`               | v0.1.0 | Security               | Encode design questions, anti-patterns, and review checklists for Security pillar; surface least-privilege violations, encryption gaps, identity-perimeter weaknesses, and incident-response gaps.      | `sec-design-questions.md`, `sec-antipatterns.md`, `sec-checklist.md`    | `sec-review.md.tmpl`  | Solution-architect, implementation |
+| 9   | `aws-waf-reliability-skill`            | v0.1.0 | Reliability            | Encode design questions, anti-patterns, and review checklists for Reliability pillar; flag single-AZ deployments, missing retries, undefined recovery objectives, and absent failure-mode analysis.     | `rel-design-questions.md`, `rel-antipatterns.md`, `rel-checklist.md`    | `rel-review.md.tmpl`  | Solution-architect, implementation |
+| 10  | `aws-waf-performance-efficiency-skill` | v0.1.0 | Performance Efficiency | Encode design questions, anti-patterns, and review checklists for PE pillar; flag inappropriate compute selection, missing caching layers, undefined latency targets, and absent load-testing strategy. | `pe-design-questions.md`, `pe-antipatterns.md`, `pe-checklist.md`       | `pe-review.md.tmpl`   | Solution-architect, implementation |
+| 11  | `aws-waf-cost-optimization-skill`      | v0.1.0 | Cost Optimization      | Encode design questions, anti-patterns, and review checklists for Cost pillar; flag missing cost ceilings, absent right-sizing review, untagged resources, and ungoverned data-egress paths.            | `cost-design-questions.md`, `cost-antipatterns.md`, `cost-checklist.md` | `cost-review.md.tmpl` | Solution-architect, implementation |
+| 12  | `aws-waf-sustainability-skill`         | v0.1.0 | Sustainability         | Encode design questions, anti-patterns, and review checklists for Sustainability pillar; flag inefficient data lifecycles, oversized fleets, and region choices misaligned with carbon footprint goals. | `sus-design-questions.md`, `sus-antipatterns.md`, `sus-checklist.md`    | `sus-review.md.tmpl`  | Solution-architect                 |
 
 #### Deferred (v0.2)
 
-| #   | Skill                    | Tier   | Purpose (declarative)                                                                                                                                     | Required references                                               | Required templates                             | Invoked by                                                           |
-| --- | ------------------------ | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
-| 13  | `aws-hook-authoring`     | v0.2   | Generate hook script headers; lint exit-code contract; detect AWS write verbs; validate `hooks.json` entries (§9.2).                                      | `hook-events.md`, `aws-write-verbs.md`, `hook-script-contract.md` | `hook-script.sh.tmpl`, `hooks.json.entry.tmpl` | Plugin authors at build time; orchestrator at runtime                |
-| 14  | `aws-power-authoring`    | v0.2   | Validate `powers/*.power.json` (§9.1) and the plugin manifest (`plugin.json`); enforce name/version/description, MCP/skill/hook/command cross-references. | `power-schema.md`, `manifest-schema.md`                           | `power.json.tmpl`                              | Plugin authors at build time; `/aws-power` command (v0.2)            |
+| #   | Skill                 | Tier | Purpose (declarative)                                                                                                                                     | Required references                                               | Required templates                             | Invoked by                                                |
+| --- | --------------------- | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------- |
+| 13  | `aws-hook-authoring`  | v0.2 | Generate hook script headers; lint exit-code contract; detect AWS write verbs; validate `hooks.json` entries (§9.2).                                      | `hook-events.md`, `aws-write-verbs.md`, `hook-script-contract.md` | `hook-script.sh.tmpl`, `hooks.json.entry.tmpl` | Plugin authors at build time; orchestrator at runtime     |
+| 14  | `aws-power-authoring` | v0.2 | Validate `powers/*.power.json` (§9.1) and the plugin manifest (`plugin.json`); enforce name/version/description, MCP/skill/hook/command cross-references. | `power-schema.md`, `manifest-schema.md`                           | `power.json.tmpl`                              | Plugin authors at build time; `/aws-power` command (v0.2) |
 
 `aws-bedrock-validation` and a test-design skill remain tracked under §4.4.
 
@@ -259,13 +259,13 @@ Each `SKILL.md` must declare:
 
 **Frontmatter keys:**
 
-| Key                         | Constraint                                                                                                              |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `name`                      | Lowercase hyphenated; matches parent directory name.                                                                    |
+| Key                         | Constraint                                                                                                                                                                                                                                                                              |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`                      | Lowercase hyphenated; matches parent directory name.                                                                                                                                                                                                                                    |
 | `description`               | Block scalar prefixed `**WORKFLOW SKILL** —`; states capabilities and trigger conditions; cites no example bodies. ≤300 chars. Must contain ≥3 distinct keywords from the skill's sibling `trigger-keywords.txt` per §11.A gate 16. Must not begin with `This skill` or `A skill that`. |
-| `version`                   | SemVer.                                                                                                                 |
-| `argument-hint` (optional)  | When the skill is `user-invocable`.                                                                                     |
-| `user-invocable` (optional) | Boolean; default false.                                                                                                 |
+| `version`                   | SemVer.                                                                                                                                                                                                                                                                                 |
+| `argument-hint` (optional)  | When the skill is `user-invocable`.                                                                                                                                                                                                                                                     |
+| `user-invocable` (optional) | Boolean; default false.                                                                                                                                                                                                                                                                 |
 
 **Required sibling files:**
 
@@ -328,12 +328,12 @@ Every agent file under `claude-aws-architect/agents/<name>-agent.md` must declar
 
 ### 5.2 v0.1.0 agent roster
 
-| #   | Agent                                  | Tier   | Layer | SDLC role                                       | MCP servers required (subset of §3.1)                | New plugin skills loaded                                                  | Rules consulted (subset of §6)                                 | Outputs (paths under `.claude/specs/<feature>/`)                                                              |
-| --- | -------------------------------------- | ------ | ----- | ----------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| 0   | `claude-aws-architect-orchestrator-agent`    | v0.1.0 | L4    | Entry point + parallel fan-out + merge          | none directly (delegates)                            | `aws-sdlc-workflow`, `aws-spec-grounding`, `aws-mcp-routing`              | `aws-spec-frontmatter`, `aws-docs`                             | `requirements.md`, `design.md`, `tasks.md` (final assembly)                                                   |
-| 1   | `claude-aws-architect-discovery-agent`       | v0.1.0 | L3    | Discovery + grounding ledger                    | `aws-knowledge`                                      | `aws-spec-grounding`, `aws-grounding-cache`, `aws-mcp-routing`            | `aws-spec-frontmatter`, `aws-docs`                             | `requirements.md` (draft) + `.grounding-ledger.json` entries                                                  |
-| 2   | `claude-aws-architect-solution-architect-agent` | v0.1.0 | L3    | Solution architecture + design choice           | `aws-knowledge`, `aws-iac`                           | `aws-component-contract`, `aws-layered-diagram`, `aws-mcp-routing`, all 6 `aws-waf-*-skill` pillars | `aws-cdk`, `aws-component-contract`, `aws-diagram`, `aws-docs` | `design.md`, `contracts/<slug>.md` per component, `diagrams.d2` `c4-l1`/`c4-l2` layers, per-pillar review block in `design.md`                        |
-| 3   | `claude-aws-architect-implementation-agent`  | v0.1.0 | L3    | Bundled IaC + cost ROM + IAM hygiene + test sketch | `aws-iac`, `aws-pricing`, `iam`, `cloudwatch`        | `aws-component-contract`, `aws-mcp-routing`, `aws-waf-security-skill`, `aws-waf-cost-optimization-skill`, `aws-waf-reliability-skill`, `aws-waf-operational-excellence-skill` | `aws-cdk`, `aws-iam-policy`, `aws-component-contract`, `aws-test` | `contracts/<slug>.md` IaC + Cost + Security + Acceptance + Observability sections, `tasks.md`                |
+| #   | Agent                                           | Tier   | Layer | SDLC role                                          | MCP servers required (subset of §3.1)         | New plugin skills loaded                                                                                                                                                      | Rules consulted (subset of §6)                                    | Outputs (paths under `.claude/specs/<feature>/`)                                                                               |
+| --- | ----------------------------------------------- | ------ | ----- | -------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 0   | `claude-aws-architect-orchestrator-agent`       | v0.1.0 | L4    | Entry point + parallel fan-out + merge             | none directly (delegates)                     | `aws-sdlc-workflow`, `aws-spec-grounding`, `aws-mcp-routing`                                                                                                                  | `aws-spec-frontmatter`, `aws-docs`                                | `requirements.md`, `design.md`, `tasks.md` (final assembly)                                                                    |
+| 1   | `claude-aws-architect-discovery-agent`          | v0.1.0 | L3    | Discovery + grounding ledger                       | `aws-knowledge`                               | `aws-spec-grounding`, `aws-grounding-cache`, `aws-mcp-routing`                                                                                                                | `aws-spec-frontmatter`, `aws-docs`                                | `requirements.md` (draft) + `.grounding-ledger.json` entries                                                                   |
+| 2   | `claude-aws-architect-solution-architect-agent` | v0.1.0 | L3    | Solution architecture + design choice              | `aws-knowledge`, `aws-iac`                    | `aws-component-contract`, `aws-layered-diagram`, `aws-mcp-routing`, all 6 `aws-waf-*-skill` pillars                                                                           | `aws-cdk`, `aws-component-contract`, `aws-diagram`, `aws-docs`    | `design.md`, `contracts/<slug>.md` per component, `diagrams.d2` `c4-l1`/`c4-l2` layers, per-pillar review block in `design.md` |
+| 3   | `claude-aws-architect-implementation-agent`     | v0.1.0 | L3    | Bundled IaC + cost ROM + IAM hygiene + test sketch | `aws-iac`, `aws-pricing`, `iam`, `cloudwatch` | `aws-component-contract`, `aws-mcp-routing`, `aws-waf-security-skill`, `aws-waf-cost-optimization-skill`, `aws-waf-reliability-skill`, `aws-waf-operational-excellence-skill` | `aws-cdk`, `aws-iam-policy`, `aws-component-contract`, `aws-test` | `contracts/<slug>.md` IaC + Cost + Security + Acceptance + Observability sections, `tasks.md`                                  |
 
 Three additional v0.2 specialists (`cost-engineer`, `security-engineer`, `test-engineer`) split out of the bundled `implementation-agent` once the merge contract (§5.5) is validated under load.
 
@@ -472,7 +472,7 @@ Every hook script must declare in a header comment block:
 | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `init.sh`      | Detect/install `uvx` (and underlying `uv`), `jq`, `d2`, `shellcheck`. Verify `aws` CLI present. Pre-fetch every stdio MCP package declared in `.mcp.json`. Write consumer settings template if absent (or with `--force`). Exec `doctor.sh` at end. | Inherits from `doctor.sh`.                                                                        |
 | `doctor.sh`    | Verify `uvx`, `aws` CLI, env (`AWS_PROFILE`, `AWS_REGION`), MCP package resolution per server, `sts:GetCallerIdentity`, minimum-IAM presence (N12). `--json` flag emits structured output.                                                          | `0` OK · `1` missing tool · `2` missing env · `3` MCP unresolved · `4` STS · `5` IAM insufficient |
-| `install.sh`   | Two modes: `--symlink` (default — symlinks plugin into consumer's `.claude/plugins/claude-aws-architect/`) and `--copy` (copies templates into `.claude/`). Idempotent. Never overwrite existing consumer files. Log every action.                        | `0` OK · `64` bad arg · `65` target conflict                                                      |
+| `install.sh`   | Two modes: `--symlink` (default — symlinks plugin into consumer's `.claude/plugins/claude-aws-architect/`) and `--copy` (copies templates into `.claude/`). Idempotent. Never overwrite existing consumer files. Log every action.                  | `0` OK · `64` bad arg · `65` target conflict                                                      |
 | `uninstall.sh` | Reverse `install.sh`. Never delete `.claude/specs/`, `.claude/steering/`, or consumer-authored hooks. `--dry-run` flag prints actions without performing them.                                                                                      | `0` OK · `64` bad arg                                                                             |
 
 ### 8.2 Cross-script invariants
@@ -533,14 +533,14 @@ Each fixture lives under `tests/transcripts/<name>/` and contains:
 
 ### 10.3 v0.1.0 fixture set (minimum)
 
-| Fixture                     | Validates                                                                              |
-| --------------------------- | -------------------------------------------------------------------------------------- |
-| `vibe-shallow`              | §5.6 rule 4 (verb-of-inquiry → shallow); no fan-out; no artefacts written.             |
-| `sdlc-full-depth`           | §5.6 rule 2 (SDLC-artefact intent → full depth); ≥2 parallel `Agent` calls; F5 + F6 artefacts produced. |
-| `merge-conflict`            | §5.5 priority rules: planted disagreement between solution-architect and implementation; verifies the resolved-vs-raised outcome. |
-| `degraded-mcp`              | §3.5: simulated `aws-knowledge` 5xx; verifies `grounding-deferred` marker in output and ledger entry. |
-| `secret-in-diff`            | §7.2 hook 3: planted AWS access key in a write; verifies block + redacted finding.     |
-| `iteration-cap`             | O4: prompt designed to keep specialists disagreeing; orchestrator must halt at the iteration cap with `iteration-cap-reached` marker rather than looping. |
+| Fixture           | Validates                                                                                                                                                 |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `vibe-shallow`    | §5.6 rule 4 (verb-of-inquiry → shallow); no fan-out; no artefacts written.                                                                                |
+| `sdlc-full-depth` | §5.6 rule 2 (SDLC-artefact intent → full depth); ≥2 parallel `Agent` calls; F5 + F6 artefacts produced.                                                   |
+| `merge-conflict`  | §5.5 priority rules: planted disagreement between solution-architect and implementation; verifies the resolved-vs-raised outcome.                         |
+| `degraded-mcp`    | §3.5: simulated `aws-knowledge` 5xx; verifies `grounding-deferred` marker in output and ledger entry.                                                     |
+| `secret-in-diff`  | §7.2 hook 3: planted AWS access key in a write; verifies block + redacted finding.                                                                        |
+| `iteration-cap`   | O4: prompt designed to keep specialists disagreeing; orchestrator must halt at the iteration cap with `iteration-cap-reached` marker rather than looping. |
 
 ### 10.4 Runner
 
@@ -569,7 +569,7 @@ Gates split into **deterministic** (runnable locally and in CI without a live mo
 13. Re-running `init.sh` is idempotent (no errors, no duplicate writes); asserted against a tempdir snapshot diff.
 14. `markdownlint-cli2 --config .markdownlint.jsonc` and `prettier --check` pass on every Markdown file.
 15. `README.md` contains a top-level `## Trademark notice` section with the four declarative bullets specified in §15.4 (asserted by a CI grep-and-count check).
-16. **Skill description quality**: every `skills/*/SKILL.md` frontmatter `description` field matches the §4.3 requirements *and* contains ≥3 distinct trigger keywords drawn from `trigger-keywords.txt` (a per-skill sibling file declaring the skill's own keyword set), is ≤300 chars, and does not begin with the prefix `This skill` or `A skill that`. Asserted by a CI parser against `trigger-keywords.txt`.
+16. **Skill description quality**: every `skills/*/SKILL.md` frontmatter `description` field matches the §4.3 requirements _and_ contains ≥3 distinct trigger keywords drawn from `trigger-keywords.txt` (a per-skill sibling file declaring the skill's own keyword set), is ≤300 chars, and does not begin with the prefix `This skill` or `A skill that`. Asserted by a CI parser against `trigger-keywords.txt`.
 17. **SKILL.md size budget**: every `skills/*/SKILL.md` body (excluding frontmatter) is ≤500 lines per Anthropic authoring guidance. Skills exceeding the budget must split content into `references/<topic>.md` files. Asserted by `wc -l`.
 18. **Tool-name length budget**: the longest fully-qualified tool name across all `.mcp.json` servers — computed as `len("mcp__plugin_<plugin>_<server>__<longest-tool>")` — is < 64 characters per O3. Asserted by a CI script that resolves each server's tool list (statically declared in `.mcp.json#tools[]` for stdio servers, fetched once at CI time for HTTP servers and cached).
 
@@ -679,32 +679,32 @@ This section enumerates every skill the v0.1.0 orchestrator + agents reference, 
 
 #### Workflow skills
 
-| Skill                       | Authored under                                                   | Authoring tier | Used by                                                   |
-| --------------------------- | ---------------------------------------------------------------- | -------------- | --------------------------------------------------------- |
-| `aws-sdlc-workflow`         | `claude-aws-architect/skills/aws-sdlc-workflow/`                 | v0.1.0         | orchestrator                                              |
-| `aws-spec-grounding`        | `claude-aws-architect/skills/aws-spec-grounding/`                | v0.1.0         | orchestrator, discovery, solution-architect, implementation |
-| `aws-grounding-cache`       | `claude-aws-architect/skills/aws-grounding-cache/`               | v0.1.0         | aws-spec-grounding (transitive)                           |
-| `aws-component-contract`    | `claude-aws-architect/skills/aws-component-contract/`            | v0.1.0         | solution-architect, implementation                        |
-| `aws-layered-diagram`       | `claude-aws-architect/skills/aws-layered-diagram/`               | v0.1.0         | solution-architect                                        |
-| `aws-mcp-routing`           | `claude-aws-architect/skills/aws-mcp-routing/`                   | v0.1.0         | all agents                                                |
+| Skill                    | Authored under                                        | Authoring tier | Used by                                                     |
+| ------------------------ | ----------------------------------------------------- | -------------- | ----------------------------------------------------------- |
+| `aws-sdlc-workflow`      | `claude-aws-architect/skills/aws-sdlc-workflow/`      | v0.1.0         | orchestrator                                                |
+| `aws-spec-grounding`     | `claude-aws-architect/skills/aws-spec-grounding/`     | v0.1.0         | orchestrator, discovery, solution-architect, implementation |
+| `aws-grounding-cache`    | `claude-aws-architect/skills/aws-grounding-cache/`    | v0.1.0         | aws-spec-grounding (transitive)                             |
+| `aws-component-contract` | `claude-aws-architect/skills/aws-component-contract/` | v0.1.0         | solution-architect, implementation                          |
+| `aws-layered-diagram`    | `claude-aws-architect/skills/aws-layered-diagram/`    | v0.1.0         | solution-architect                                          |
+| `aws-mcp-routing`        | `claude-aws-architect/skills/aws-mcp-routing/`        | v0.1.0         | all agents                                                  |
 
 #### WAF pillar skills
 
-| Skill                                  | Authored under                                                              | Authoring tier | Used by                                                   |
-| -------------------------------------- | --------------------------------------------------------------------------- | -------------- | --------------------------------------------------------- |
-| `aws-waf-operational-excellence-skill` | `claude-aws-architect/skills/aws-waf-operational-excellence-skill/`         | v0.1.0         | solution-architect, implementation                        |
-| `aws-waf-security-skill`               | `claude-aws-architect/skills/aws-waf-security-skill/`                       | v0.1.0         | solution-architect, implementation                        |
-| `aws-waf-reliability-skill`            | `claude-aws-architect/skills/aws-waf-reliability-skill/`                    | v0.1.0         | solution-architect, implementation                        |
-| `aws-waf-performance-efficiency-skill` | `claude-aws-architect/skills/aws-waf-performance-efficiency-skill/`         | v0.1.0         | solution-architect                                        |
-| `aws-waf-cost-optimization-skill`      | `claude-aws-architect/skills/aws-waf-cost-optimization-skill/`              | v0.1.0         | solution-architect, implementation                        |
-| `aws-waf-sustainability-skill`         | `claude-aws-architect/skills/aws-waf-sustainability-skill/`                 | v0.1.0         | solution-architect                                        |
+| Skill                                  | Authored under                                                      | Authoring tier | Used by                            |
+| -------------------------------------- | ------------------------------------------------------------------- | -------------- | ---------------------------------- |
+| `aws-waf-operational-excellence-skill` | `claude-aws-architect/skills/aws-waf-operational-excellence-skill/` | v0.1.0         | solution-architect, implementation |
+| `aws-waf-security-skill`               | `claude-aws-architect/skills/aws-waf-security-skill/`               | v0.1.0         | solution-architect, implementation |
+| `aws-waf-reliability-skill`            | `claude-aws-architect/skills/aws-waf-reliability-skill/`            | v0.1.0         | solution-architect, implementation |
+| `aws-waf-performance-efficiency-skill` | `claude-aws-architect/skills/aws-waf-performance-efficiency-skill/` | v0.1.0         | solution-architect                 |
+| `aws-waf-cost-optimization-skill`      | `claude-aws-architect/skills/aws-waf-cost-optimization-skill/`      | v0.1.0         | solution-architect, implementation |
+| `aws-waf-sustainability-skill`         | `claude-aws-architect/skills/aws-waf-sustainability-skill/`         | v0.1.0         | solution-architect                 |
 
 #### v0.2 deferred
 
-| Skill                       | Authored under                                                   | Authoring tier | Used by                                                   |
-| --------------------------- | ---------------------------------------------------------------- | -------------- | --------------------------------------------------------- |
-| `aws-hook-authoring`        | `claude-aws-architect/skills/aws-hook-authoring/`                | v0.2           | plugin-author workflow only                               |
-| `aws-power-authoring`       | `claude-aws-architect/skills/aws-power-authoring/`               | v0.2           | plugin-author workflow only                               |
+| Skill                 | Authored under                                     | Authoring tier | Used by                     |
+| --------------------- | -------------------------------------------------- | -------------- | --------------------------- |
+| `aws-hook-authoring`  | `claude-aws-architect/skills/aws-hook-authoring/`  | v0.2           | plugin-author workflow only |
+| `aws-power-authoring` | `claude-aws-architect/skills/aws-power-authoring/` | v0.2           | plugin-author workflow only |
 
 **Skills explicitly NOT authored at v0.1.0** (and not referenced by any v0.1.0 agent):
 
@@ -774,7 +774,7 @@ The plugin's listing posture is **delayed and curated**:
 
 - **v0.1.0 release**: GitHub-only. Discovery limited to the repository README, GitHub topic tags (`aws`, `claude-code`, `claude-plugin`, `aws-cdk`, `claude-skills`), and word-of-mouth.
 - **After v0.1.1** (i.e. after the first round of real-user bugfixes): submit listings to two community indexes — `skills.sh` (the Vercel-hosted skills leaderboard) and `awesome-claude-skills` (community-curated index). One submission each, tracked in CHANGELOG.
-- **Not listed at any tier**: npm (Claude Code plugins are not npm packages), commercial marketplaces (no commercial offering), and ad-hoc awesome-* repos beyond the two named.
+- **Not listed at any tier**: npm (Claude Code plugins are not npm packages), commercial marketplaces (no commercial offering), and ad-hoc awesome-\* repos beyond the two named.
 - **Each listing carries**: a short description matching `plugin.json#description`, a screenshot of the dogfooded `sdlc-full-depth` example, and the `claude-aws-architect` install command.
 
 ### 15.4 Trademark disclaimer

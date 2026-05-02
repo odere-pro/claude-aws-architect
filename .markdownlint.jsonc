@@ -1,0 +1,41 @@
+// markdownlint-cli2 configuration for claude-aws-architect.
+// Per SPEC §N14.
+//
+// Rules deliberately relaxed:
+// - MD013 (line-length): plugin docs include long descriptive sentences,
+//   table rows with rationale columns, and inline links that exceed 80
+//   chars. Soft-wrap is preferred over hard-wrap for prose.
+// - MD024 (no-duplicate-header): the spec uses repeated `## H2` headings
+//   across different sections (e.g. "Required references", "Required
+//   templates" appear under multiple skills).
+// - MD033 (no-inline-html): we use HTML comments and the occasional
+//   <details>/<summary> for collapsible sections.
+// - MD034 (no-bare-urls): some examples and links are intentionally bare
+//   for copy-paste convenience.
+// - MD041 (first-line-h1): ADRs and some templates may start with
+//   frontmatter rather than an H1.
+// - MD060 (table-column-style): markdown tables in this repo do not enforce
+//   pipe alignment — the source-of-truth is GitHub-rendered output.
+// - MD001 (heading-increment): SPEC-v4.md and other planning docs use ####
+//   subsections without intermediate ### parents to keep the section numbering
+//   aligned with the spec text (e.g. "12.A", "12.B-2", "13.G").
+// - MD029 (ordered-list-prefix): the PR roadmap uses non-sequential numbers
+//   like "28a", "28b" intentionally; SPEC-v4 reuses the spec's own item IDs.
+// - MD036 (no-emphasis-as-heading): SPEC.md uses italic _(pending PR N)_ as a
+//   parenthetical status marker, which is a note rather than a heading.
+// - MD049 (emphasis-style): SPEC-v4.md uses `**bold**` for emphasis throughout
+//   to match the source planning conversation; switching to `__bold__` would
+//   diverge from the canonical spec text and add zero reader value.
+{
+  "default": true,
+  "MD013": false,
+  "MD024": false,
+  "MD033": false,
+  "MD034": false,
+  "MD041": false,
+  "MD060": false,
+  "MD001": false,
+  "MD029": false,
+  "MD036": false,
+  "MD049": false
+}

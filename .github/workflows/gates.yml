@@ -1,0 +1,122 @@
+name: gates
+
+# Note on CI tooling install vs SPEC §16.2: §16.2 prohibits npm dependencies
+# of the *plugin runtime* — markdown + JSON + bash, no package.json. The
+# `npm install -g` steps below install ephemeral CI lint tools
+# (markdownlint-cli2, prettier) for the gate-14 check only; they are not
+# bundled with the plugin and not consumed by users at runtime. SPEC §17
+# release artefacts (`tar.gz` of the plugin tree) do not include node_modules.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deterministic-gates-linux:
+    name: deterministic gates (Linux, bash 5+)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install jq
+        run: |
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y jq
+          fi
+          jq --version
+
+      - name: Install shellcheck
+        run: |
+          if ! command -v shellcheck >/dev/null 2>&1; then
+            sudo apt-get install -y shellcheck
+          fi
+          shellcheck --version
+
+      - name: Install Python + PyYAML
+        run: |
+          python3 --version
+          python3 -m pip install --user pyyaml
+
+      - name: Install Node + markdownlint-cli2 + prettier
+        run: |
+          node --version
+          npm --version
+          npm install -g markdownlint-cli2@0.18.1 prettier@3.6.2
+          markdownlint-cli2 --version
+          prettier --version
+
+      - name: Run all deterministic gates
+        run: bash tests/gates/run-all.sh --keep-going
+
+  deterministic-gates-macos-bash3:
+    name: deterministic gates (macOS, system bash 3.2 — portability check)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Confirm system bash is 3.2 (frozen GPLv2 default on macOS)
+        run: /bin/bash --version | head -1
+
+      - name: Install shellcheck (jq is pre-installed on macos-latest)
+        run: |
+          if ! command -v shellcheck >/dev/null 2>&1; then
+            brew install shellcheck
+          fi
+          jq --version
+          shellcheck --version
+
+      - name: Install Python + PyYAML
+        run: |
+          python3 --version
+          python3 -m pip install --user --break-system-packages pyyaml || python3 -m pip install --user pyyaml
+
+      - name: Install Node + markdownlint-cli2 + prettier
+        run: |
+          node --version
+          npm install -g markdownlint-cli2@0.18.1 prettier@3.6.2
+          markdownlint-cli2 --version
+          prettier --version
+
+      - name: Run all deterministic gates with /bin/bash (3.2)
+        # SPEC §8.2: scripts must run on macOS bash 3.2 AND Ubuntu bash 5+.
+        # Explicit /bin/bash invocation ensures we test 3.2 even if Homebrew
+        # bash is on PATH from a previous job step.
+        run: /bin/bash tests/gates/run-all.sh --keep-going
+
+  deterministic-gates-macos-bash5:
+    name: deterministic gates (macOS, brew bash 5+)
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install bash 5+ and shellcheck
+        run: |
+          brew install bash
+          if ! command -v shellcheck >/dev/null 2>&1; then
+            brew install shellcheck
+          fi
+          bash --version | head -1
+          jq --version
+          shellcheck --version
+
+      - name: Install Python + PyYAML
+        run: |
+          python3 --version
+          python3 -m pip install --user --break-system-packages pyyaml || python3 -m pip install --user pyyaml
+
+      - name: Install Node + markdownlint-cli2 + prettier
+        run: |
+          node --version
+          npm install -g markdownlint-cli2@0.18.1 prettier@3.6.2
+          markdownlint-cli2 --version
+          prettier --version
+
+      - name: Run all deterministic gates with brew bash (5+)
+        run: bash tests/gates/run-all.sh --keep-going
