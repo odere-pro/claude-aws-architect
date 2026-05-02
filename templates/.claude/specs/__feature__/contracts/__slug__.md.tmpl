@@ -1,0 +1,71 @@
+---
+component: TODO-component-slug
+kind: TODO-kind-from-closed-vocabulary
+version: 0.1.0
+status: draft
+talks-to: []
+grounded-by:
+  - TODO:server:short-key
+---
+
+## Purpose
+
+One paragraph: what this component does and why it exists in the design.
+
+## Interface
+
+### Inputs
+
+- Source channel and event/request shape.
+- Encoding and schema reference.
+
+### Outputs
+
+- Destination channel and event/response shape.
+- Encoding and schema reference.
+
+### Errors
+
+- Named error types and their recovery semantics.
+- HTTP status codes or domain error enum, as relevant.
+
+## Sequence
+
+Narrative or pseudo-sequence describing how the component handles a
+representative request. Reference the `seq-component` tag in `diagrams.d2`
+if a sequence diagram exists.
+
+## Component view (C4 L3)
+
+References `c4-l3-<container>` in `diagrams.d2`. In-prose context for what
+readers should look for in the diagram.
+
+## Acceptance criteria
+
+- Latency budget (e.g., p99 under stated load).
+- Error rate (e.g., percentage over a stated window).
+- Throughput floor (e.g., sustained requests per second).
+- IaC repo path (filled in by the implementation agent).
+- Test coverage minimum (e.g., percentage on business logic).
+
+## Observability
+
+### Metric
+
+- TODO: name a concrete metric, source, and threshold.
+
+### Log
+
+- TODO: name a log destination and the structured fields.
+- TODO: state the level discipline.
+
+### Trace
+
+- TODO: name the tracer, propagation mechanism, and sampling rule.
+
+## Integration points
+
+For each slug in `talks-to`, narrate the protocol, event shape, retry
+semantics, and idempotency strategy.
+
+- **TODO: sibling-slug** — protocol, event shape, retry, idempotency.

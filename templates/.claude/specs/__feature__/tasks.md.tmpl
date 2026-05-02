@@ -1,0 +1,48 @@
+---
+feature: TODO-feature-slug
+created: TODO-iso-8601-date
+updated: TODO-iso-8601-date
+status: draft
+grounded-by:
+  - TODO:server:short-key
+---
+
+# Tasks — TODO-feature-name
+
+Implementation backlog for the design in `design.md`. Every task traces back
+to one or more acceptance criteria in `requirements.md` (`AC-N`) and, where
+relevant, to one or more component contracts under `contracts/<slug>.md`.
+
+## Conventions
+
+- Task IDs are stable: `T-<NN>` ordered by intended sequence.
+- Status values: `todo`, `in-progress`, `blocked`, `done`.
+- Each task names the AC(s) and contract(s) it advances. Tasks without a
+  traceability target are rejected by the implementation agent.
+
+## Tasks
+
+### T-01 — TODO-task-summary
+
+- Status: `todo`.
+- Traces to: AC-TODO, `contracts/TODO-component-slug.md`.
+- Outputs: TODO (e.g., CDK stack file path, IAM policy file path, test path).
+- Risks: TODO (one line per risk; cite the pillar that flagged it).
+- Notes: TODO.
+
+### T-02 — TODO-task-summary
+
+- Status: `todo`.
+- Traces to: AC-TODO.
+- Outputs: TODO.
+- Risks: TODO.
+- Notes: TODO.
+
+## Validation tasks
+
+Tasks that exercise the spec rather than ship code. Required before status
+moves past `draft`.
+
+- **V-01** — TODO: assertion to verify (for example: every `design.md`
+  component has a contract; every contract has an observability triple).
+- **V-02** — TODO.
