@@ -1,0 +1,1 @@
+Design a multi-tenant document-ingestion service on AWS with per-tenant data isolation, sub-second p95 retrieval latency, and a 99.9% monthly availability target. Produce the requirements.md draft for this feature.

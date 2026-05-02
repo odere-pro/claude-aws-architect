@@ -1,0 +1,7 @@
+# sdlc-full-depth (PR 17 — discovery only): a single full-depth turn
+# fans out to the discovery specialist, which writes a draft requirements
+# file and the per-feature grounding ledger. solution-architect and
+# implementation specialists are not invoked yet (those land with PR 19
+# and PR 21).
+requirements.md
+.grounding-ledger.json

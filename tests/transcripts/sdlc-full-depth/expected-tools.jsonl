@@ -1,0 +1,4 @@
+{"step": 1, "tool": "Agent", "fan_out_index": 1}
+{"step": 2, "tool": "mcp__plugin_claude-aws-architect_kb__search_documentation", "server": "kb"}
+{"step": 3, "tool": "mcp__plugin_claude-aws-architect_kb__read_documentation", "server": "kb"}
+{"step": 4, "tool": "Write"}
