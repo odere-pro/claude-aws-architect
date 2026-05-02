@@ -1,0 +1,114 @@
+name: install-matrix
+
+# Cross-platform CI matrix that runs install.sh / doctor.sh / uninstall.sh
+# end-to-end on ubuntu-latest and macos-latest, plus the install-safety gates
+# 30-33 from SPEC §11.D. Backs N11 ("CI matrix runs install/doctor/uninstall
+# on ubuntu-latest and macos-latest for every PR touching scripts/") and
+# gates 28-29 from §11.C (every §11.A gate passes on both platforms — already
+# covered by gates.yml; this workflow adds the explicit install-flow check
+# the SPEC names by convention).
+#
+# Note: doctor.sh runs `aws sts get-caller-identity` and resolves stdio MCP
+# packages via `uvx`. Neither is available in CI. We invoke `doctor.sh --help`
+# to assert the script loads on both shells, and rely on gates 30-33 to
+# exercise install + uninstall behaviour deterministically without network.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/**'
+      - 'tests/gates/gate-30-*.sh'
+      - 'tests/gates/gate-31-*.sh'
+      - 'tests/gates/gate-32-*.sh'
+      - 'tests/gates/gate-33-*.sh'
+      - '.github/workflows/install-matrix.yml'
+  workflow_dispatch:
+
+jobs:
+  install-flow:
+    name: install/doctor/uninstall (${{ matrix.os }}, ${{ matrix.shell }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            shell: bash5
+            bash_path: /bin/bash
+          - os: macos-latest
+            shell: bash3
+            bash_path: /bin/bash
+          - os: macos-latest
+            shell: bash5
+            bash_path: brew
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install brew bash 5+ (macOS bash5 leg only)
+        if: matrix.os == 'macos-latest' && matrix.shell == 'bash5'
+        run: brew install bash
+
+      - name: Resolve bash path
+        id: bash
+        run: |
+          if [[ "${{ matrix.bash_path }}" == "brew" ]]; then
+            echo "path=$(brew --prefix bash)/bin/bash" >> "$GITHUB_OUTPUT"
+          else
+            echo "path=${{ matrix.bash_path }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Print bash version
+        run: ${{ steps.bash.outputs.path }} --version | head -1
+
+      - name: Smoke-test --help on every script
+        run: |
+          BASH=${{ steps.bash.outputs.path }}
+          "$BASH" scripts/install.sh   --help
+          "$BASH" scripts/uninstall.sh --help
+          "$BASH" scripts/doctor.sh    --help
+
+      - name: install --symlink → uninstall (clean tree)
+        run: |
+          BASH=${{ steps.bash.outputs.path }}
+          tree=$(mktemp -d)
+          CONSUMER_ROOT="$tree" "$BASH" scripts/install.sh   --symlink
+          CONSUMER_ROOT="$tree" "$BASH" scripts/uninstall.sh
+          remaining=$(find "$tree" -mindepth 1 | wc -l | tr -d ' ')
+          if [[ "$remaining" != "0" ]]; then
+            echo "::error::tree not clean after uninstall ($remaining residual entries)"
+            find "$tree" -mindepth 1
+            exit 1
+          fi
+
+      - name: install --copy → uninstall (clean tree)
+        run: |
+          BASH=${{ steps.bash.outputs.path }}
+          tree=$(mktemp -d)
+          CONSUMER_ROOT="$tree" "$BASH" scripts/install.sh   --copy
+          CONSUMER_ROOT="$tree" "$BASH" scripts/uninstall.sh
+          remaining=$(find "$tree" -mindepth 1 | wc -l | tr -d ' ')
+          if [[ "$remaining" != "0" ]]; then
+            echo "::error::tree not clean after --copy uninstall ($remaining residual entries)"
+            find "$tree" -mindepth 1
+            exit 1
+          fi
+
+      - name: install --symlink x 2 (idempotency)
+        run: |
+          BASH=${{ steps.bash.outputs.path }}
+          tree=$(mktemp -d)
+          CONSUMER_ROOT="$tree" "$BASH" scripts/install.sh --symlink
+          CONSUMER_ROOT="$tree" "$BASH" scripts/install.sh --symlink
+          CONSUMER_ROOT="$tree" "$BASH" scripts/uninstall.sh
+
+      - name: Run install-safety gates 30-33
+        run: |
+          BASH=${{ steps.bash.outputs.path }}
+          "$BASH" tests/gates/gate-30-clean-roundtrip.sh
+          "$BASH" tests/gates/gate-31-dirty-roundtrip.sh
+          "$BASH" tests/gates/gate-32-install-idempotent.sh
+          "$BASH" tests/gates/gate-33-dryrun-matches-real.sh
