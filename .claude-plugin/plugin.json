@@ -1,0 +1,28 @@
+{
+  "name": "claude-aws-architect",
+  "version": "0.1.0",
+  "description": "Claude Code plugin for AWS Well-Architected SDLC: design, IaC, cost, security, and observability with grounded citations to AWS docs.",
+  "author": {
+    "name": "odere-pro",
+    "email": "odere.pro@gmail.com",
+    "url": "https://github.com/odere-pro"
+  },
+  "homepage": "https://github.com/odere-pro/claude-aws-architect",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/odere-pro/claude-aws-architect.git"
+  },
+  "license": "MIT",
+  "keywords": [
+    "aws",
+    "claude-code",
+    "claude-plugin",
+    "well-architected",
+    "aws-cdk",
+    "iac",
+    "claude-skills"
+  ],
+  "engines": {
+    "claude-code": ">=2.0.0"
+  }
+}

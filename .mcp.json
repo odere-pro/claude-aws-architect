@@ -1,0 +1,40 @@
+{
+  "mcpServers": {
+    "kb": {
+      "type": "http",
+      "url": "https://knowledge-mcp.global.api.aws",
+      "version": "0.1.0",
+      "timeoutMs": 30000
+    },
+    "iac": {
+      "command": "uvx",
+      "args": ["--from", "awslabs.aws-iac-mcp-server==1.0.17", "awslabs.aws-iac-mcp-server"],
+      "version": "1.0.17",
+      "timeoutMs": 60000
+    },
+    "cost": {
+      "command": "uvx",
+      "args": ["--from", "awslabs.aws-pricing-mcp-server==1.0.28", "awslabs.aws-pricing-mcp-server"],
+      "version": "1.0.28",
+      "timeoutMs": 30000
+    },
+    "sec": {
+      "command": "uvx",
+      "args": ["--from", "awslabs.well-architected-security-mcp-server==0.1.7", "awslabs.well-architected-security-mcp-server"],
+      "version": "0.1.7",
+      "timeoutMs": 60000
+    },
+    "iam": {
+      "command": "uvx",
+      "args": ["--from", "awslabs.iam-mcp-server==1.0.18", "awslabs.iam-mcp-server"],
+      "version": "1.0.18",
+      "timeoutMs": 30000
+    },
+    "cw": {
+      "command": "uvx",
+      "args": ["--from", "awslabs.cloudwatch-mcp-server==0.0.26", "awslabs.cloudwatch-mcp-server"],
+      "version": "0.0.26",
+      "timeoutMs": 30000
+    }
+  }
+}
