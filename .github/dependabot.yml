@@ -1,0 +1,36 @@
+version: 2
+
+# v0.1.0 scope: GitHub Actions only (per SPEC-v4 §16.4).
+#
+# The plugin is markdown + JSON + bash. There is no package.json, no
+# requirements.txt, no go.mod, no Cargo.toml. The only dependency surface
+# Dependabot can monitor at v0.1.0 is the actions/* references in
+# .github/workflows/*.yml — and per SPEC-v4 §16.2 those are pinned to full
+# commit SHAs, not tags. Dependabot still surfaces a SHA bump as a PR
+# (with the corresponding tag in the commit message), which is the supply-
+# chain monitoring posture v0.1.0 commits to.
+#
+# MCP server version pins live in .mcp.json and are out of scope for
+# Dependabot — they are monitored by the nightly mcp-version-skew
+# workflow under .github/workflows/mcp-version-skew.yml.
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore(deps)
+      include: scope
+    labels:
+      - dependencies
+      - github-actions
+    groups:
+      actions-minor-and-patch:
+        update-types:
+          - minor
+          - patch

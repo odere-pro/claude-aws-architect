@@ -1,0 +1,205 @@
+name: mcp-version-skew
+
+# Nightly check for upstream version drift on the MCP server roster pinned
+# in .mcp.json (SPEC-v4 §16.4). When a pinned awslabs.* package has a newer
+# stable release on PyPI, this workflow opens (or updates) a tracking issue
+# so a human can decide whether to ship a feat(deps) PR per SPEC-v4 §16.2.
+#
+# Scope:
+#   - Queries PyPI JSON for each uvx-resolved awslabs.* server in .mcp.json.
+#   - Skips http servers (the `kb` aws-knowledge endpoint pins to a documented
+#     stable URL; its version field is plugin-internal, not a PyPI release).
+#   - Pre-release versions on PyPI are ignored — only stable releases trigger
+#     drift, matching the "pinned stable" policy in SPEC-v4 §16.2.
+#
+# Output:
+#   - A single GitHub issue titled "MCP version skew: <N> server(s) drifted".
+#     Re-runs update the existing issue rather than spamming new ones.
+#   - Idempotent: if no drift is detected, an open issue from a previous run
+#     is closed with a confirmation comment.
+
+on:
+  schedule:
+    # 04:17 UTC daily — off the top of the hour to avoid GitHub Actions burst
+    # contention; arbitrary minute matches no other workflow in this repo.
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  version-skew:
+    name: Check MCP roster against PyPI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install jq
+        run: |
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y jq
+          fi
+          jq --version
+
+      - name: Compute version skew
+        id: skew
+        env:
+          MCP_FILE: .mcp.json
+        run: |
+          set -euo pipefail
+
+          if [ ! -f "$MCP_FILE" ]; then
+            echo "ERROR: $MCP_FILE not found" >&2
+            exit 1
+          fi
+
+          drift_lines=""
+          drift_count=0
+
+          # Iterate uvx-resolved servers only. The `--from awslabs.NAME==X.Y.Z`
+          # form is what we parse; http servers (no `args`) are skipped.
+          while IFS=$'\t' read -r key from_arg pinned; do
+            [ -z "$key" ] && continue
+            [ -z "$from_arg" ] && continue
+
+            pkg="${from_arg%%==*}"
+            if [ "$pkg" = "$from_arg" ]; then
+              echo "skip $key: --from missing == pin"
+              continue
+            fi
+
+            echo "check $key: pkg=$pkg pinned=$pinned"
+
+            # PyPI JSON: https://pypi.org/pypi/<pkg>/json
+            # `info.version` is the latest non-yanked release. We further
+            # require a non-pre-release shape (no '.devN', 'aN', 'bN', 'rcN').
+            resp="$(curl --fail --silent --show-error \
+                      --max-time 30 \
+                      --user-agent 'claude-aws-architect-mcp-skew/0.1' \
+                      "https://pypi.org/pypi/${pkg}/json" || true)"
+
+            if [ -z "$resp" ]; then
+              echo "  WARN: pypi lookup failed for $pkg (network or 404); not treated as drift"
+              continue
+            fi
+
+            latest="$(printf '%s' "$resp" | jq -r '.info.version // empty')"
+            if [ -z "$latest" ]; then
+              echo "  WARN: pypi response missing info.version for $pkg"
+              continue
+            fi
+
+            # Reject pre-release shapes: anything with a, b, rc, or .dev.
+            case "$latest" in
+              *a[0-9]*|*b[0-9]*|*rc[0-9]*|*.dev[0-9]*)
+                echo "  skip $pkg: latest=$latest is a pre-release"
+                continue
+                ;;
+            esac
+
+            if [ "$latest" != "$pinned" ]; then
+              drift_count=$((drift_count + 1))
+              drift_lines="${drift_lines}- \`${key}\` — \`${pkg}\` pinned at \`${pinned}\`, PyPI latest stable is \`${latest}\`"$'\n'
+              echo "  DRIFT: $pkg pinned=$pinned latest=$latest"
+            else
+              echo "  ok: $pkg at latest $latest"
+            fi
+          done < <(jq -r '
+            .mcpServers
+            | to_entries[]
+            | select(.value.command == "uvx")
+            | [
+                .key,
+                ((.value.args // []) | map(select(test("=="))) | .[0] // ""),
+                (.value.version // "")
+              ]
+            | @tsv
+          ' "$MCP_FILE")
+
+          {
+            echo "drift_count=$drift_count"
+            echo "drift_lines<<DRIFT_EOF"
+            printf '%s' "$drift_lines"
+            echo "DRIFT_EOF"
+          } >> "$GITHUB_OUTPUT"
+
+          echo
+          echo "summary: drift_count=$drift_count"
+
+      - name: Open or update tracking issue
+        if: steps.skew.outputs.drift_count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DRIFT_COUNT: ${{ steps.skew.outputs.drift_count }}
+          DRIFT_LINES: ${{ steps.skew.outputs.drift_lines }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          title="MCP version skew: ${DRIFT_COUNT} server(s) drifted"
+          body="$(printf '%s\n' \
+            "Detected by \`mcp-version-skew\` workflow (see SPEC-v4 §16.4)." \
+            "" \
+            "**Drifted servers:**" \
+            "" \
+            "${DRIFT_LINES}" \
+            "**Action:** open a \`feat(deps)\` PR per SPEC-v4 §16.2 — bump the \`version\` in \`.mcp.json\` (and the matching \`==X.Y.Z\` in \`args\`), record rationale in the commit body, and add a CHANGELOG entry under \`### Changed\`. CI gate 12 enforces presence of the pinned \`version\` on every server." \
+            "" \
+            "**Run:** ${RUN_URL}" \
+          )"
+
+          # Search for an existing open issue with the same title.
+          existing="$(gh issue list \
+            --repo "$REPO" \
+            --state open \
+            --label mcp-version-skew \
+            --search "in:title ${title}" \
+            --json number \
+            --jq '.[0].number // empty' || true)"
+
+          if [ -n "${existing:-}" ]; then
+            echo "updating existing issue #$existing"
+            gh issue edit "$existing" --repo "$REPO" --body "$body"
+            gh issue comment "$existing" --repo "$REPO" \
+              --body "Re-checked at run ${RUN_URL} — drift still present."
+          else
+            echo "opening new issue"
+            gh issue create \
+              --repo "$REPO" \
+              --title "$title" \
+              --body "$body" \
+              --label mcp-version-skew \
+              --label dependencies
+          fi
+
+      - name: Close stale tracking issue if drift cleared
+        if: steps.skew.outputs.drift_count == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          # Close any open mcp-version-skew issue with a confirmation comment.
+          mapfile -t open_nums < <(gh issue list \
+            --repo "$REPO" \
+            --state open \
+            --label mcp-version-skew \
+            --json number \
+            --jq '.[].number')
+
+          if [ "${#open_nums[@]}" -eq 0 ]; then
+            echo "no open mcp-version-skew issues — nothing to do"
+            exit 0
+          fi
+
+          for n in "${open_nums[@]}"; do
+            echo "closing #$n (drift cleared)"
+            gh issue comment "$n" --repo "$REPO" \
+              --body "Drift cleared at run ${RUN_URL} — closing automatically."
+            gh issue close "$n" --repo "$REPO" --reason completed
+          done
