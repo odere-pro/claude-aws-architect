@@ -10,12 +10,12 @@
 
 ## Where to get help
 
-| What you need          | Where to go                                                                                                     |
-| ---------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Bug reports            | [GitHub Issues](https://github.com/odere-pro/claude-aws-architect/issues) — use the bug template (lands PR 28b) |
-| Feature requests       | GitHub Issues — use the feature-request template (lands PR 28b)                                                 |
-| How-to / discussion    | [GitHub Discussions](https://github.com/odere-pro/claude-aws-architect/discussions)                             |
-| Security vulnerability | See [SECURITY.md](./SECURITY.md) — **not** a public issue                                                       |
+| What you need          | Where to go                                                                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Bug reports            | [GitHub Issues](https://github.com/odere-pro/claude-aws-architect/issues/new?template=bug_report.yml) — use the bug template                  |
+| Feature requests       | [GitHub Issues](https://github.com/odere-pro/claude-aws-architect/issues/new?template=feature_request.yml) — use the feature-request template |
+| How-to / discussion    | [GitHub Discussions](https://github.com/odere-pro/claude-aws-architect/discussions)                                                           |
+| Security vulnerability | See [SECURITY.md](./SECURITY.md) — **not** a public issue                                                                                     |
 
 ## What gets fixed
 

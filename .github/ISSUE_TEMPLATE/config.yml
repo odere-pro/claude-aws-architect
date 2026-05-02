@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: How-to questions and discussion
+    url: https://github.com/odere-pro/claude-aws-architect/discussions
+    about: Use Discussions for questions, ideas, and confusing UX. Confusing UX is a real bug — discussion-format helps converge on the right fix before code lands.
+  - name: Security vulnerability
+    url: https://github.com/odere-pro/claude-aws-architect/security/advisories/new
+    about: Do NOT open a public issue. Use a private security advisory — see SECURITY.md for the full disclosure process.
+  - name: Support policy
+    url: https://github.com/odere-pro/claude-aws-architect/blob/main/SUPPORT.md
+    about: Read this first — community plugin, best-effort, no SLA. Severity tiers and triage rules live here.
