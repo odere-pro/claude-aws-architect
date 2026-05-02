@@ -43,11 +43,11 @@ The orchestrator fans out parallel specialists (discovery → solution-architect
 
 > Land in PR 23.
 
-| Command       | Purpose                                                                |
-| ------------- | ---------------------------------------------------------------------- |
+| Command       | Purpose                                                                    |
+| ------------- | -------------------------------------------------------------------------- |
 | `/aws`        | L4 orchestrator entry point. Fans out specialists per the depth heuristic. |
-| `/aws-spec`   | Validate a spec folder against gates §11.A and §11.B.                  |
-| `/aws-doctor` | Wrap `scripts/doctor.sh` for in-session environment checks.            |
+| `/aws-spec`   | Validate a spec folder against gates §11.A and §11.B.                      |
+| `/aws-doctor` | Wrap `scripts/doctor.sh` for in-session environment checks.                |
 
 ## Powers
 
@@ -55,11 +55,11 @@ The orchestrator fans out parallel specialists (discovery → solution-architect
 
 Powers are declarative bundles (MCP servers + skills + hooks + commands) for focused workflows.
 
-| Power                              | Bundles                                                                  |
-| ---------------------------------- | ------------------------------------------------------------------------ |
-| `claude-aws-architect-cdk`         | CDK authoring + IaC validation + Cost ROM                                |
-| `claude-aws-architect-cost`        | Cost-only workflow: pricing MCP + cost-optimization pillar skill         |
-| `claude-aws-architect-security`    | Security-only workflow: WAF security MCP + IAM MCP + security pillar skill |
+| Power                           | Bundles                                                                    |
+| ------------------------------- | -------------------------------------------------------------------------- |
+| `claude-aws-architect-cdk`      | CDK authoring + IaC validation + Cost ROM                                  |
+| `claude-aws-architect-cost`     | Cost-only workflow: pricing MCP + cost-optimization pillar skill           |
+| `claude-aws-architect-security` | Security-only workflow: WAF security MCP + IAM MCP + security pillar skill |
 
 Bedrock and IaC-foundations powers deferred to v0.2.
 
@@ -67,14 +67,14 @@ Bedrock and IaC-foundations powers deferred to v0.2.
 
 > Land in PRs 25–26.
 
-| Hook                       | Event       | Default | Purpose                                                |
-| -------------------------- | ----------- | :-----: | ------------------------------------------------------ |
-| `secret-scanner`           | PreToolUse  |   yes   | Block writes containing AWS keys, tokens, private keys |
-| `aws-api-write-guard`      | PreToolUse  |   yes   | Confirm AWS write-verb MCP calls                       |
-| `on-cdk-write`             | PostToolUse |    no   | Surface CDK synth + Nag check nudge                    |
-| `on-iam-write`             | PostToolUse |    no   | Validate IAM JSON; least-privilege heuristic           |
-| `on-bedrock-prompt-write`  | PostToolUse |    no   | Check guardrail/model-id binding                       |
-| `aws-test-coverage`        | PostToolUse |    no   | Surface missing AWS-touching tests                     |
+| Hook                      | Event       | Default | Purpose                                                |
+| ------------------------- | ----------- | :-----: | ------------------------------------------------------ |
+| `secret-scanner`          | PreToolUse  |   yes   | Block writes containing AWS keys, tokens, private keys |
+| `aws-api-write-guard`     | PreToolUse  |   yes   | Confirm AWS write-verb MCP calls                       |
+| `on-cdk-write`            | PostToolUse |   no    | Surface CDK synth + Nag check nudge                    |
+| `on-iam-write`            | PostToolUse |   no    | Validate IAM JSON; least-privilege heuristic           |
+| `on-bedrock-prompt-write` | PostToolUse |   no    | Check guardrail/model-id binding                       |
+| `aws-test-coverage`       | PostToolUse |   no    | Surface missing AWS-touching tests                     |
 
 Opt in/out via `.claude/claude-aws-architect.local.md`.
 
@@ -118,14 +118,14 @@ Never deletes `.claude/specs/`, `.claude/steering/`, or consumer-authored hooks.
 
 Six servers ship at v0.1.0. Each `.mcp.json` key is a short identifier (per [SPEC §O3](./docs/plan/SPEC-v4.md) tool-name budget); the **Logical name** column is what the spec text and skill prompts reference.
 
-| Key    | Logical name                | Transport | Package (uvx target)                                     | Pinned version | Timeout |
-| ------ | --------------------------- | --------- | -------------------------------------------------------- | -------------- | ------- |
-| `kb`   | `aws-knowledge`             | http      | `https://knowledge-mcp.global.api.aws`                   | 0.1.0          | 30000ms |
-| `iac`  | `aws-iac`                   | stdio     | `awslabs.aws-iac-mcp-server`                             | 1.0.17         | 60000ms |
-| `cost` | `aws-pricing`               | stdio     | `awslabs.aws-pricing-mcp-server`                         | 1.0.28         | 30000ms |
-| `sec`  | `well-architected-security` | stdio     | `awslabs.well-architected-security-mcp-server`           | 0.1.7          | 60000ms |
-| `iam`  | `iam`                       | stdio     | `awslabs.iam-mcp-server`                                 | 1.0.18         | 30000ms |
-| `cw`   | `cloudwatch`                | stdio     | `awslabs.cloudwatch-mcp-server`                          | 0.0.26         | 30000ms |
+| Key    | Logical name                | Transport | Package (uvx target)                           | Pinned version | Timeout |
+| ------ | --------------------------- | --------- | ---------------------------------------------- | -------------- | ------- |
+| `kb`   | `aws-knowledge`             | http      | `https://knowledge-mcp.global.api.aws`         | 0.1.0          | 30000ms |
+| `iac`  | `aws-iac`                   | stdio     | `awslabs.aws-iac-mcp-server`                   | 1.0.17         | 60000ms |
+| `cost` | `aws-pricing`               | stdio     | `awslabs.aws-pricing-mcp-server`               | 1.0.28         | 30000ms |
+| `sec`  | `well-architected-security` | stdio     | `awslabs.well-architected-security-mcp-server` | 0.1.7          | 60000ms |
+| `iam`  | `iam`                       | stdio     | `awslabs.iam-mcp-server`                       | 1.0.18         | 30000ms |
+| `cw`   | `cloudwatch`                | stdio     | `awslabs.cloudwatch-mcp-server`                | 0.0.26         | 30000ms |
 
 Version bumps land as separate `feat(deps)` PRs per [SPEC §17.4](./docs/plan/SPEC-v4.md).
 

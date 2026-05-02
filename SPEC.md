@@ -19,14 +19,14 @@ The orchestrator fans out L3 specialists in parallel (≤3 concurrent calls per 
 
 Six servers wired at v0.1.0. Each `.mcp.json` key is a short identifier (per O3 tool-name budget) mapping to the descriptive logical name used in skills and agents.
 
-| Key    | Logical name                | Transport | Package                                          | Version | Timeout |
-| ------ | --------------------------- | --------- | ------------------------------------------------ | ------- | ------- |
-| `kb`   | `aws-knowledge`             | http      | `https://knowledge-mcp.global.api.aws`           | 0.1.0   | 30000ms |
-| `iac`  | `aws-iac`                   | stdio     | `awslabs.aws-iac-mcp-server`                     | 1.0.17  | 60000ms |
-| `cost` | `aws-pricing`               | stdio     | `awslabs.aws-pricing-mcp-server`                 | 1.0.28  | 30000ms |
-| `sec`  | `well-architected-security` | stdio     | `awslabs.well-architected-security-mcp-server`   | 0.1.7   | 60000ms |
-| `iam`  | `iam`                       | stdio     | `awslabs.iam-mcp-server`                         | 1.0.18  | 30000ms |
-| `cw`   | `cloudwatch`                | stdio     | `awslabs.cloudwatch-mcp-server`                  | 0.0.26  | 30000ms |
+| Key    | Logical name                | Transport | Package                                        | Version | Timeout |
+| ------ | --------------------------- | --------- | ---------------------------------------------- | ------- | ------- |
+| `kb`   | `aws-knowledge`             | http      | `https://knowledge-mcp.global.api.aws`         | 0.1.0   | 30000ms |
+| `iac`  | `aws-iac`                   | stdio     | `awslabs.aws-iac-mcp-server`                   | 1.0.17  | 60000ms |
+| `cost` | `aws-pricing`               | stdio     | `awslabs.aws-pricing-mcp-server`               | 1.0.28  | 30000ms |
+| `sec`  | `well-architected-security` | stdio     | `awslabs.well-architected-security-mcp-server` | 0.1.7   | 60000ms |
+| `iam`  | `iam`                       | stdio     | `awslabs.iam-mcp-server`                       | 1.0.18  | 30000ms |
+| `cw`   | `cloudwatch`                | stdio     | `awslabs.cloudwatch-mcp-server`                | 0.0.26  | 30000ms |
 
 Version pins are enforced by gate 12 in CI. Bumping a pin is a `feat(deps)` PR.
 
@@ -45,12 +45,12 @@ Each skill must satisfy the canonical declaration contract: SKILL.md frontmatter
 
 _(Pending PRs 16–21.)_
 
-| #   | Agent                                                | Layer | Role                                          |
-| --- | ---------------------------------------------------- | ----- | --------------------------------------------- |
-| 0   | `claude-aws-architect-orchestrator-agent`            | L4    | Entry point, parallel fan-out, merge contract |
-| 1   | `claude-aws-architect-discovery-agent`               | L3    | Discovery + grounding ledger                  |
-| 2   | `claude-aws-architect-solution-architect-agent`      | L3    | Solution architecture + design choice         |
-| 3   | `claude-aws-architect-implementation-agent`          | L3    | Bundled IaC + cost ROM + IAM + tests          |
+| #   | Agent                                           | Layer | Role                                          |
+| --- | ----------------------------------------------- | ----- | --------------------------------------------- |
+| 0   | `claude-aws-architect-orchestrator-agent`       | L4    | Entry point, parallel fan-out, merge contract |
+| 1   | `claude-aws-architect-discovery-agent`          | L3    | Discovery + grounding ledger                  |
+| 2   | `claude-aws-architect-solution-architect-agent` | L3    | Solution architecture + design choice         |
+| 3   | `claude-aws-architect-implementation-agent`     | L3    | Bundled IaC + cost ROM + IAM + tests          |
 
 Every agent file satisfies the canonical agent declaration contract: frontmatter (`name`, `description`, `model`, `effort`, `user-invocable`, `tools`), nine ordered H2 sections (Role · Requirements · Dependencies · Operating Principles · Routing Map · Workflow · Output Rules · Boundaries · Quality Checks). The orchestrator additionally declares `max-iterations` (default 3) and an `Agent` tool. Enforced by gate 9.
 
@@ -81,13 +81,13 @@ Canonical schemas referenced throughout the plugin:
 
 Eighteen deterministic gates (run locally and in CI) plus nine runtime gates (transcript-replay) plus four install-safety gates plus a release gate. Full enumeration at [SPEC-v4 §11](./docs/plan/SPEC-v4.md).
 
-| Tier              | Gates    | Where enforced                                      |
-| ----------------- | -------- | --------------------------------------------------- |
-| Deterministic     | 1–18     | `.github/workflows/` (lands PR 2)                   |
-| Runtime           | 19–27    | `tests/run-transcripts.sh` (lands PR 3, extended PR 18+) |
-| Cross-platform    | 28–29    | CI matrix on `ubuntu-latest`, `macos-latest` (PR 28) |
-| Install-safety    | 30–33    | `tests/install/` fixtures (PR 27)                   |
-| Release           | 34       | Self-design dogfood (PR 31, blocks tagging)         |
+| Tier           | Gates | Where enforced                                           |
+| -------------- | ----- | -------------------------------------------------------- |
+| Deterministic  | 1–18  | `.github/workflows/` (lands PR 2)                        |
+| Runtime        | 19–27 | `tests/run-transcripts.sh` (lands PR 3, extended PR 18+) |
+| Cross-platform | 28–29 | CI matrix on `ubuntu-latest`, `macos-latest` (PR 28)     |
+| Install-safety | 30–33 | `tests/install/` fixtures (PR 27)                        |
+| Release        | 34    | Self-design dogfood (PR 31, blocks tagging)              |
 
 This PR (1) makes gates **2** (`plugin.json` parses, has `name` + `engines.claude-code`), **12** (`.mcp.json` lists exactly the 6 servers from §3.1, each with pinned `version` and `timeoutMs`), and **15** (README has `## Trademark notice` with the four declarative bullets) achievable. CI enforcement of these gates lands in PR 2.
 

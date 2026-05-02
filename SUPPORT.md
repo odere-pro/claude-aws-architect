@@ -10,21 +10,21 @@
 
 ## Where to get help
 
-| What you need                | Where to go                                                                     |
-| ---------------------------- | ------------------------------------------------------------------------------- |
-| Bug reports                  | [GitHub Issues](https://github.com/odere-pro/claude-aws-architect/issues) — use the bug template (lands PR 28b) |
-| Feature requests             | GitHub Issues — use the feature-request template (lands PR 28b)                 |
-| How-to / discussion          | [GitHub Discussions](https://github.com/odere-pro/claude-aws-architect/discussions) |
-| Security vulnerability       | See [SECURITY.md](./SECURITY.md) — **not** a public issue                       |
+| What you need          | Where to go                                                                                                     |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Bug reports            | [GitHub Issues](https://github.com/odere-pro/claude-aws-architect/issues) — use the bug template (lands PR 28b) |
+| Feature requests       | GitHub Issues — use the feature-request template (lands PR 28b)                                                 |
+| How-to / discussion    | [GitHub Discussions](https://github.com/odere-pro/claude-aws-architect/discussions)                             |
+| Security vulnerability | See [SECURITY.md](./SECURITY.md) — **not** a public issue                                                       |
 
 ## What gets fixed
 
-| Severity | Examples                                                          | Triage                                  |
-| -------- | ----------------------------------------------------------------- | --------------------------------------- |
-| Critical | Plugin breaks Claude Code, exposes secrets, corrupts user data    | Hotfix branch, prioritised over all else |
-| High     | A gate in §11 fails for a real-world repo; degraded mode breaks   | Next release                            |
-| Medium   | Polish, ergonomics, error-message clarity                         | When time permits                       |
-| Low      | Style, typos, minor docs                                          | Welcomes PRs                            |
+| Severity | Examples                                                        | Triage                                   |
+| -------- | --------------------------------------------------------------- | ---------------------------------------- |
+| Critical | Plugin breaks Claude Code, exposes secrets, corrupts user data  | Hotfix branch, prioritised over all else |
+| High     | A gate in §11 fails for a real-world repo; degraded mode breaks | Next release                             |
+| Medium   | Polish, ergonomics, error-message clarity                       | When time permits                        |
+| Low      | Style, typos, minor docs                                        | Welcomes PRs                             |
 
 Feature requests are triaged into `v0.2`, `v1.0`, or `wontfix` labels. `wontfix` always carries a one-line rationale.
 

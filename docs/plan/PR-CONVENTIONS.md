@@ -23,7 +23,7 @@ The single exception is PR 0 (this planning import), which lives on the pre-exis
 
 Conventional Commits with no attribution footer (per global git-workflow rule).
 
-```
+```text
 <type>(<scope>): <subject>
 
 <body — optional, wrap at 72 cols, explains *why* not *what*>
@@ -36,7 +36,7 @@ Conventional Commits with no attribution footer (per global git-workflow rule).
 
 Examples:
 
-```
+```text
 feat(plugin): scaffold manifest and 6-server .mcp.json
 
 Lands the v0.1.0 .mcp.json with all 6 servers from §3.1, each carrying
@@ -45,14 +45,14 @@ CHANGELOG, LICENSE skeletons included so subsequent PRs can extend
 them without restructuring.
 ```
 
-```
+```text
 feat(skill): add aws-mcp-routing
 
 Implements §13 substrate item; references degraded-modes table from §3.5.
 Sibling trigger-keywords.txt added for §11.A gate 16.
 ```
 
-```
+```text
 docs(adr): record A4 merge-contract rationale
 
 Captures the priority order in §5.5 and the conflict-surfacing format,
@@ -104,11 +104,11 @@ The full template lives in `.github/pull_request_template.md` once PR 28b ships.
 
 Two strategies, chosen by PR type:
 
-| PR type                          | Strategy        | Rationale                                                                                          |
-| -------------------------------- | --------------- | -------------------------------------------------------------------------------------------------- |
-| Planning, ADR, docs-only         | **Squash-merge** | One commit per logical unit on `main`; intermediate edit churn is noise.                          |
+| PR type                                      | Strategy                     | Rationale                                                                                                                           |
+| -------------------------------------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Planning, ADR, docs-only                     | **Squash-merge**             | One commit per logical unit on `main`; intermediate edit churn is noise.                                                            |
 | Feature PRs (skills, agents, hooks, scripts) | **Merge-commit (no squash)** | Preserves the build sequence inside the PR — useful for `git bisect` and for understanding how a multi-step change was constructed. |
-| Hotfixes                         | **Squash-merge** | Single fix → single commit on `main`.                                                              |
+| Hotfixes                                     | **Squash-merge**             | Single fix → single commit on `main`.                                                                                               |
 
 Default is **merge-commit** for any PR that lists more than one commit-within-PR in `PR-PLAN.md` or that ships executable artefacts (skills, agents, scripts, hooks). Default is **squash-merge** for everything else.
 
