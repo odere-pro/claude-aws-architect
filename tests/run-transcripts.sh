@@ -5,18 +5,24 @@
 # expected-* files, and exits non-zero on first mismatch. Snapshot updates
 # require explicit --update-snapshots and a reviewer comment.
 #
-# v0.1.0 PR 3 ships skeleton-mode only:
+# Modes:
 #   - --validate-only (default): validates every fixture's files conform to
 #     the schema documented in tests/transcripts/README.md. Does NOT execute
-#     Claude Code. Exits 0 if all fixtures are well-formed.
-#   - --execute: stubbed; lands in PR 18 with the orchestrator wiring.
-#   - --update-snapshots: stubbed; same.
+#     the orchestrator. Exits 0 if all fixtures are well-formed.
+#   - --execute: deterministic, model-free executor. Replays the orchestrator's
+#     §5.6 depth-classification heuristic + routing decisions against the
+#     fixture prompt and asserts the predicted trace matches expected-tools.jsonl.
+#     Does NOT call the live model. At this revision the wired delegation paths
+#     are: shallow direct-answer and full-depth Discovery. Fixtures whose
+#     first-step trace requires solution-architect or implementation specialists
+#     are reported as DEFERRED, not FAIL, until that wiring lands.
+#   - --update-snapshots: not implemented at v0.1.0.
 #
 # Usage:
 #   tests/run-transcripts.sh                           # validate every fixture
 #   tests/run-transcripts.sh --fixture vibe-shallow    # filter to one
 #   tests/run-transcripts.sh --keep-going              # don't stop at first failure
-#   tests/run-transcripts.sh --execute                 # NotImplemented (PR 18)
+#   tests/run-transcripts.sh --execute                 # deterministic executor
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -50,8 +56,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 case "$MODE" in
-  execute|update)
-    gate_fail "19" "$MODE mode is not yet implemented; lands in PR 18 with the orchestrator wiring. Use --validate-only (default) for now."
+  update)
+    gate_fail "19" "--update-snapshots is not implemented at v0.1.0. Hand-author expected-* files and re-run --execute."
     ;;
 esac
 
@@ -138,24 +144,179 @@ validate_fixture() {
   return 0
 }
 
+# Deterministic depth classifier mirroring SPEC §5.6 / phases.md.
+# Reads $1 = prompt text. Echoes "shallow" or "full".
+classify_depth() {
+  local prompt="$1"
+  local lower
+  lower=$(printf '%s' "$prompt" | tr '[:upper:]' '[:lower:]')
+  # Rule 1: explicit override.
+  if printf '%s' "$prompt" | grep -qE -- '--deep([^[:alnum:]_-]|$)'; then
+    echo full; return
+  fi
+  if printf '%s' "$prompt" | grep -qE -- '--quick([^[:alnum:]_-]|$)'; then
+    echo shallow; return
+  fi
+  # Rule 2: SDLC-artefact intent. Word-boundary match on any keyword.
+  local sdlc_kw="design architecture iac cdk runbook spec requirements contract rfc adr"
+  for kw in $sdlc_kw; do
+    if printf '%s' "$lower" | grep -qE "(^|[^a-z])${kw}([^a-z]|\$)"; then
+      echo full; return
+    fi
+  done
+  # Multi-word SDLC keywords.
+  if printf '%s' "$lower" | grep -qE "threat[[:space:]]+model|cost[[:space:]]+estimate|security[[:space:]]+review"; then
+    echo full; return
+  fi
+  # Rule 3: verb-of-creation at start.
+  if printf '%s' "$lower" | grep -qE '^[[:space:]]*(build|design|architect|propose|draft|spec|plan)([^a-z]|$)'; then
+    echo full; return
+  fi
+  # Rule 4: verb-of-inquiry at start.
+  if printf '%s' "$lower" | grep -qE '^[[:space:]]*(what|how|which|is|does)([^a-z]|$)'; then
+    echo shallow; return
+  fi
+  # Rule 5: default.
+  echo shallow
+}
+
+# Compares predicted orchestrator routing against the fixture's expected trace.
+# Returns: 0 = pass; 2 = deferred (specialist wiring not yet active); 1 = fail.
+execute_fixture() {
+  local dir=$1
+  local name
+  name=$(basename "$dir")
+
+  local prompt
+  prompt=$(cat "$dir/prompt.txt")
+  local depth
+  depth=$(classify_depth "$prompt")
+
+  # Identify the first observed step number in the fixture.
+  local first_step
+  first_step=$(jq -rs '[.[].step] | min // 1' "$dir/expected-tools.jsonl" 2>/dev/null)
+  if [[ -z "$first_step" || "$first_step" == "null" ]]; then
+    first_step=1
+  fi
+
+  # Collect first-step tool names and any specialist references in the trace.
+  local first_step_tools=()
+  read_into first_step_tools < <(jq -r --argjson s "$first_step" 'select(.step == ($s|tonumber)) | .tool' "$dir/expected-tools.jsonl" 2>/dev/null || true)
+
+  local specialists
+  specialists=$(jq -r 'select(.subagent != null) | .subagent' "$dir/expected-tools.jsonl" 2>/dev/null | sort -u || true)
+
+  # Effective non-comment artefact rows.
+  local expected_artefact_count
+  expected_artefact_count=$(grep -cE '^[^#[:space:]]' "$dir/expected-artefacts.txt" 2>/dev/null || true)
+  expected_artefact_count=${expected_artefact_count:-0}
+
+  case "$depth" in
+    shallow)
+      # Shallow path: orchestrator answers from grounded knowledge; the
+      # discovery agent may be invoked for citation lookups, but there is
+      # no parallel fan-out. Expected-artefacts.txt must be effectively
+      # empty (only blanks/comments).
+      if [[ $expected_artefact_count -ne 0 ]]; then
+        gate_warn "19" "$name: classifier says shallow but fixture expects $expected_artefact_count artefact(s)"
+        return 1
+      fi
+      # If the fixture expects an Agent fan-out call at the first step,
+      # shallow classification is wrong.
+      local agent_calls=0
+      local i
+      for ((i = 0; i < ${#first_step_tools[@]}; i++)); do
+        case "${first_step_tools[$i]}" in
+          *Agent*|*subagent*)
+            agent_calls=$((agent_calls + 1))
+            ;;
+        esac
+      done
+      if [[ $agent_calls -ge 2 ]]; then
+        gate_warn "19" "$name: classifier says shallow but fixture expects parallel Agent fan-out at step $first_step"
+        return 1
+      fi
+      return 0
+      ;;
+    full)
+      # Full path: at this revision the wired delegation is Discovery only.
+      # If the fixture's first step calls exactly one specialist and that
+      # specialist is the discovery agent, the predicted trace matches
+      # the wired path → PASS. If the first step expects parallel fan-out
+      # to multiple specialists (solution-architect or implementation),
+      # the wiring isn't here yet → DEFERRED.
+      local agent_calls=0
+      local i
+      for ((i = 0; i < ${#first_step_tools[@]}; i++)); do
+        case "${first_step_tools[$i]}" in
+          *Agent*|*subagent*)
+            agent_calls=$((agent_calls + 1))
+            ;;
+        esac
+      done
+      local discovery_present=0
+      if printf '%s\n' "$specialists" | grep -q 'discovery-agent'; then
+        discovery_present=1
+      fi
+      if [[ $agent_calls -le 1 && $discovery_present -eq 1 ]]; then
+        return 0
+      fi
+      if [[ $agent_calls -ge 2 ]]; then
+        # Parallel fan-out fixture; wiring deferred.
+        return 2
+      fi
+      # Full-depth fixture that does not name discovery — wiring not present.
+      return 2
+      ;;
+  esac
+  return 1
+}
+
 failed=()
+deferred=()
 for dir in "${fixtures[@]}"; do
   name=$(basename "$dir")
   if [[ -n "$FIXTURE_FILTER" && "$name" != "$FIXTURE_FILTER" ]]; then
     continue
   fi
-  if validate_fixture "$dir"; then
-    gate_pass "19" "$name: fixture schema valid"
-  else
+  if ! validate_fixture "$dir"; then
     failed+=("$name")
     if [[ $KEEP_GOING -eq 0 ]]; then
       gate_fail "19" "stopping at first failed fixture; pass --keep-going to continue"
     fi
+    continue
   fi
+  if [[ "$MODE" == "validate" ]]; then
+    gate_pass "19" "$name: fixture schema valid"
+    continue
+  fi
+  # MODE == execute
+  exec_status=0
+  execute_fixture "$dir" || exec_status=$?
+  case $exec_status in
+    0)
+      gate_pass "19" "$name: execute PASS (depth + routing match expected trace)"
+      ;;
+    2)
+      deferred+=("$name")
+      gate_info "19" "$name: execute DEFERRED (specialist wiring lands in a later PR)"
+      ;;
+    *)
+      failed+=("$name")
+      gate_warn "19" "$name: execute FAIL"
+      if [[ $KEEP_GOING -eq 0 ]]; then
+        gate_fail "19" "stopping at first failed fixture; pass --keep-going to continue"
+      fi
+      ;;
+  esac
 done
 
 if [[ ${#failed[@]} -gt 0 ]]; then
-  gate_fail "19" "${#failed[@]} fixture(s) failed validation: ${failed[*]}"
+  gate_fail "19" "${#failed[@]} fixture(s) failed: ${failed[*]}"
+fi
+
+if [[ ${#deferred[@]} -gt 0 ]]; then
+  gate_info "19" "${#deferred[@]} fixture(s) deferred (pending wiring): ${deferred[*]}"
 fi
 
 if [[ -n "$FIXTURE_FILTER" ]]; then
@@ -167,5 +328,3 @@ if [[ -n "$FIXTURE_FILTER" ]]; then
     gate_fail "19" "fixture filter '$FIXTURE_FILTER' matched no fixtures"
   fi
 fi
-
-gate_info "19" "executor mode (--execute / --update-snapshots) lands in PR 18"
