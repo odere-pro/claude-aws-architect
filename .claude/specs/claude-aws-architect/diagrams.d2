@@ -1,0 +1,148 @@
+# C4 + sequence diagrams for claude-aws-architect (release-dogfood
+# meta-spec). Required layers per skills/aws-layered-diagram and
+# §9.6: c4-l1, c4-l2, one c4-l3-<container> per L2 container,
+# seq-system, seq-component, seq-error.
+
+layers: {
+  c4-l1: {
+    # System context: the engineer and their AWS account, with the
+    # plugin sitting between them as a Claude Code surface.
+    engineer: Engineer (Claude Code session)
+    plugin: claude-aws-architect plugin {
+      shape: rectangle
+    }
+    aws-mcp: AWS MCP servers (kb / iac / cost / sec / iam / cw)
+    repo: Project repo (.claude/specs/<feature>/)
+    engineer -> plugin: /aws "vibe prompt"
+    plugin -> aws-mcp: read-class MCP calls
+    plugin -> repo: write F5 + F6 artefacts
+  }
+
+  c4-l2: {
+    # Containers — one box per L3 specialist named in design.md
+    # plus the L4 orchestrator.
+    engineer: Engineer
+    orchestrator: claude-aws-architect-orchestrator-agent
+    discovery: claude-aws-architect-discovery-agent
+    sa: claude-aws-architect-solution-architect-agent
+    impl: claude-aws-architect-implementation-agent
+    aws-mcp: AWS MCP servers
+    engineer -> orchestrator: /aws prompt
+    orchestrator -> discovery: parallel Agent call (Discovery phase)
+    orchestrator -> sa: parallel Agent call (Design phase)
+    orchestrator -> impl: parallel Agent call (Implementation phase)
+    discovery -> aws-mcp: kb reads
+    sa -> aws-mcp: kb / iac reads
+    impl -> aws-mcp: iac / cost / iam / cw reads
+  }
+
+  c4-l3-orchestrator: {
+    # Internals of the L4 orchestrator.
+    classifier: Depth classifier (§5.6 rules 1–5)
+    fanout: Parallel Agent dispatcher (N≤3)
+    merge: Merge contract enforcer (§5.5 priority order)
+    assembler: Final-assembly writer
+    classifier -> fanout: full-depth route
+    classifier -> assembler: shallow route
+    fanout -> merge: specialist returns
+    merge -> assembler: resolved sections
+  }
+
+  c4-l3-discovery: {
+    # Internals of the L3 discovery specialist.
+    intent-parser: Intent parser
+    kb-reader: kb MCP reader (≤8 calls)
+    grounding-writer: Grounding ledger writer
+    requirements-drafter: requirements.md drafter
+    intent-parser -> kb-reader: lookups
+    kb-reader -> grounding-writer: cite
+    grounding-writer -> requirements-drafter: ground
+  }
+
+  c4-l3-solution-architect: {
+    # Internals of the L3 solution-architect specialist.
+    intake: design intent intake
+    iac-reader: iac MCP reader
+    pillar-skills: 6 WAF pillar skills (review block authoring)
+    contract-author: contracts/<slug>.md authoring (Purpose + Interface + Integration)
+    diagram-author: diagrams.d2 c4-l1/c4-l2 author
+    intake -> iac-reader: probe
+    iac-reader -> pillar-skills: feed evidence
+    pillar-skills -> contract-author: per-pillar gates
+    contract-author -> diagram-author: derive layers
+  }
+
+  c4-l3-implementation: {
+    # Internals of the L3 implementation specialist (bundled v0.1.0).
+    intake: design.md intake (read-only)
+    iac-mcp: iac MCP (validation)
+    cost-mcp: cost MCP (ROM)
+    iam-mcp: iam MCP (simulate)
+    cw-mcp: cw MCP (recommended alarms)
+    section-merger: contracts/<slug>.md section-merge writer
+    tasks-writer: tasks.md whole-file writer
+    intake -> iac-mcp: validate
+    intake -> cost-mcp: price
+    intake -> iam-mcp: simulate
+    intake -> cw-mcp: alarms
+    iac-mcp -> section-merger: IaC section
+    cost-mcp -> section-merger: Cost section
+    iam-mcp -> section-merger: Security section
+    cw-mcp -> section-merger: Observability section
+    section-merger -> tasks-writer: traceability
+  }
+
+  seq-system: {
+    # Happy-path sequence across the L1 boundary.
+    shape: sequence_diagram
+    engineer: Engineer
+    orchestrator: Orchestrator
+    specialists: L3 specialists (parallel)
+    aws-mcp: AWS MCP servers
+    repo: .claude/specs/<feature>/
+    engineer -> orchestrator: /aws prompt
+    orchestrator -> specialists: parallel fan-out (≥2 Agent calls)
+    specialists -> aws-mcp: read-class calls
+    aws-mcp -> specialists: grounded results
+    specialists -> orchestrator: section returns
+    orchestrator -> repo: F5 + F6 artefacts
+    orchestrator -> engineer: summary + artefact paths
+  }
+
+  seq-component: {
+    # Representative sequence inside the orchestrator container.
+    shape: sequence_diagram
+    prompt: Prompt
+    classifier: Depth classifier
+    fanout: Parallel dispatcher
+    discovery: Discovery
+    sa: Solution architect
+    impl: Implementation
+    merge: Merge enforcer
+    prompt -> classifier: classify
+    classifier -> fanout: full-depth
+    fanout -> discovery: requirements draft
+    fanout -> sa: design + contracts (Purpose/Interface)
+    fanout -> impl: contracts (IaC/Cost/Security/Acceptance/Observability) + tasks
+    discovery -> merge: section return
+    sa -> merge: section return
+    impl -> merge: section return
+    merge -> merge: §5.5 priority order
+  }
+
+  seq-error: {
+    # Dominant failure mode and recovery sequence.
+    shape: sequence_diagram
+    prompt: Prompt
+    orchestrator: Orchestrator
+    specialists: Specialists
+    merge: Merge enforcer
+    user: Engineer
+    prompt -> orchestrator: full-depth route
+    orchestrator -> specialists: fan-out
+    specialists -> merge: conflicting returns
+    merge -> merge: priority rules cannot resolve
+    merge -> orchestrator: surface to ## Open Questions
+    orchestrator -> user: artefacts emitted with explicit open questions
+  }
+}
