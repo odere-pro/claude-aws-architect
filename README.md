@@ -41,13 +41,11 @@ The orchestrator fans out parallel specialists (discovery → solution-architect
 
 ## Commands
 
-> Land in PR 23.
-
-| Command       | Purpose                                                                    |
-| ------------- | -------------------------------------------------------------------------- |
-| `/aws`        | L4 orchestrator entry point. Fans out specialists per the depth heuristic. |
-| `/aws-spec`   | Validate a spec folder against the deterministic and runtime gates.        |
-| `/aws-doctor` | Wrap `scripts/doctor.sh` for in-session environment checks.                |
+| Command                                                | Purpose                                                                                                                                                                  |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `/aws <feature-prompt>`                                | L4 orchestrator entry point. Vibe-classifies depth and either answers directly (shallow) or fans out L3 specialists in parallel and merges their outputs (full).         |
+| `/aws-spec <feature> [--validate \| --list \| --show]` | Read-only validator over `.claude/specs/<feature>/`. Checks frontmatter, citations, component-contract one-to-one mapping, diagram layer tags, and re-runs plugin gates. |
+| `/aws-doctor [--json]`                                 | Wraps `scripts/doctor.sh`: verifies `uvx`, `aws` CLI, `AWS_PROFILE`/`AWS_REGION`, MCP package resolution, `sts:GetCallerIdentity`, and minimum-IAM presence.             |
 
 ## Powers
 
