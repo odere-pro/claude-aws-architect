@@ -1,0 +1,39 @@
+name: Security vulnerability (do not use)
+description: Security reports must NOT be filed as public issues. This form redirects you to the private channel.
+title: "DO NOT FILE — see SECURITY.md"
+labels: ["security", "do-not-file"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # Stop — do not file a public issue for security vulnerabilities
+
+        Public issues disclose the vulnerability to everyone, including potential attackers, before a fix exists. Use a private channel instead.
+
+        ## Where to report
+
+        - **GitHub Security Advisory** (preferred): <https://github.com/odere-pro/claude-aws-architect/security/advisories/new>
+        - **Email**: `odere.pro@gmail.com` with subject prefix `[security]`
+
+        See [SECURITY.md](../blob/main/SECURITY.md) for the full disclosure process, response window, and in-scope/out-of-scope boundaries.
+
+        ## What to include
+
+        - Affected version(s) (`plugin.json#version`)
+        - Description of the vulnerability and its impact
+        - Steps to reproduce, ideally with a minimal repro repo
+        - Your suggested mitigation, if any
+
+        ## If you are not reporting a vulnerability
+
+        - **Bug**: use the [bug report template](https://github.com/odere-pro/claude-aws-architect/issues/new?template=bug_report.yml).
+        - **Feature request**: use the [feature request template](https://github.com/odere-pro/claude-aws-architect/issues/new?template=feature_request.yml).
+        - **Question / discussion**: open a [Discussion](https://github.com/odere-pro/claude-aws-architect/discussions).
+
+  - type: checkboxes
+    id: acknowledgement
+    attributes:
+      label: Acknowledgement
+      options:
+        - label: I understand this form is a redirect, not a reporting channel, and I will close this issue and re-file via the private advisory link above.
+          required: true
