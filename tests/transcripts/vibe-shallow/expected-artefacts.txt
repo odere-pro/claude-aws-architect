@@ -1,0 +1,2 @@
+# vibe-shallow MUST NOT write any artefacts under .claude/specs/.
+# This file is intentionally empty (other than this comment).

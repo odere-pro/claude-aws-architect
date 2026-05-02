@@ -1,0 +1,18 @@
+# Changelog
+
+All notable changes to `claude-aws-architect` are documented here.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+One entry is added per merged PR. The plugin starts at `v0.1.0` — no `v0.0.x` versions exist. Until v0.1.0 is tagged (per [PR-PLAN.md](./docs/plan/PR-PLAN.md) PR 31, which gates the tag on the release-dogfood gate), all PR entries accumulate under `## [Unreleased]` and are promoted to `## [0.1.0]` at tag time.
+
+## [Unreleased]
+
+### Added
+
+- **PR 0**: Planning import. `docs/plan/SPEC-v4.md` (full v4 declarative spec, sections 0–18), `docs/plan/PR-PLAN.md` (33-PR execution roadmap with dependencies and parallel-safe flags), `docs/plan/PR-CONVENTIONS.md` (branch naming, commit format, merge strategy).
+- **PR 1**: Plugin scaffold. `.claude-plugin/plugin.json` (manifest with `name`, `version`, `engines.claude-code`), `.mcp.json` (6 AWS MCP servers with short identifiers, pinned versions, and `timeoutMs`), `README.md` (with Trademark notice), `SPEC.md`, `LICENSE` (MIT), `SECURITY.md` (vulnerability disclosure), `SUPPORT.md` (community-driven posture), `CHANGELOG.md` (this file).
+- **PR 3**: Transcript-replay harness skeleton. `tests/run-transcripts.sh` (validate-only mode at v0.1.0; execute and update-snapshots modes stubbed pending PR 18); `tests/transcripts/README.md` (fixture format reference); first fixture `tests/transcripts/vibe-shallow/` (validates the verb-of-inquiry → shallow depth rule — no fan-out, no artefacts written) with `prompt.txt`, `expected-tools.jsonl`, and `expected-artefacts.txt`. New CI job `transcript-validate` wires the harness into `.github/workflows/gates.yml`. Makes gate 19 (skeleton) achievable.
+- **PR 2**: Deterministic gates 1–18 in CI. 16 gate scripts under `tests/gates/` (gates 1 and 13 deferred until PR 27 ships init/doctor); `tests/gates/lib/common.sh` shared helpers (bash 3.2 compatible — uses `read_into` instead of `mapfile`); cached MCP tool lists under `tests/gates/cache/tools-<key>.txt` (seeded from upstream awslabs READMEs); `tests/gates/cache/known-overshoots.txt` documenting 12 upstream-controlled tool names that exceed the 64-char tool-name budget (WARN-only, with citation of which agent/skill depends on each); `.markdownlint.jsonc` config with rationale for every disabled rule; `.github/workflows/gates.yml` with three jobs (Linux bash 5+, macOS system bash 3.2, macOS brew bash 5+) — explicit `/bin/bash` invocation on macOS asserts the "tested on macOS bash 3.2" claim. Markdown auto-formatted with prettier 3.6.2.
+
+[Unreleased]: https://github.com/odere-pro/claude-aws-architect/compare/main...HEAD

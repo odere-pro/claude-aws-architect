@@ -1,0 +1,2 @@
+{"step": 1, "tool": "mcp__plugin_claude-aws-architect_kb__search_documentation", "server": "kb"}
+{"step": 2, "tool": "mcp__plugin_claude-aws-architect_kb__read_documentation", "server": "kb"}
