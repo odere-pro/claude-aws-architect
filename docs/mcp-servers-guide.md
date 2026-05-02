@@ -210,7 +210,7 @@ a one-line edit. Follow this order so CI stays green throughout.
    degraded-mode entry (per SPEC-v4 §3.5), and any tool-budget
    adjustment.
 6. **Wire into a Power** (per
-   [POWERS-GUIDE.md](./POWERS-GUIDE.md)) by adding the short key to
+   [powers-guide.md](./powers-guide.md)) by adding the short key to
    `mcpServers[]`. A server that no Power references is dead weight
    and gate 6 will catch the orphan once the v0.2 cross-validator
    ships.

@@ -29,14 +29,14 @@ A [Claude Code](https://claude.ai/code) plugin for AWS Well-Architected SDLC. De
 
 | Layer        | Surface                                                                                                                                            | Count |
 | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | :---: |
-| **MCP**      | `kb`, `iac`, `cost`, `sec`, `iam`, `cw` — see [MCP-SERVERS-GUIDE.md](./docs/MCP-SERVERS-GUIDE.md)                                                  |   6   |
+| **MCP**      | `kb`, `iac`, `cost`, `sec`, `iam`, `cw` — see [mcp-servers-guide.md](./docs/mcp-servers-guide.md)                                                  |   6   |
 | **Skills**   | 6 workflow + 6 WAF pillar                                                                                                                          |  12   |
 | **Agents**   | 1 L4 orchestrator + 3 L3 specialists (`discovery`, `solution-architect`, `implementation`)                                                         |   4   |
 | **Commands** | `/aws`, `/aws-spec`, `/aws-doctor`                                                                                                                 |   3   |
-| **Powers**   | `claude-aws-architect-{cdk,cost,security}` — see [POWERS-GUIDE.md](./docs/POWERS-GUIDE.md)                                                         |   3   |
+| **Powers**   | `claude-aws-architect-{cdk,cost,security}` — see [powers-guide.md](./docs/powers-guide.md)                                                         |   3   |
 | **Rules**    | 9 file-scoped instruction rules under `rules/`                                                                                                     |   9   |
 | **Hooks**    | 2 PreToolUse default-on (`aws-secret-scanner`, `aws-api-write-guard`) + 4 PostToolUse default-off                                                  |   6   |
-| **Gates**    | 18 deterministic + 9 runtime + 2 cross-platform + 4 install-safety + 1 release — see [VALIDATION-GATES-GUIDE.md](./docs/VALIDATION-GATES-GUIDE.md) |  34   |
+| **Gates**    | 18 deterministic + 9 runtime + 2 cross-platform + 4 install-safety + 1 release — see [validation-gates-guide.md](./docs/validation-gates-guide.md) |  34   |
 
 ---
 
@@ -108,9 +108,9 @@ Deep dives live under [`docs/`](./docs/). Start here:
 
 | Topic                     | Guide                                                                                                        |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| Powers (workflow bundles) | [POWERS-GUIDE.md](./docs/POWERS-GUIDE.md)                                                                    |
-| MCP servers (`.mcp.json`) | [MCP-SERVERS-GUIDE.md](./docs/MCP-SERVERS-GUIDE.md)                                                          |
-| Validation gates          | [VALIDATION-GATES-GUIDE.md](./docs/VALIDATION-GATES-GUIDE.md)                                                |
+| Powers (workflow bundles) | [powers-guide.md](./docs/powers-guide.md)                                                                    |
+| MCP servers (`.mcp.json`) | [mcp-servers-guide.md](./docs/mcp-servers-guide.md)                                                          |
+| Validation gates          | [validation-gates-guide.md](./docs/validation-gates-guide.md)                                                |
 | Manual install / CI       | [install.md](./docs/install.md)                                                                              |
 | Lifecycle scripts         | [scripts.md](./docs/scripts.md)                                                                              |
 | Architecture & spec       | [SPEC.md](./SPEC.md), [docs/plan/SPEC-v4.md](./docs/plan/SPEC-v4.md)                                         |
