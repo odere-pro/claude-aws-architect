@@ -63,8 +63,11 @@ jobs:
       - name: Confirm system bash is 3.2 (frozen GPLv2 default on macOS)
         run: /bin/bash --version | head -1
 
-      - name: Verify pre-installed tooling (jq, shellcheck on macos-latest)
+      - name: Install shellcheck (jq is pre-installed on macos-latest)
         run: |
+          if ! command -v shellcheck >/dev/null 2>&1; then
+            brew install shellcheck
+          fi
           jq --version
           shellcheck --version
 
@@ -93,13 +96,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Install bash 5+
+      - name: Install bash 5+ and shellcheck
         run: |
           brew install bash
+          if ! command -v shellcheck >/dev/null 2>&1; then
+            brew install shellcheck
+          fi
           bash --version | head -1
-
-      - name: Verify pre-installed tooling
-        run: |
           jq --version
           shellcheck --version
 
