@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# on-iam-write — PostToolUse hook that lints IAM JSON written via
+# aws-on-iam-write — PostToolUse hook that lints IAM JSON written via
 # Write/Edit/MultiEdit and surfaces least-privilege findings.
 #
 # Input (stdin, JSON, from Claude Code):
@@ -28,7 +28,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-export HOOK_NAME=on-iam-write
+export HOOK_NAME=aws-on-iam-write
 
 # shellcheck source=SCRIPTDIR/lib/dispatcher.sh disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/lib/dispatcher.sh"

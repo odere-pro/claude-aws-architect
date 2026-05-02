@@ -9,6 +9,6 @@
     "aws-grounding-cache",
     "aws-waf-security-skill"
   ],
-  "hooks": ["secret-scanner", "aws-api-write-guard"],
+  "hooks": ["aws-secret-scanner", "aws-api-write-guard"],
   "commands": ["aws", "aws-spec", "aws-doctor"]
 }

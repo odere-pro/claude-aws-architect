@@ -130,7 +130,7 @@ plus the L4 orchestrator. The contracts use the out-of-vocab markers
 ### Security
 
 - Status: PASS.
-- Top finding: two PreToolUse hooks default-on (`secret-scanner`,
+- Top finding: two PreToolUse hooks default-on (`aws-secret-scanner`,
   `aws-api-write-guard`) plus four PostToolUse hooks default-off
   cover the full §7.2 hook surface; the `aws-api-write-guard`
   41-verb classifier blocks every AWS API write at the MCP boundary

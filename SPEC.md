@@ -64,7 +64,7 @@ _(Pending PR 24.)_ Three Powers ship at v0.1.0: `claude-aws-architect-cdk`, `cla
 
 ## Hooks
 
-_(Pending PRs 25–26.)_ Hooks registry at `hooks/hooks.json` with seven scripts under `hooks/scripts/`. Default-enabled: `secret-scanner`, `aws-api-write-guard`. Opt-in via `.claude/claude-aws-architect.local.md`. Hook-script contract enforced by gate 11.
+_(Pending PRs 25–26.)_ Hooks registry at `hooks/hooks.json` with seven scripts under `hooks/scripts/`. Default-enabled: `aws-secret-scanner`, `aws-api-write-guard`. Opt-in via `.claude/claude-aws-architect.local.md`. Hook-script contract enforced by gate 11.
 
 ## Schemas
 

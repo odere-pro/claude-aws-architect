@@ -1,7 +1,7 @@
 {
   "name": "claude-aws-architect-cost",
   "version": "0.1.0",
-  "description": "Cost-only workflow power: bundles the AWS pricing and knowledge MCP servers with the cost-optimization pillar skill, the routing/grounding/cache skills, and the secret-scanner hook for reviewing pricing-model choices, right-sizing, storage tiers, and tagging.",
+  "description": "Cost-only workflow power: bundles the AWS pricing and knowledge MCP servers with the cost-optimization pillar skill, the routing/grounding/cache skills, and the aws-secret-scanner hook for reviewing pricing-model choices, right-sizing, storage tiers, and tagging.",
   "mcpServers": ["cost", "kb"],
   "skills": [
     "aws-mcp-routing",
@@ -9,6 +9,6 @@
     "aws-grounding-cache",
     "aws-waf-cost-optimization-skill"
   ],
-  "hooks": ["secret-scanner"],
+  "hooks": ["aws-secret-scanner"],
   "commands": ["aws", "aws-spec"]
 }

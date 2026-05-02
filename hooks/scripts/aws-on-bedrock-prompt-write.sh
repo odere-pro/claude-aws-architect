@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# on-bedrock-prompt-write — PostToolUse hook that checks Bedrock prompt /
+# aws-on-bedrock-prompt-write — PostToolUse hook that checks Bedrock prompt /
 # AgentCore artefact writes for the three v0.1.0 mandatory bindings:
 # (1) model-id pinning, (2) guardrail binding, (3) evaluation-hook
 # presence. Surfaces missing fields as advisory findings; never edits.
@@ -42,7 +42,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-export HOOK_NAME=on-bedrock-prompt-write
+export HOOK_NAME=aws-on-bedrock-prompt-write
 
 # shellcheck source=SCRIPTDIR/lib/dispatcher.sh disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/lib/dispatcher.sh"

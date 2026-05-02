@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# on-cdk-write — PostToolUse hook that surfaces a CDK-synth + cdk-nag nudge
+# aws-on-cdk-write — PostToolUse hook that surfaces a CDK-synth + cdk-nag nudge
 # after a Write/Edit/MultiEdit lands inside a CDK source root.
 #
 # Input (stdin, JSON, from Claude Code):
@@ -29,7 +29,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-export HOOK_NAME=on-cdk-write
+export HOOK_NAME=aws-on-cdk-write
 
 # shellcheck source=SCRIPTDIR/lib/dispatcher.sh disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/lib/dispatcher.sh"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# secret-scanner — PreToolUse hook that blocks Write/Edit/MultiEdit/NotebookEdit
+# aws-secret-scanner — PreToolUse hook that blocks Write/Edit/MultiEdit/NotebookEdit
 # operations whose payload contains AWS credentials, tokens, or private keys.
 #
 # Input (stdin, JSON, from Claude Code):
@@ -25,7 +25,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-export HOOK_NAME=secret-scanner
+export HOOK_NAME=aws-secret-scanner
 
 # shellcheck source=SCRIPTDIR/lib/dispatcher.sh disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/lib/dispatcher.sh"

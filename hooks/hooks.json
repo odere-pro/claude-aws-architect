@@ -1,10 +1,10 @@
 {
   "PreToolUse": [
     {
-      "name": "secret-scanner",
+      "name": "aws-secret-scanner",
       "event": "PreToolUse",
       "matcher": "Write|Edit|MultiEdit|NotebookEdit",
-      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/secret-scanner.sh",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/aws-secret-scanner.sh",
       "enabledByDefault": true,
       "filePattern": ".*"
     },
@@ -18,26 +18,26 @@
   ],
   "PostToolUse": [
     {
-      "name": "on-cdk-write",
+      "name": "aws-on-cdk-write",
       "event": "PostToolUse",
       "matcher": "Write|Edit|MultiEdit|NotebookEdit",
-      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/on-cdk-write.sh",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/aws-on-cdk-write.sh",
       "enabledByDefault": false,
       "filePattern": "(.*/(bin|lib|cdk|infrastructure|iac)/.*\\.(ts|js|py)$|.*cdk\\.json$|.*cdk\\.context\\.json$)"
     },
     {
-      "name": "on-iam-write",
+      "name": "aws-on-iam-write",
       "event": "PostToolUse",
       "matcher": "Write|Edit|MultiEdit",
-      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/on-iam-write.sh",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/aws-on-iam-write.sh",
       "enabledByDefault": false,
       "filePattern": "(.*/(iam|policies)/.*\\.json$|.*(policy|role|trust-policy|iam-).*\\.json$)"
     },
     {
-      "name": "on-bedrock-prompt-write",
+      "name": "aws-on-bedrock-prompt-write",
       "event": "PostToolUse",
       "matcher": "Write|Edit|MultiEdit",
-      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/on-bedrock-prompt-write.sh",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/aws-on-bedrock-prompt-write.sh",
       "enabledByDefault": false,
       "filePattern": "(.*/(prompts|bedrock-prompts|agentcore)/.*\\.(json|yaml|yml|md)$|.*(prompt-|bedrock-).*\\.(json|yaml|yml|md)$)"
     },
