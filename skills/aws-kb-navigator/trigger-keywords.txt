@@ -1,0 +1,32 @@
+# Keywords that should activate the aws-kb-navigator skill.
+# One per line. Comments allowed (lines starting with #).
+# Used by gate 16 to validate description quality.
+kb
+knowledge base
+lookup
+look up
+documentation
+docs
+guide
+cli
+aws cli
+command
+compare
+comparison
+onboard
+onboarding
+learn
+recommend
+recommendation
+next
+related
+topic
+sop
+runbook
+navigate
+search_documentation
+read_documentation
+retrieve_agent_sop
+list_regions
+get_regional_availability
+region availability

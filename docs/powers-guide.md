@@ -16,6 +16,7 @@ update Powers shipped by `claude-aws-architect`.
 powers/
 ├── claude-aws-architect-cdk.power.json
 ├── claude-aws-architect-cost.power.json
+├── claude-aws-architect-kb.power.json
 └── claude-aws-architect-security.power.json
 ```
 
@@ -222,10 +223,13 @@ Renaming changes the user-visible identifier. Treat as a deprecation:
 
 ## 6. Reference — Powers shipped at v0.1.0
 
+> **Production-ready scenarios:** see [`docs/playbooks/`](./playbooks/README.md) for one playbook per Power, each with AWS-200 / AWS-300 / AWS-500 use cases.
+
 | File                                                                                             | MCPs                | Hooks                                       | Commands                        | Pillar focus                                           |
 | ------------------------------------------------------------------------------------------------ | ------------------- | ------------------------------------------- | ------------------------------- | ------------------------------------------------------ |
 | [`claude-aws-architect-cdk.power.json`](../powers/claude-aws-architect-cdk.power.json)           | `iac`, `cost`, `kb` | `aws-secret-scanner`, `aws-api-write-guard` | `aws`, `aws-spec`, `aws-doctor` | CDK authoring + ROM cost + reliability + op excellence |
 | [`claude-aws-architect-cost.power.json`](../powers/claude-aws-architect-cost.power.json)         | `cost`, `kb`        | `aws-secret-scanner`                        | `aws`, `aws-spec`               | Cost-only review                                       |
+| [`claude-aws-architect-kb.power.json`](../powers/claude-aws-architect-kb.power.json)             | `kb`                | `aws-secret-scanner`, `aws-api-write-guard` | `aws-kb`                        | Read-only KB lookup, CLI reference, SOPs, onboarding   |
 | [`claude-aws-architect-security.power.json`](../powers/claude-aws-architect-security.power.json) | `sec`, `iam`, `kb`  | `aws-secret-scanner`, `aws-api-write-guard` | `aws`, `aws-spec`, `aws-doctor` | Security-only review                                   |
 
 ---

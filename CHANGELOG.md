@@ -10,6 +10,14 @@ One entry per merged change, keyed by short commit SHA (linked to the commit on 
 
 ### Added
 
+#### KB navigator surface
+
+- **`/aws-kb` command + `claude-aws-architect-kb-navigator-agent` + `aws-kb-navigator` skill + `aws-kb-response` rule + `claude-aws-architect-kb` Power + `docs/aws-kb-guide.md`.** Read-only AWS knowledge surface: docs lookup, AWS CLI reference, recipe-style SOPs, side-by-side comparisons, onboarding pointers, and "what should I learn next" recommendations. Stateless per turn; never writes spec artefacts. Six classified intents (`lookup`, `cli`, `compare`, `onboard`, `next`, `region-q`) routed against the `kb` MCP server only, capped at 6 calls per turn. Five-section response template (Answer → bullets-or-block → Citations → Related → Next) with a 250-word default ceiling (600 with `--deep`) enforced by the new rule. Reuses `aws-mcp-routing`, `aws-grounding-cache`, and `aws-spec-grounding`. Suggested by the orchestrator when `/aws` shallow path detects a no-SDLC-intent query.
+
+#### Power playbooks (AWS-200 / 300 / 500)
+
+- **`docs/playbooks/`** — one playbook per shipped Power (`kb`, `cdk`, `cost`, `security`), each with three depth-tiered scenarios modelled on the AWS re:Invent session-numbering convention. Every scenario includes Persona, Trigger, exact Invocation, What happens (which agent, MCP servers, skills, artefacts), and Why this is production-ready (the closed anti-pattern list, merge-contract priority, TTL class, or hook contract that backs the run). Linked from `docs/powers-guide.md` §6 and from the root `README.md` documentation table.
+
 #### Planning and scaffold
 
 - **[`92be854`](https://github.com/odere-pro/claude-aws-architect/commit/92be854)** — Planning import: `docs/plan/SPEC-v4.md`, `docs/plan/PR-PLAN.md`, `docs/plan/PR-CONVENTIONS.md`.
