@@ -1,0 +1,44 @@
+# Keywords that should activate the aws-waf-sustainability-skill skill.
+# One per line. Comments allowed (lines starting with #).
+# Used by gate 16 to validate description quality.
+sustainability
+sustainability pillar
+well-architected
+well-architected sustainability
+waf-sustainability
+carbon
+low-carbon
+carbon footprint
+carbon-aware
+carbon intensity
+green
+region selection
+region tier
+graviton
+arm64
+arm
+right-sizing
+right size
+right-size
+managed services
+serverless
+lambda
+fargate
+storage lifecycle
+lifecycle
+s3 lifecycle
+glacier
+storage tier
+idle
+idle resources
+shutdown
+duty cycle
+data transfer
+data-transfer
+data movement
+spot
+scale to zero
+compute optimizer
+energy
+emissions
+pue
