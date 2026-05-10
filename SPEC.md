@@ -9,9 +9,9 @@ User-facing specification of the plugin's architecture, contracts, and validatio
 Four layers, loosely coupled:
 
 1. **Layer 1 — MCP servers.** Six AWS MCP servers (see § MCP servers) provide grounded knowledge: docs, IaC validation, pricing, security findings, IAM, observability.
-2. **Layer 2 — Skills.** Twelve plugin-authored skills (six workflow + six WAF pillar) under `skills/`. _(pending PRs 4–15)_
+2. **Layer 2 — Skills.** Thirteen plugin-authored skills (six workflow + six WAF pillar + recipe authoring) under `skills/`. _(pending PRs 4–15)_
 3. **Layer 3 — Agents.** One L4 orchestrator + three L3 specialists (`discovery`, `solution-architect`, `implementation`) under `agents/`. _(pending PRs 16–21)_
-4. **Layer 4 — Surface.** Three slash commands (`/aws`, `/aws-spec`, `/aws-doctor`), three Powers, and a hooks registry. _(pending PRs 22–28)_
+4. **Layer 4 — Surface.** Three slash commands (`/aws`, `/aws-spec`, `/aws-doctor`), three Recipes, and a hooks registry. _(pending PRs 22–28)_
 
 The orchestrator fans out L3 specialists in parallel (≤3 concurrent calls per turn) and merges results per the conflict-resolution priority order in [SPEC-v4 §5.5](./docs/plan/SPEC-v4.md).
 
@@ -34,10 +34,11 @@ Degraded-mode behaviour per [SPEC-v4 §3.5](./docs/plan/SPEC-v4.md): every per-s
 
 ## Skills
 
-_(Pending PRs 4–15.)_ Twelve skills ship at v0.1.0:
+_(Pending PRs 4–15.)_ Thirteen skills ship at v0.1.0:
 
 - **Workflow skills (6):** `aws-sdlc-workflow`, `aws-spec-grounding`, `aws-grounding-cache`, `aws-component-contract`, `aws-layered-diagram`, `aws-mcp-routing`.
 - **WAF pillar skills (6):** `aws-waf-operational-excellence-skill`, `aws-waf-security-skill`, `aws-waf-reliability-skill`, `aws-waf-performance-efficiency-skill`, `aws-waf-cost-optimization-skill`, `aws-waf-sustainability-skill`.
+- **Authoring skills (1):** `aws-recipe-authoring` — full recipe lifecycle (build / update / use).
 
 Each skill must satisfy the canonical declaration contract: SKILL.md frontmatter (`name`, `description`, `version`), required body sections (When to Use · Procedure · **Gotchas (mandatory)** · Boundaries · Quality Checks), ≤500-line body budget, and a sibling `trigger-keywords.txt`. Enforced by gates 10, 16, 17.
 
@@ -58,9 +59,9 @@ Every agent file satisfies the canonical agent declaration contract: frontmatter
 
 _(Pending PR 22.)_ Nine file-scoped instruction rules under `rules/` raise per-file accuracy. See [docs/plan/SPEC-v4.md §6.2](./docs/plan/SPEC-v4.md) for the full mandate. Enforced by gate 8.
 
-## Powers
+## Recipes
 
-_(Pending PR 24.)_ Three Powers ship at v0.1.0: `claude-aws-architect-cdk`, `claude-aws-architect-cost`, `claude-aws-architect-security`. Each is a JSON file under `powers/` declaring `name`, `version`, `description`, and arrays of `mcpServers`, `skills`, `hooks`, `commands` it bundles. Enforced by gate 6.
+_(Pending PR 24.)_ Three Recipes ship at v0.1.0: `claude-aws-architect-cdk`, `claude-aws-architect-cost`, `claude-aws-architect-security`. Each is a JSON file under `recipes/` declaring `name`, `version`, `description`, and arrays of `mcpServers`, `skills`, `hooks`, `commands` it bundles. Enforced by gate 6.
 
 ## Hooks
 
@@ -70,7 +71,7 @@ _(Pending PRs 25–26.)_ Hooks registry at `hooks/hooks.json` with six scripts u
 
 Canonical schemas referenced throughout the plugin:
 
-- **`powers/<name>.power.json`** — per [SPEC-v4 §9.1](./docs/plan/SPEC-v4.md). Required keys: `name`, `version`, `description`, `mcpServers[]`, `skills[]`, `hooks[]`, `commands[]`.
+- **`recipes/<name>.recipe.json`** — per [SPEC-v4 §9.1](./docs/plan/SPEC-v4.md). Required keys: `name`, `version`, `description`, `mcpServers[]`, `skills[]`, `hooks[]`, `commands[]`.
 - **`hooks/hooks.json` entry** — per §9.2. Required: `name`, `event`, `matcher`, `command`, `enabledByDefault`. Optional: `filePattern`, `enabledWhen`.
 - **Spec-doc frontmatter** — per §9.3. Required: `feature`, `created`, `updated`, `status`, `grounded-by[]`.
 - **Component-contract frontmatter** — per §9.4. Required: `component`, `kind`, `version`, `status`, `talks-to[]`, `grounded-by[]`.

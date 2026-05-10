@@ -20,8 +20,8 @@ tests/gates/gate-12-mcp-json.sh   # CI schema + roster gate
 
 All wiring is declarative in `.mcp.json`. There is no per-server
 glue code in this repo — servers are referenced by short key from
-skills (e.g. `aws-mcp-routing`), agents, and Powers
-(`powers/*.power.json#mcpServers`).
+skills (e.g. `aws-mcp-routing`), agents, and Recipes
+(`recipes/*.recipe.json#mcpServers`).
 
 ---
 
@@ -126,7 +126,7 @@ Required fields: `type`, `url`, `version`, `timeoutMs`.
 3. Each entry has a non-empty `version`.
 4. Each entry has an integer `timeoutMs`.
 
-Cross-references from Powers (`mcpServers[]`) and skills
+Cross-references from Recipes (`mcpServers[]`) and skills
 (`aws-mcp-routing`) to short keys are author-discipline at v0.1.0;
 the deeper validator ships in v0.2.
 
@@ -183,7 +183,7 @@ hook (PreToolUse, default-on) blocks any commit that ships a key.
 
 ## 5. Adding a new MCP server
 
-A server addition is a **schema + roster + power + ADR** change, not
+A server addition is a **schema + roster + recipe + ADR** change, not
 a one-line edit. Follow this order so CI stays green throughout.
 
 ### 5.1 Decide whether the server fits v0.1 or v0.2
@@ -198,7 +198,7 @@ a one-line edit. Follow this order so CI stays green throughout.
 
 1. **ADR entry.** Append to `ADR-A3 aws-mcp-server-roster.md` with
    the server's purpose, transport, package, version, timeout
-   rationale, and the Power(s) that will reference it.
+   rationale, and the Recipe(s) that will reference it.
 2. **`.mcp.json` entry.** Add the descriptor under a unique short
    key (§2). Pin both `args` and `version` to the same SemVer.
 3. **Update gate 12.** Edit
@@ -209,9 +209,9 @@ a one-line edit. Follow this order so CI stays green throughout.
 5. **Update `aws-mcp-routing` skill.** Add the routing rule, the
    degraded-mode entry (per SPEC-v4 §3.5), and any tool-budget
    adjustment.
-6. **Wire into a Power** (per
-   [powers-guide.md](./powers-guide.md)) by adding the short key to
-   `mcpServers[]`. A server that no Power references is dead weight
+6. **Wire into a Recipe** (per
+   [recipes-guide.md](./recipes-guide.md)) by adding the short key to
+   `mcpServers[]`. A server that no Recipe references is dead weight
    and gate 6 will catch the orphan once the v0.2 cross-validator
    ships.
 7. **Run doctor + gates.**
@@ -275,16 +275,16 @@ remove and re-add under a new short key in the next release.
 ### 6.4 Renaming the short key
 
 Don't. Short keys leak into transcript tool names and into every
-Power that references them. If you must, treat exactly like §6.3.
+Recipe that references them. If you must, treat exactly like §6.3.
 
 ---
 
 ## 7. Removing an MCP server
 
-1. Confirm no Power, skill, agent, or rule references the short key.
+1. Confirm no Recipe, skill, agent, or rule references the short key.
 
    ```bash
-   grep -rn "<short-key>" powers/ skills/ agents/ rules/ commands/
+   grep -rn "<short-key>" recipes/ skills/ agents/ rules/ commands/
    ```
 
 2. Delete the entry from `.mcp.json`.
@@ -328,14 +328,14 @@ Reuse an existing marker if your server fits the category.
 
 ## 9. Reference — v0.1.0 roster
 
-| Short  | Logical                   | Transport | Pkg/URL                                        | Ver    | Timeout | Power(s) referencing        |
-| ------ | ------------------------- | --------- | ---------------------------------------------- | ------ | ------- | --------------------------- |
-| `kb`   | aws-knowledge             | http      | `https://knowledge-mcp.global.api.aws`         | 0.1.0  | 30000ms | cdk, cost, security         |
-| `iac`  | aws-iac                   | stdio     | `awslabs.aws-iac-mcp-server`                   | 1.0.17 | 60000ms | cdk                         |
-| `cost` | aws-pricing               | stdio     | `awslabs.aws-pricing-mcp-server`               | 1.0.28 | 30000ms | cdk, cost                   |
-| `sec`  | well-architected-security | stdio     | `awslabs.well-architected-security-mcp-server` | 0.1.7  | 60000ms | security                    |
-| `iam`  | iam                       | stdio     | `awslabs.iam-mcp-server`                       | 1.0.18 | 30000ms | security                    |
-| `cw`   | cloudwatch                | stdio     | `awslabs.cloudwatch-mcp-server`                | 0.0.26 | 30000ms | (none yet — v0.2 ops Power) |
+| Short  | Logical                   | Transport | Pkg/URL                                        | Ver    | Timeout | Recipe(s) referencing        |
+| ------ | ------------------------- | --------- | ---------------------------------------------- | ------ | ------- | ---------------------------- |
+| `kb`   | aws-knowledge             | http      | `https://knowledge-mcp.global.api.aws`         | 0.1.0  | 30000ms | cdk, cost, security          |
+| `iac`  | aws-iac                   | stdio     | `awslabs.aws-iac-mcp-server`                   | 1.0.17 | 60000ms | cdk                          |
+| `cost` | aws-pricing               | stdio     | `awslabs.aws-pricing-mcp-server`               | 1.0.28 | 30000ms | cdk, cost                    |
+| `sec`  | well-architected-security | stdio     | `awslabs.well-architected-security-mcp-server` | 0.1.7  | 60000ms | security                     |
+| `iam`  | iam                       | stdio     | `awslabs.iam-mcp-server`                       | 1.0.18 | 30000ms | security                     |
+| `cw`   | cloudwatch                | stdio     | `awslabs.cloudwatch-mcp-server`                | 0.0.26 | 30000ms | (none yet — v0.2 ops Recipe) |
 
 ---
 
@@ -359,11 +359,11 @@ Reuse an existing marker if your server fits the category.
 - **v0.2 server expansion** (SPEC-v4 §3.2): `aws-api-mcp-server`,
   `bedrock-agentcore-mcp-server`, `dynamodb-mcp-server`,
   `aws-serverless-mcp-server`. Each lands with its own ADR amendment
-  and a Power that references it.
+  and a Recipe that references it.
 - **Cross-reference validator**: gate 12 currently checks `.mcp.json`
-  shape only. The deeper validator (does every Power's `mcpServers[]`
+  shape only. The deeper validator (does every Recipe's `mcpServers[]`
   resolve, does every skill's routing rule reference a real key)
-  ships with the `aws-power-authoring` skill in v0.2.
+  ships with the `aws-recipe-authoring` skill in v0.2.
 - **HTTP auth schema**: the v0.1.0 HTTP transport assumes
   unauthenticated endpoints. Bearer-token / SigV4 support lands when
   a roster candidate requires it.

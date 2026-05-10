@@ -30,7 +30,7 @@ Conventional Commits with no attribution footer (per global git-workflow rule).
 ```
 
 - `<type>` — same vocabulary as branch type prefix.
-- `<scope>` — one of: `plugin`, `mcp`, `agent`, `skill`, `rule`, `power`, `hook`, `script`, `ci`, `docs`, `adr`, `plan`, `deps`, `repo`. Choose the narrowest applicable scope.
+- `<scope>` — one of: `plugin`, `mcp`, `agent`, `skill`, `rule`, `recipe`, `hook`, `script`, `ci`, `docs`, `adr`, `plan`, `deps`, `repo`. Choose the narrowest applicable scope.
 - `<subject>` — imperative mood, lowercase, no trailing period, ≤72 chars.
 - Body — optional but expected for any non-trivial change. Cite the spec section that authorises the change (e.g. "per §5.5 merge contract").
 

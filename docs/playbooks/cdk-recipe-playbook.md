@@ -1,6 +1,6 @@
 # `claude-aws-architect-cdk` — playbook
 
-Authoring power for IaC. Bundles `iac`, `cost`, `kb` MCP servers; the routing / grounding / cache / component-contract / layered-diagram skills; the Cost / Reliability / Operational-Excellence WAF pillar skills; both default PreToolUse hooks; and the full `/aws`, `/aws-spec`, `/aws-doctor` command set.
+Authoring recipe for IaC. Bundles `iac`, `cost`, `kb` MCP servers; the routing / grounding / cache / component-contract / layered-diagram skills; the Cost / Reliability / Operational-Excellence WAF pillar skills; both default PreToolUse hooks; and the full `/aws`, `/aws-spec`, `/aws-doctor` command set.
 
 ---
 
@@ -28,7 +28,7 @@ Authoring power for IaC. Bundles `iac`, `cost`, `kb` MCP servers; the routing / 
 
 - The component contract is not free-form prose: it is bound to a 21-kind closed vocabulary so a downstream automation can parse it.
 - The cost ROM is grounded against `cost:` MCP calls, not invented.
-- The `aws-secret-scanner` and `aws-api-write-guard` PreToolUse hooks are loaded by the Power, so the iteration loop is safe even when the engineer pastes credentials by mistake or runs an `aws` write verb.
+- The `aws-secret-scanner` and `aws-api-write-guard` PreToolUse hooks are loaded by the Recipe, so the iteration loop is safe even when the engineer pastes credentials by mistake or runs an `aws` write verb.
 
 ---
 
@@ -51,7 +51,7 @@ Authoring power for IaC. Bundles `iac`, `cost`, `kb` MCP servers; the routing / 
 - `solution-architect` produces `design.md` with component contracts for the four pipeline pieces (e.g., EventBridge bus, SQS DLQ, Lambda processor, DynamoDB idempotency table) and runs the `aws-waf-cost-optimization-skill`, `aws-waf-reliability-skill`, and `aws-waf-operational-excellence-skill` reviews against the design.
 - `implementation` writes `tasks.md` with a CDK plan, a cost ROM grounded against `cost:` (S3, Lambda, EventBridge, SQS, DynamoDB pricing), and the IaC-validation hooks via `iac:validate_cloudformation_template`.
 - The merge contract resolves any specialist disagreements in priority order: security → facts → cost → convergence → recency.
-- A canonical reference run already lives at `templates/examples/order-processing-pipeline/` — the Power produces the same shape.
+- A canonical reference run already lives at `templates/examples/order-processing-pipeline/` — the Recipe produces the same shape.
 
 **Why this is production-ready:**
 

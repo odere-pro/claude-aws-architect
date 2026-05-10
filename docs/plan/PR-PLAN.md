@@ -41,7 +41,7 @@ Branch naming, commit format, merge strategy, and PR template are defined in [PR
 | 21  | `feat/aws-plugin-21-agent-implementation`             | 12.C.21    | L3 implementation agent; fan-out at N=3                                                                                        | 9, 19–27               | 20, 11, 12, 14, 10 | N                       |
 | 22  | `feat/aws-plugin-22-rules`                            | 12.D.22    | 9 file-scoped instruction rules under `rules/`                                                                                 | 8                      | 2                  | Y                       |
 | 23  | `feat/aws-plugin-23-commands`                         | 12.E.23    | 3 commands: `/aws`, `/aws-spec`, `/aws-doctor`                                                                                 | 9                      | 21                 | N                       |
-| 24  | `feat/aws-plugin-24-powers`                           | 12.F.24    | 3 Powers: `cdk`, `cost`, `security`                                                                                            | 6                      | 21, 22             | Y                       |
+| 24  | `feat/aws-plugin-24-recipes`                          | 12.F.24    | 3 Recipes: `cdk`, `cost`, `security`                                                                                           | 6                      | 21, 22             | Y                       |
 | 25  | `feat/aws-plugin-25-hooks-core`                       | 12.F.25    | Hooks registry, dispatcher, `secret-scanner`, `aws-api-write-guard`                                                            | 7, 11                  | 2                  | Y                       |
 | 26  | `feat/aws-plugin-26-hooks-secondary`                  | 12.F.26    | 4 secondary hooks: `cdk-write`, `iam-write`, `bedrock-prompt-write`, `test-coverage`                                           | 7, 11                  | 25                 | Y                       |
 | 27  | `feat/aws-plugin-27-scripts`                          | 12.F.27    | `init.sh`, `doctor.sh`, `install.sh`, `uninstall.sh`; install-safety gates 30–33                                               | 1, 4, 13, 30–33        | 25                 | Y                       |
@@ -59,7 +59,7 @@ The lower bound is 33 because every numbered §12 item is its own PR per the §1
 
 ## Critical path
 
-The longest dependency chain: 0 → 1 → 2 → 3 → (4–9 in parallel) → 16 → 17 → 18 → (10–15 in parallel) → 19 → 20 → 21 → 23 → 29 → 30 → 31. Roughly 14 sequential PR-merges along the critical path; everything else (rules, powers, hooks, scripts, security infra, ADRs) hangs off branches that can ship in parallel.
+The longest dependency chain: 0 → 1 → 2 → 3 → (4–9 in parallel) → 16 → 17 → 18 → (10–15 in parallel) → 19 → 20 → 21 → 23 → 29 → 30 → 31. Roughly 14 sequential PR-merges along the critical path; everything else (rules, recipes, hooks, scripts, security infra, ADRs) hangs off branches that can ship in parallel.
 
 ## Release gate
 

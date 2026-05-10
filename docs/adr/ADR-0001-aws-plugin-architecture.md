@@ -61,4 +61,4 @@ Every factual AWS claim that appears in a generated artefact carries a grounded-
 
 - Real-user data shows depth misclassification rate >5% across one release cycle. Outcome: tune §5.6 rules or add `--deep` / `--quick` flag UX prominence.
 - A second L4 surface emerges (e.g. a cost-only or IAM-only entry point) — at which point the layering generalises to "1 or more L4s, each fronting a specialist set" rather than "single L4".
-- The Powers mechanism (§9.1) reaches v0.2 maturity and a new pillar arrives that's better authored as an external Power than as an in-tree skill. Revisits the boundary between L2 (skills) and Powers.
+- The Recipes mechanism (§9.1) reaches v0.2 maturity and a new pillar arrives that's better authored as an external Recipe than as an in-tree skill. Revisits the boundary between L2 (skills) and Recipes.

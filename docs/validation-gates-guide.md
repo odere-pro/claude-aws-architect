@@ -59,7 +59,7 @@ by the release runbook.
 | 3   | [`gate-03-no-absolute-paths.sh`](../tests/gates/gate-03-no-absolute-paths.sh) | No absolute paths anywhere in the plugin tree.                                                              |
 | 4   | [`gate-04-shellcheck.sh`](../tests/gates/gate-04-shellcheck.sh)               | `shellcheck` clean across every bash script.                                                                |
 | 5   | [`gate-05-yaml-frontmatter.sh`](../tests/gates/gate-05-yaml-frontmatter.sh)   | Every Markdown with `---` frontmatter parses as YAML.                                                       |
-| 6   | [`gate-06-powers.sh`](../tests/gates/gate-06-powers.sh)                       | Every `powers/*.power.json` matches §9.1 schema.                                                            |
+| 6   | [`gate-06-recipes.sh`](../tests/gates/gate-06-recipes.sh)                     | Every `recipes/*.recipe.json` matches §9.1 schema.                                                          |
 | 7   | [`gate-07-hooks-json.sh`](../tests/gates/gate-07-hooks-json.sh)               | Every `hooks/hooks.json` entry matches §9.2 schema.                                                         |
 | 8   | [`gate-08-rules.sh`](../tests/gates/gate-08-rules.sh)                         | Every rule file matches §6.1 (frontmatter + 2–6 bullets, ≤200 words, no example code).                      |
 | 9   | [`gate-09-agents.sh`](../tests/gates/gate-09-agents.sh)                       | Every agent file matches §5.1 (frontmatter + H2 ordering + section constraints).                            |
@@ -113,7 +113,7 @@ bash tests/gates/run-all.sh --keep-going
 ### 4.2 Single gate
 
 ```bash
-bash tests/gates/gate-06-powers.sh
+bash tests/gates/gate-06-recipes.sh
 bash tests/gates/gate-12-mcp-json.sh
 # etc.
 ```
@@ -132,9 +132,9 @@ across both bash 5 and bash 3.2.
 Every gate emits one of:
 
 ```text
-PASS gate-06: 3 power files match power-bundle schema
-WARN gate-06: powers/foo.power.json: missing required key 'name'
-FAIL gate-06: 1 schema violations across 3 power files
+PASS gate-06: 3 recipe files match recipe-bundle schema
+WARN gate-06: recipes/foo.recipe.json: missing required key 'name'
+FAIL gate-06: 1 schema violations across 3 recipe files
 ```
 
 Helpers come from
@@ -161,7 +161,7 @@ Follow this sequence to keep CI green at every step.
 ### 5.2 Author the script
 
 1. Create `tests/gates/gate-NN-<slug>.sh`. Use a short slug — match
-   existing naming (`powers`, `mcp-json`, `skill-description`).
+   existing naming (`recipes`, `mcp-json`, `skill-description`).
 2. Start from this skeleton:
 
    ```bash
@@ -198,12 +198,12 @@ Follow this sequence to keep CI green at every step.
    guards doesn't exist yet, prefer `gate_pass "$GATE" "no-op"`
    over `gate_fail`. Gates ship in PRs that pre-date the artefact
    they guard; CI must stay green during the rollout. See
-   `gate-06-powers.sh` and `gate-12-mcp-json.sh` for the pattern.
+   `gate-06-recipes.sh` and `gate-12-mcp-json.sh` for the pattern.
 
 5. **Only assert what the spec mandates.** Resist the urge to add
    "while we're here" checks — each gate covers exactly one §11
    rule. Cross-reference checks belong to the v0.2 author-tooling
-   wave (e.g. `aws-power-authoring`).
+   wave (e.g. `aws-recipe-authoring`).
 
 6. `chmod +x tests/gates/gate-NN-<slug>.sh`.
 
@@ -339,8 +339,8 @@ Before opening a gate PR:
   harness in PR 25 (per `docs/plan/PR-PLAN.md`). The harness lives
   at `tests/run-transcripts.sh`; assertions are JSON files under
   `tests/fixtures/transcripts/`.
-- **`aws-power-authoring` skill (v0.2)** will deepen gate 6 with
-  cross-reference resolution between Powers, `.mcp.json`, skills,
+- **`aws-recipe-authoring` skill (v0.2)** will deepen gate 6 with
+  cross-reference resolution between Recipes, `.mcp.json`, skills,
   hooks, and commands.
 - **Performance budgets gate**: cap total `run-all.sh` wall time so
   the gate fleet stays usable as a pre-commit check. Pending an ADR

@@ -61,7 +61,7 @@ then
 
 - The `aws-kb-response` rule enforces "code block OR bullets, never both," so the runbook gets a clean, copy-pasteable command shape.
 - The `aws-grounding-cache` skill TTL-classifies CLI reference results as `immutable`, so a second engineer running the same query reuses the cache and burns no extra MCP calls.
-- The `aws-secret-scanner` hook is loaded by the Power, so any accidental paste of `aws_access_key_id=...` while iterating is blocked at PreToolUse.
+- The `aws-secret-scanner` hook is loaded by the Recipe, so any accidental paste of `aws_access_key_id=...` while iterating is blocked at PreToolUse.
 
 ---
 

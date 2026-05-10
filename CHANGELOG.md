@@ -12,15 +12,15 @@ One entry per merged change, keyed by short commit SHA (linked to the commit on 
 
 #### Bedrock + AWS AI surface
 
-- **`aws-bedrock-ai` skill (+ references for foundation models, inference modes, licensing, knowledge bases, IAM patterns) + `aws-bedrock-ai` instruction rule + `claude-aws-architect-bedrock-ai` Power + `docs/playbooks/bedrock-ai-power-playbook.md`.** Domain expertise for Amazon Bedrock and the AWS AI managed-service family: foundation-model selection (Anthropic, Amazon Nova/Titan, Meta Llama, Mistral, Cohere, AI21, Stability) with pinned model identifiers and per-region GA verification, inference modes (on-demand, provisioned throughput, batch with ~50% discount, latency-optimised, cross-region inference profiles), Knowledge Bases for Amazon Bedrock RAG (OpenSearch Serverless / Aurora pgvector / Pinecone / Redis Enterprise / MongoDB Atlas vector stores; embedding model + chunking choices), Agents for Bedrock + AgentCore IAM patterns, Guardrails (content filters, denied topics, PII filters, contextual grounding) bound by ID + version, fine-tuning vs custom model import, KMS-CMK on every data plane, VPC endpoints, data-perimeter SCPs, the Bedrock no-training-on-customer-data guarantee, and per-provider AUP / licensing constraints. Power bundles `kb`, `cost`, `iam`, `sec` MCP servers with the substrate skills, the WAF security pillar skill, both default PreToolUse hooks, and `/aws`, `/aws-spec`, `/aws-doctor`, `/aws-kb`. Reuses the existing `kb` MCP server (the closed v0.1.x server set is unchanged; gate-12 protects it).
+- **`aws-bedrock-ai` skill (+ references for foundation models, inference modes, licensing, knowledge bases, IAM patterns) + `aws-bedrock-ai` instruction rule + `claude-aws-architect-bedrock-ai` Recipe + `docs/playbooks/bedrock-ai-recipe-playbook.md`.** Domain expertise for Amazon Bedrock and the AWS AI managed-service family: foundation-model selection (Anthropic, Amazon Nova/Titan, Meta Llama, Mistral, Cohere, AI21, Stability) with pinned model identifiers and per-region GA verification, inference modes (on-demand, provisioned throughput, batch with ~50% discount, latency-optimised, cross-region inference profiles), Knowledge Bases for Amazon Bedrock RAG (OpenSearch Serverless / Aurora pgvector / Pinecone / Redis Enterprise / MongoDB Atlas vector stores; embedding model + chunking choices), Agents for Bedrock + AgentCore IAM patterns, Guardrails (content filters, denied topics, PII filters, contextual grounding) bound by ID + version, fine-tuning vs custom model import, KMS-CMK on every data plane, VPC endpoints, data-perimeter SCPs, the Bedrock no-training-on-customer-data guarantee, and per-provider AUP / licensing constraints. Recipe bundles `kb`, `cost`, `iam`, `sec` MCP servers with the substrate skills, the WAF security pillar skill, both default PreToolUse hooks, and `/aws`, `/aws-spec`, `/aws-doctor`, `/aws-kb`. Reuses the existing `kb` MCP server (the closed v0.1.x server set is unchanged; gate-12 protects it).
 
 #### KB navigator surface
 
-- **`/aws-kb` command + `claude-aws-architect-kb-navigator-agent` + `aws-kb-navigator` skill + `aws-kb-response` rule + `claude-aws-architect-kb` Power + `docs/aws-kb-guide.md`.** Read-only AWS knowledge surface: docs lookup, AWS CLI reference, recipe-style SOPs, side-by-side comparisons, onboarding pointers, and "what should I learn next" recommendations. Stateless per turn; never writes spec artefacts. Six classified intents (`lookup`, `cli`, `compare`, `onboard`, `next`, `region-q`) routed against the `kb` MCP server only, capped at 6 calls per turn. Five-section response template (Answer → bullets-or-block → Citations → Related → Next) with a 250-word default ceiling (600 with `--deep`) enforced by the new rule. Reuses `aws-mcp-routing`, `aws-grounding-cache`, and `aws-spec-grounding`. Suggested by the orchestrator when `/aws` shallow path detects a no-SDLC-intent query.
+- **`/aws-kb` command + `claude-aws-architect-kb-navigator-agent` + `aws-kb-navigator` skill + `aws-kb-response` rule + `claude-aws-architect-kb` Recipe + `docs/aws-kb-guide.md`.** Read-only AWS knowledge surface: docs lookup, AWS CLI reference, recipe-style SOPs, side-by-side comparisons, onboarding pointers, and "what should I learn next" recommendations. Stateless per turn; never writes spec artefacts. Six classified intents (`lookup`, `cli`, `compare`, `onboard`, `next`, `region-q`) routed against the `kb` MCP server only, capped at 6 calls per turn. Five-section response template (Answer → bullets-or-block → Citations → Related → Next) with a 250-word default ceiling (600 with `--deep`) enforced by the new rule. Reuses `aws-mcp-routing`, `aws-grounding-cache`, and `aws-spec-grounding`. Suggested by the orchestrator when `/aws` shallow path detects a no-SDLC-intent query.
 
-#### Power playbooks (AWS-200 / 300 / 500)
+#### Recipe playbooks (AWS-200 / 300 / 500)
 
-- **`docs/playbooks/`** — one playbook per shipped Power (`kb`, `cdk`, `cost`, `security`), each with three depth-tiered scenarios modelled on the AWS re:Invent session-numbering convention. Every scenario includes Persona, Trigger, exact Invocation, What happens (which agent, MCP servers, skills, artefacts), and Why this is production-ready (the closed anti-pattern list, merge-contract priority, TTL class, or hook contract that backs the run). Linked from `docs/powers-guide.md` §6 and from the root `README.md` documentation table.
+- **`docs/playbooks/`** — one playbook per shipped Recipe (`kb`, `cdk`, `cost`, `security`), each with three depth-tiered scenarios modelled on the AWS re:Invent session-numbering convention. Every scenario includes Persona, Trigger, exact Invocation, What happens (which agent, MCP servers, skills, artefacts), and Why this is production-ready (the closed anti-pattern list, merge-contract priority, TTL class, or hook contract that backs the run). Linked from `docs/recipes-guide.md` §6 and from the root `README.md` documentation table.
 
 #### Planning and scaffold
 
@@ -60,14 +60,14 @@ Each pillar skill ships `SKILL.md` + `trigger-keywords.txt` + 2–3 references +
 
 - **[`694ef8f`](https://github.com/odere-pro/claude-aws-architect/commit/694ef8f)** — Rules roster: 9 file-scoped instruction files with canonical frontmatter (`description`, `applyTo`, `inclusion`) — `aws-cdk`, `aws-iam-policy`, `aws-sdk-usage`, `aws-bedrock-prompt`, `aws-test`, `aws-docs`, `aws-diagram`, `aws-component-contract`, `aws-spec-frontmatter`. Gate 8 transitions to enforcing PASS.
 
-#### Powers
+#### Recipes
 
-- **[`c921c7c`](https://github.com/odere-pro/claude-aws-architect/commit/c921c7c)** — Three power bundles under `powers/<name>.power.json`:
+- **[`c921c7c`](https://github.com/odere-pro/claude-aws-architect/commit/c921c7c)** — Three recipe bundles under `recipes/<name>.recipe.json`:
   - `claude-aws-architect-cdk` — CDK authoring (`iac`/`cost`/`kb` MCP, full skill+command set).
   - `claude-aws-architect-cost` — cost-only (`cost`/`kb` MCP, `aws-waf-cost-optimization-skill`).
   - `claude-aws-architect-security` — security-only (`sec`/`iam`/`kb` MCP, `aws-waf-security-skill`).
 
-  Bedrock and IaC-foundations powers deferred to v0.2. Gate 6 transitions to enforcing PASS.
+  Bedrock and IaC-foundations recipes deferred to v0.2. Gate 6 transitions to enforcing PASS.
 
 #### Hooks
 
@@ -135,7 +135,7 @@ Each pillar skill ships `SKILL.md` + `trigger-keywords.txt` + 2–3 references +
 
 ### Changed
 
-- **[`839a4cf`](https://github.com/odere-pro/claude-aws-architect/commit/839a4cf)** — Uniform `aws-` prefix on hook names and script filenames to avoid collisions when installed alongside other plugins or a global `~/.claude/`. Renames `secret-scanner` → `aws-secret-scanner`, `on-cdk-write` → `aws-on-cdk-write`, `on-iam-write` → `aws-on-iam-write`, `on-bedrock-prompt-write` → `aws-on-bedrock-prompt-write`. `aws-api-write-guard` and `aws-test-coverage` already prefixed. Updates references in `README.md`, `SPEC.md`, `CLAUDE.md`, `hooks/README.md`, `docs/threat-model.md`, `docs/plan/SPEC-v4.md` (normative tables only), three power bundles, the dogfood spec, the consumer template, and the transcript-fixture README. New "Naming policy for shipped artefacts" section in `CLAUDE.md` codifies the convention.
+- **[`839a4cf`](https://github.com/odere-pro/claude-aws-architect/commit/839a4cf)** — Uniform `aws-` prefix on hook names and script filenames to avoid collisions when installed alongside other plugins or a global `~/.claude/`. Renames `secret-scanner` → `aws-secret-scanner`, `on-cdk-write` → `aws-on-cdk-write`, `on-iam-write` → `aws-on-iam-write`, `on-bedrock-prompt-write` → `aws-on-bedrock-prompt-write`. `aws-api-write-guard` and `aws-test-coverage` already prefixed. Updates references in `README.md`, `SPEC.md`, `CLAUDE.md`, `hooks/README.md`, `docs/threat-model.md`, `docs/plan/SPEC-v4.md` (normative tables only), three recipe bundles, the dogfood spec, the consumer template, and the transcript-fixture README. New "Naming policy for shipped artefacts" section in `CLAUDE.md` codifies the convention.
 
 ### Fixed
 

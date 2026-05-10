@@ -4,7 +4,7 @@
 # Modes (mutually exclusive):
 #   --symlink   (default) Create one symlink at .claude/plugins/claude-aws-architect
 #               pointing at the plugin root. Cheapest to update.
-#   --copy      Copy plugin trees (commands, agents, skills, rules, hooks, powers,
+#   --copy      Copy plugin trees (commands, agents, skills, rules, hooks, recipes,
 #               templates) into .claude/<dir>/. Files that already exist in the
 #               consumer tree are NEVER overwritten — those slots stay consumer-owned.
 #
@@ -42,7 +42,7 @@ done
 CLAUDE_DIR="$CONSUMER_ROOT/.claude"
 
 # Trees we ship into the consumer .claude/ in --copy mode.
-COPY_TREES=(commands agents skills rules hooks powers templates)
+COPY_TREES=(commands agents skills rules hooks recipes templates)
 
 # Create a directory only if absent and record it in the manifest so uninstall
 # can rmdir it later (only if still empty — consumer content is never touched).

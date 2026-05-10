@@ -1,7 +1,7 @@
 {
   "name": "claude-aws-architect-cdk",
   "version": "0.1.0",
-  "description": "CDK authoring power: bundles IaC pattern lookup, pricing for cost ROM, knowledge-grounded design, the component-contract and routing skills, the cost/reliability/operational-excellence pillar skills, and the aws-secret-scanner and aws-api-write-guard hooks.",
+  "description": "CDK authoring recipe: bundles IaC pattern lookup, pricing for cost ROM, knowledge-grounded design, the component-contract and routing skills, the cost/reliability/operational-excellence pillar skills, and the aws-secret-scanner and aws-api-write-guard hooks.",
   "mcpServers": ["iac", "cost", "kb"],
   "skills": [
     "aws-mcp-routing",

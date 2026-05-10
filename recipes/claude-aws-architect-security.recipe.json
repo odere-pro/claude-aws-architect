@@ -1,7 +1,7 @@
 {
   "name": "claude-aws-architect-security",
   "version": "0.1.0",
-  "description": "Security-only workflow power: bundles the well-architected-security and IAM MCP servers with the security pillar skill, the routing/grounding/cache skills, and both default hooks for least-privilege review, encryption gaps, identity-perimeter weaknesses, and AWS write-verb confirmation.",
+  "description": "Security-only workflow recipe: bundles the well-architected-security and IAM MCP servers with the security pillar skill, the routing/grounding/cache skills, and both default hooks for least-privilege review, encryption gaps, identity-perimeter weaknesses, and AWS write-verb confirmation.",
   "mcpServers": ["sec", "iam", "kb"],
   "skills": [
     "aws-mcp-routing",

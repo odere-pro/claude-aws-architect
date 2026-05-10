@@ -1,0 +1,35 @@
+# Keywords that should activate the aws-recipe-authoring skill.
+# One per line. Comments allowed (lines starting with #).
+# Used by gate 16 to validate description quality.
+recipe
+recipes
+recipe.json
+recipe bundle
+bundle
+recipe schema
+schema
+authoring
+author recipe
+build recipe
+add recipe
+new recipe
+update recipe
+modify recipe
+remove recipe
+use recipe
+invoke recipe
+recipe playbook
+recipe-playbook
+gate 6
+gate-06
+gate-06-recipes
+cross-reference
+cross-references
+cross reference
+mcpServers
+.power.json
+recipes/
+recipes-guide
+@-reference
+/aws-recipe
+SemVer bump

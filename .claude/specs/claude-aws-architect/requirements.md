@@ -102,7 +102,7 @@ the release-dogfood acceptance check per §13.G.
 - v0.2 specialists (`cost-engineer`, `security-engineer`,
   `test-engineer`) — they split out of `implementation-agent` once
   the merge contract is validated under load.
-- Bedrock and IaC-foundations powers — deferred to v0.2.
+- Bedrock and IaC-foundations recipes — deferred to v0.2.
 
 ## Open questions
 

@@ -1,6 +1,6 @@
 # `claude-aws-architect-bedrock-ai` — playbook
 
-Amazon Bedrock + AWS AI domain power. Bundles `kb`, `cost`, `iam`, `sec` MCP servers; the `aws-bedrock-ai` skill; the substrate routing / grounding / cache skills; the component-contract skill; the WAF security pillar skill; both default PreToolUse hooks; and `/aws`, `/aws-spec`, `/aws-doctor`, `/aws-kb`.
+Amazon Bedrock + AWS AI domain recipe. Bundles `kb`, `cost`, `iam`, `sec` MCP servers; the `aws-bedrock-ai` skill; the substrate routing / grounding / cache skills; the component-contract skill; the WAF security pillar skill; both default PreToolUse hooks; and `/aws`, `/aws-spec`, `/aws-doctor`, `/aws-kb`.
 
 > See [`skills/aws-bedrock-ai/SKILL.md`](../../skills/aws-bedrock-ai/SKILL.md) for the underlying procedure, the foundation-model selection grid, the inference-mode catalogue, the licensing snapshot, the knowledge-base reference, and the IAM patterns.
 
@@ -35,7 +35,7 @@ then
 **Why this is production-ready:**
 
 - The model-access opt-in step is captured in `tasks.md` — the `aws-bedrock-ai` rule makes its absence a deployment-blocking finding instead of a silent runtime failure.
-- The IAM policy is scoped to the specific model ARN, not `Resource: "*"`. The `aws-waf-security-skill` (loaded by the Power) flags wildcards as anti-patterns.
+- The IAM policy is scoped to the specific model ARN, not `Resource: "*"`. The `aws-waf-security-skill` (loaded by the Recipe) flags wildcards as anti-patterns.
 - The Guardrail is bound by `guardrailIdentifier` + `guardrailVersion`; unbound production invocations fail the rule.
 - Every region / model / IAM claim carries a `kb:` or `iam:` citation in the grounding ledger.
 

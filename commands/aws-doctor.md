@@ -1,5 +1,5 @@
 ---
-description: Run the claude-aws-architect environment health check — verifies uvx, aws CLI, AWS_PROFILE/AWS_REGION, MCP package resolution per server, sts:GetCallerIdentity, and minimum-IAM presence. Wraps scripts/doctor.sh; safe to run anytime.
+description: Run the claude-aws-architect environment health check — verifies uvx, aws CLI, AWS_PROFILE/AWS_REGION, MCP package resolution per server, MCP enablement state in consumer settings, sts:GetCallerIdentity, and minimum-IAM presence. Wraps scripts/doctor.sh; safe to run anytime.
 argument-hint: "[--json]"
 allowed-tools:
   - Bash
@@ -21,6 +21,7 @@ You are running the **claude-aws-architect doctor** — an in-session environmen
    - `aws` CLI is installed and on `PATH`.
    - `AWS_PROFILE` and `AWS_REGION` are set in the environment.
    - Every stdio MCP server declared in `${CLAUDE_PLUGIN_ROOT}/.mcp.json` resolves via `uvx`.
+   - Every declared MCP server is enabled (or approval-pending) per the consumer's `.claude/settings*.json` — flags any server explicitly listed in `disabledMcpjsonServers`.
    - `aws sts get-caller-identity` succeeds against the resolved profile.
    - The minimum IAM permission set required by the plugin's MCP servers is present.
 3. If the script does not exist yet (the scripts bundle has not been installed), emit a clearly-marked notice: the script ships in a later integration step; report which environment checks the user can run manually in the meantime.
@@ -35,8 +36,9 @@ When the script ran:
 - `3` — at least one MCP server failed to resolve.
 - `4` — `sts:GetCallerIdentity` failed (credentials, MFA, or expired session).
 - `5` — minimum-IAM presence check failed.
+- `6` — one or more MCP servers declared in `.mcp.json` are explicitly disabled in the consumer's `.claude/settings*.json`. The user must re-enable via `/mcp` or by removing the server from `disabledMcpjsonServers` before recipes that depend on it can ground.
 
-Surface the exit code in the user-facing response. On non-zero exit, point the user at the next step (rotate credentials, set the env var, install the missing tool) instead of emitting a wall of stack output.
+Surface the exit code in the user-facing response. On non-zero exit, point the user at the next step (rotate credentials, set the env var, install the missing tool, enable the disabled MCP via `/mcp`) instead of emitting a wall of stack output.
 
 ## JSON mode
 

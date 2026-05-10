@@ -26,17 +26,17 @@ Numbered bash scripts under [`tests/gates/`](../tests/gates/), invoked by
 [`tests/gates/run-all.sh`](../tests/gates/run-all.sh). Each gate asserts
 one structural property and exits non-zero on violation.
 
-| Gate group               | IDs            | What it asserts                                                                                 |
-| ------------------------ | -------------- | ----------------------------------------------------------------------------------------------- |
-| Doctor + plugin metadata | 01–02          | `scripts/doctor.sh` loads; `.claude-plugin/plugin.json` schema + version.                       |
-| Path / shell hygiene     | 03–04          | No absolute paths committed; `shellcheck -x` clean.                                             |
-| YAML / file shape        | 05, 09, 10     | Frontmatter parses; agents and skills have required keys + naming-policy prefixes.              |
-| Powers / hooks / MCP     | 06, 07, 11, 12 | `*.power.json`, `hooks/hooks.json`, hook scripts, `.mcp.json` validity + matching script names. |
-| Init idempotency         | 13             | `init.sh` produces the same on-disk state on repeat runs.                                       |
-| Markdown lint            | 14             | `prettier --check` + `markdownlint-cli2` over every `.md`.                                      |
-| Trademark / wording      | 15             | No banned phrasing (e.g. unauthorized AWS endorsement).                                         |
-| Skill budgets            | 16, 17, 18     | Skill description shape; skill line count; tool-name length budget.                             |
-| Install safety           | 30–33          | Clean roundtrip, dirty roundtrip, install idempotency, `--dry-run` byte-equal to real install.  |
+| Gate group               | IDs            | What it asserts                                                                                  |
+| ------------------------ | -------------- | ------------------------------------------------------------------------------------------------ |
+| Doctor + plugin metadata | 01–02          | `scripts/doctor.sh` loads; `.claude-plugin/plugin.json` schema + version.                        |
+| Path / shell hygiene     | 03–04          | No absolute paths committed; `shellcheck -x` clean.                                              |
+| YAML / file shape        | 05, 09, 10     | Frontmatter parses; agents and skills have required keys + naming-policy prefixes.               |
+| Recipes / hooks / MCP    | 06, 07, 11, 12 | `*.recipe.json`, `hooks/hooks.json`, hook scripts, `.mcp.json` validity + matching script names. |
+| Init idempotency         | 13             | `init.sh` produces the same on-disk state on repeat runs.                                        |
+| Markdown lint            | 14             | `prettier --check` + `markdownlint-cli2` over every `.md`.                                       |
+| Trademark / wording      | 15             | No banned phrasing (e.g. unauthorized AWS endorsement).                                          |
+| Skill budgets            | 16, 17, 18     | Skill description shape; skill line count; tool-name length budget.                              |
+| Install safety           | 30–33          | Clean roundtrip, dirty roundtrip, install idempotency, `--dry-run` byte-equal to real install.   |
 
 `tests/gates/lib/common.sh` holds shared helpers; `tests/gates/cache/`
 holds frozen MCP tool inventories so gates do not need network. The

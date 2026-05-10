@@ -6,14 +6,15 @@ Loaded on demand by the `aws-mcp-routing` skill. Encodes the per-server fallback
 
 When an MCP call fails or times out, the agent emits a marker in its response. The marker is a short tag the orchestrator's merge contract surfaces in the final user-facing output. Markers are case-sensitive.
 
-| Marker                     | Meaning                                                                                                             |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `grounding-deferred`       | A factual claim could not be grounded; the assertion is held and surfaced as needing re-fetch.                      |
-| `validation-advisory`      | An IaC validation step degraded to advisory mode; the contract still emits but the validation result is incomplete. |
-| `cost-rom-only`            | Pricing API was unreachable; the cost estimate is a rough order of magnitude with explicit uncertainty.             |
-| `security-checklist-only`  | Automated security assessment was unavailable; the security review falls back to a human-readable checklist.        |
-| `iam-advisory-only`        | IAM least-privilege loop degraded to advisory; the policy is not auto-shrunk.                                       |
-| `observability-incomplete` | CloudWatch evidence could not be retrieved; observability triple is flagged incomplete.                             |
+| Marker                     | Meaning                                                                                                                                                    |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `grounding-deferred`       | A factual claim could not be grounded; the assertion is held and surfaced as needing re-fetch.                                                             |
+| `validation-advisory`      | An IaC validation step degraded to advisory mode; the contract still emits but the validation result is incomplete.                                        |
+| `cost-rom-only`            | Pricing API was unreachable; the cost estimate is a rough order of magnitude with explicit uncertainty.                                                    |
+| `security-checklist-only`  | Automated security assessment was unavailable; the security review falls back to a human-readable checklist.                                               |
+| `iam-advisory-only`        | IAM least-privilege loop degraded to advisory; the policy is not auto-shrunk.                                                                              |
+| `observability-incomplete` | CloudWatch evidence could not be retrieved; observability triple is flagged incomplete.                                                                    |
+| `mcp-disabled-<server>`    | The MCP server is declared in `.mcp.json` but disabled in the consumer's settings (distinct from a runtime failure). User action is required to enable it. |
 
 ## Per-server failure handling
 
@@ -52,6 +53,36 @@ When an MCP call fails or times out, the agent emits a marker in its response. T
 - **Symptom**: stdio timeout, log-insights query timeout, alarm-history pagination failure.
 - **Action**: test-engineer (v0.2) emits unit-test design only; observability triple flagged `observability-incomplete`.
 - **Do not**: synthesise metric data. The observability triple's missing metric is a real signal — the deployment may need additional instrumentation before observability is achievable.
+
+## `mcp-disabled-<server>` — user-action-required, not runtime failure
+
+This marker is distinct from the runtime-failure markers above. It fires
+when the skill detects that the MCP server's tools (`mcp__<server>__*`)
+are not present in the session's available tool list, indicating the
+server is either disabled in the consumer's `.claude/settings*.json`
+(`disabledMcpjsonServers`) or never approved via `/mcp`.
+
+- **Symptom**: `mcp__<server>__<tool>` returns "tool not found" or is
+  absent from the available tool list at session start.
+- **Action**: skill emits `mcp-disabled-<server>` once per affected
+  server, with remediation copy:
+  > MCP `<server>` is declared in `.mcp.json` but not enabled in this
+  > session. Run `/mcp` to approve, remove the server from
+  > `disabledMcpjsonServers` in `.claude/settings.json`, or run
+  > `/aws-doctor` for a full health report. The dependent recipe will
+  > degrade until the server is enabled.
+- **Do not**: treat as a transient failure (do NOT emit
+  `grounding-deferred`, `cost-rom-only`, etc. in its place). The user
+  has to take an action; a transient marker would mislead them into
+  waiting for the server to recover.
+- **Do not**: emit one marker per call. One marker per server, per
+  session, with the remediation copy.
+
+The `aws-mcp-availability` UserPromptSubmit hook (default-off, opt-in)
+surfaces the same signal proactively at prompt time, before any skill
+attempts a call. When the hook is enabled, the skill marker remains
+the catch-all for cases where the server was enabled at session start
+but became unavailable mid-session.
 
 ## Marker lifecycle in the merge contract
 

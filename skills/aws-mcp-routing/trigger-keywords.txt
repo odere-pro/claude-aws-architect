@@ -24,3 +24,9 @@ cost
 sec
 cw
 grounding
+mcp-disabled
+mcp not enabled
+disabled mcp
+disabledMcpjsonServers
+mcp availability
+enable mcp

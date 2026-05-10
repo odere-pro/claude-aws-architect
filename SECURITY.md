@@ -30,7 +30,7 @@ The following components are in scope for security reports:
 - Install/uninstall scripts under `scripts/` — particularly file-system operations and symlink handling.
 - `.mcp.json` server configuration — version pinning, timeout enforcement, transport selection.
 - Agent files under `agents/` and skill files under `skills/` — instruction patterns that could enable prompt-injection escapes or tool-call abuse.
-- Power JSON files under `powers/` — schema validation gaps that could mis-bundle servers or hooks.
+- Recipe JSON files under `recipes/` — schema validation gaps that could mis-bundle servers or hooks.
 
 ## Out of scope
 
