@@ -130,6 +130,27 @@ jobs:
           echo
           echo "summary: drift_count=$drift_count"
 
+      - name: Ensure tracking labels exist
+        # The issue steps below filter and create issues by label. A fresh repo
+        # has neither label, which previously crashed `gh issue create` with
+        # "label not found". Create both idempotently; --force updates in place
+        # when they already exist, so this is safe to re-run nightly.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh label create mcp-version-skew \
+            --repo "$REPO" \
+            --color FBCA04 \
+            --description "Pinned MCP server drifted from PyPI latest stable" \
+            --force
+          gh label create dependencies \
+            --repo "$REPO" \
+            --color 0366D6 \
+            --description "Dependency version updates" \
+            --force
+
       - name: Open or update tracking issue
         if: steps.skew.outputs.drift_count != '0'
         env:
