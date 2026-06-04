@@ -24,9 +24,10 @@ Trigger conditions:
 1. **Classify the request.** Determine which of the six categories the request belongs to: docs, IaC, cost, security review, IAM, or operations. The category determines the server.
 2. **Select the server.** Consult `references/selection-rules.md` for the category-to-server mapping. Use the short identifier (`kb`, `iac`, `cost`, `sec`, `iam`, `cw`) defined in `.mcp.json`, never the descriptive logical name in tool calls.
 3. **Select the tool.** Consult the per-server tool catalogue in `references/server-roster.md`. Pick the narrowest tool that satisfies the request. Wide tools (e.g. broad documentation search) waste the per-specialist MCP-call budget (8 calls for discovery, 12 for solution-architect, 16 for implementation).
-4. **Issue the call within the timeout budget.** The per-server `timeoutMs` value in `.mcp.json` is the per-call budget; the agent's MCP-call budget is the per-invocation cap. Both must be respected.
-5. **Handle response.** On success, capture the result. On timeout or 5xx, consult `references/degraded-modes.md` for the per-server fallback behaviour and emit the corresponding labelled marker in the agent's output.
-6. **Record the citation.** Every successful MCP call must be recorded in the grounding ledger via the `aws-grounding-cache` skill, producing a `<server>:<short-key>` reference for use in `grounded-by` fields.
+4. **Verify the server is enabled.** Before issuing the first call to a server in a session, confirm `mcp__<server>__*` tools are present in the available tool list. If not, the server is disabled or pending approval — emit `mcp-disabled-<server>` per `references/degraded-modes.md` with remediation copy (run `/mcp`, edit `disabledMcpjsonServers`, or run `/aws-doctor`) and do not proceed with the call. One marker per server, per session.
+5. **Issue the call within the timeout budget.** The per-server `timeoutMs` value in `.mcp.json` is the per-call budget; the agent's MCP-call budget is the per-invocation cap. Both must be respected.
+6. **Handle response.** On success, capture the result. On timeout or 5xx, consult `references/degraded-modes.md` for the per-server fallback behaviour and emit the corresponding labelled marker in the agent's output.
+7. **Record the citation.** Every successful MCP call must be recorded in the grounding ledger via the `aws-grounding-cache` skill, producing a `<server>:<short-key>` reference for use in `grounded-by` fields.
 
 ## Gotchas
 
@@ -36,6 +37,7 @@ Trigger conditions:
 - **Do not mix logical names with `.mcp.json` keys.** Tool calls must use the short keys (`kb`, `iac`, `cost`, `sec`, `iam`, `cw`); the descriptive names like `aws-knowledge` or `well-architected-security` are documentation references only.
 - **Do not invoke `awslabs.*` packages directly.** All AWS interaction goes through the MCP server abstraction. Bypassing the abstraction breaks the grounding ledger and the timeout budget.
 - **Do not skip the grounding-ledger write.** A successful MCP call without a ledger entry leaves the agent's claim unsourced; downstream `grounded-by` validation will fail.
+- **Do not conflate "disabled" with "runtime failure".** A `mcp-disabled-<server>` marker means the user must take an action (enable the server). A `grounding-deferred`/`cost-rom-only`/etc. marker means the server is enabled but the call failed transiently. Using the wrong marker misleads the user about the path to remediation.
 
 ## Boundaries
 
@@ -52,6 +54,7 @@ Before returning a routing decision, confirm:
 - The selected server key matches one of `kb`, `iac`, `cost`, `sec`, `iam`, `cw`.
 - The selected tool name appears in `tests/gates/cache/tools-<server>.txt`.
 - The chosen tool would not breach the 64-character fully-qualified-tool-name limit unless the `<server>:<tool>` pair appears in `tests/gates/cache/known-overshoots.txt`.
+- The selected server is enabled (verified once per session via the availability check in step 4); otherwise `mcp-disabled-<server>` is queued and the call is not issued.
 - A grounding-ledger entry has been queued for any successful call.
 - A degraded-mode marker is queued for any failed call, per `references/degraded-modes.md`.
 - The per-specialist MCP-call budget is not exceeded by issuing this call.

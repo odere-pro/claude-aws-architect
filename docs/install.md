@@ -109,7 +109,7 @@ git clone https://github.com/odere-pro/claude-aws-architect.git \
   --region us-east-1
 ```
 
-- `install.sh --copy` copies the seven plugin trees (`commands`, `agents`, `skills`, `rules`, `hooks`, `powers`, `templates`) into `.claude/<tree>/`. Files that already exist in the consumer tree are **never** overwritten — those slots stay consumer-owned.
+- `install.sh --copy` copies the seven plugin trees (`commands`, `agents`, `skills`, `rules`, `hooks`, `recipes`, `templates`) into `.claude/<tree>/`. Files that already exist in the consumer tree are **never** overwritten — those slots stay consumer-owned.
 - Updates require running `uninstall.sh` then re-installing.
 
 ---

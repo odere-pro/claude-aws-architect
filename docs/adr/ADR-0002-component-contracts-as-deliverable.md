@@ -45,7 +45,7 @@ Every component named in `design.md` must have a contract file; gate 8 in §11.A
 - Implementation phase has a per-component target. The implementation agent (§5.2) writes IaC and tasks against named contracts; drift becomes a structural impossibility rather than a vigilance task.
 - Review surface is per-component and uniform. Security review reads each contract's IAM section; reliability review reads each contract's acceptance + observability triple. No cross-document hunting.
 - Diagrams gain a natural decomposition target — the contract's sequence fragment is one source for the layered `diagrams.d2` (§9.6).
-- Contracts compose: integration links between contracts make the dependency graph explicit, which in turn powers gate 8 (cross-reference check) and the merge contract (§5.5).
+- Contracts compose: integration links between contracts make the dependency graph explicit, which in turn recipes gate 8 (cross-reference check) and the merge contract (§5.5).
 
 **Negative.**
 
@@ -57,4 +57,4 @@ Every component named in `design.md` must have a contract file; gate 8 in §11.A
 
 - Three or more real-user features hit ≥30 components and contract authoring becomes the latency bottleneck. Outcome: consider per-component templates or partial contract generation.
 - OpenAPI / AsyncAPI tooling matures enough to drive contract sections from machine-readable schemas. Outcome: add an optional generated contract path while keeping the markdown contract as the canonical artefact.
-- The Powers mechanism (§9.1) introduces a different deliverable shape that competes with contracts. Outcome: explicitly choose one or document the boundary.
+- The Recipes mechanism (§9.1) introduces a different deliverable shape that competes with contracts. Outcome: explicitly choose one or document the boundary.

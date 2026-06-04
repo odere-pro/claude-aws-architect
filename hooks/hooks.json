@@ -16,6 +16,15 @@
       "enabledByDefault": true
     }
   ],
+  "UserPromptSubmit": [
+    {
+      "name": "aws-mcp-availability",
+      "event": "UserPromptSubmit",
+      "matcher": ".*",
+      "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/aws-mcp-availability.sh",
+      "enabledByDefault": false
+    }
+  ],
   "PostToolUse": [
     {
       "name": "aws-on-cdk-write",

@@ -19,7 +19,7 @@ The plugin ships as a **single greenfield Claude Code plugin** under a new repos
 - No backward-compatibility surface.
 - No migration notes (v1 §13 is dropped).
 - All substrate skills are authored within this plugin (see §13).
-- The plugin's `plugin.json` declares a single name; the Powers mechanism (§9.1) is the only composition surface inside the plugin.
+- The plugin's `plugin.json` declares a single name; the Recipes mechanism (§9.1) is the only composition surface inside the plugin.
 
 ### 0.2 Name
 
@@ -33,7 +33,7 @@ Rationale (against the screening criteria from v2):
 - Available — to be verified at repo-creation time on GitHub and on every index listed in §15.3.
 - Trademark posture — "AWS" appears as a descriptive token, not a leading claim of affiliation. The README ships the disclaimer in §15.4.
 
-Throughout this plan, `claude-aws-architect` is the literal plugin name. It appears in `plugin.json`, install paths (`.claude/plugins/claude-aws-architect/`), Power filenames (`claude-aws-architect-cdk.power.json`), agent filenames (`claude-aws-architect-orchestrator-agent.md`), and the user-facing settings file (`.claude/claude-aws-architect.local.md`).
+Throughout this plan, `claude-aws-architect` is the literal plugin name. It appears in `plugin.json`, install paths (`.claude/plugins/claude-aws-architect/`), Recipe filenames (`claude-aws-architect-cdk.recipe.json`), agent filenames (`claude-aws-architect-orchestrator-agent.md`), and the user-facing settings file (`.claude/claude-aws-architect.local.md`).
 
 ---
 
@@ -47,9 +47,9 @@ Throughout this plan, `claude-aws-architect` is the literal plugin name. It appe
 - F4. Every **factual** AWS claim (API shape, quota, pricing, service availability, region presence, ARN format) cites ≥1 AWS MCP source. **Design opinions** (architectural choices, trade-offs, recommendations) require a rationale paragraph linking to a WAF pillar or named principle, not a citation.
 - F5. Each generated component ships with a contract: interface, sequence diagram, C4 L3 fragment, acceptance criteria, observability triple, integration links.
 - F6. One `diagrams.d2` per feature carries every required layer tag (§9.6) — C4 L1, L2, L3, plus three sequence-diagram zoom levels.
-- F7. Plugin ships **3 Powers** at v0.1.0 (declarative MCP+skills+hooks+commands bundles): `claude-aws-architect-cdk`, `claude-aws-architect-cost`, `claude-aws-architect-security`. Two additional Powers (`claude-aws-architect-bedrock`, `claude-aws-architect-iac-foundations`) deferred to v0.2.
-- F8. Plugin ships **3 commands** at v0.1.0: `/aws`, `/aws-spec`, `/aws-doctor`. Six additional commands (`/aws-power`, `/aws-hook`, `/aws-doc`, `/aws-price`, `/aws-quota`, `/aws-sec-scan`, `/aws-cdk-check`) deferred to v0.2 pending usage data.
-- F9. Plugin ships **12 new L2 skills** at v0.1.0 covering the orchestrator's substrate (6 workflow skills) and full WAF pillar coverage (6 pillar skills). See §13 for the authoring backlog. Two additional new skills (`aws-hook-authoring`, `aws-power-authoring`) deferred to v0.2.
+- F7. Plugin ships **3 Recipes** at v0.1.0 (declarative MCP+skills+hooks+commands bundles): `claude-aws-architect-cdk`, `claude-aws-architect-cost`, `claude-aws-architect-security`. Two additional Recipes (`claude-aws-architect-bedrock`, `claude-aws-architect-iac-foundations`) deferred to v0.2.
+- F8. Plugin ships **3 commands** at v0.1.0: `/aws`, `/aws-spec`, `/aws-doctor`. Six additional commands (`/aws-recipe`, `/aws-hook`, `/aws-doc`, `/aws-price`, `/aws-quota`, `/aws-sec-scan`, `/aws-cdk-check`) deferred to v0.2 pending usage data.
+- F9. Plugin ships **13 new L2 skills** at v0.1.0 covering the orchestrator's substrate (6 workflow skills), full WAF pillar coverage (6 pillar skills), and recipe authoring (`aws-recipe-authoring`). See §13 for the authoring backlog. One additional skill (`aws-hook-authoring`) deferred to v0.2.
 - F10. Plugin ships an opt-in **hooks registry** (`hooks/hooks.json`) gated by `.claude/claude-aws-architect.local.md`; default-enabled hooks limited to `aws-secret-scanner` and `aws-api-write-guard`.
 - F11. Plugin ships a **doctor script** and an **init script** for one-command setup (§8).
 - F12. Plugin ships an **install script** with two modes (`--symlink` default, `--copy`); never overwrites existing consumer files.
@@ -70,10 +70,10 @@ Throughout this plan, `claude-aws-architect` is the literal plugin name. It appe
 - N2. Markdown + JSON + bash only — no TypeScript build at v0.1.0.
 - N3. All substrate L1–L2 artefacts are authored within this plugin (see §13). No external host-repo dependencies.
 - N4. YAML frontmatter on every agent/skill/command/rule file passes `yaml.safe_load`.
-- N5. Each `powers/*.power.json` validates against the §9.1 schema.
+- N5. Each `recipes/*.recipe.json` validates against the §9.1 schema.
 - N6. Each `hooks/hooks.json` entry validates against the §9.2 schema.
-- N7. README sections in this exact order: _Install · Quickstart · Commands · Powers · Hooks · Rules · Troubleshooting · Uninstall_.
-- N8. SPEC.md sections in this exact order: _Architecture · MCP servers · Skills · Agents · Rules · Powers · Hooks · Schemas · Validation gates · Versioning_.
+- N7. README sections in this exact order: _Install · Quickstart · Commands · Recipes · Hooks · Rules · Troubleshooting · Uninstall_.
+- N8. SPEC.md sections in this exact order: _Architecture · MCP servers · Skills · Agents · Rules · Recipes · Hooks · Schemas · Validation gates · Versioning_.
 - N9. CHANGELOG starts at `v0.1.0`; SemVer; one entry per merged PR.
 - N10. `init.sh`, `install.sh`, `uninstall.sh` are idempotent; never destructive without `--force`.
 - N11. Cross-platform: macOS (zsh + brew) and Linux (bash + apt-get); Windows/WSL deferred. **CI matrix runs install/doctor/uninstall on `ubuntu-latest` and `macos-latest` for every PR touching `scripts/`.**
@@ -148,7 +148,7 @@ claude-aws-architect/
 │       ├── references/
 │       └── templates/
 ├── rules/                               §6 — 9 instruction files
-├── powers/                              §1 F7 — 3 power bundles at v0.1.0
+├── recipes/                              §1 F7 — 3 recipe bundles at v0.1.0
 ├── hooks/
 │   ├── hooks.json
 │   └── scripts/                         §7 — operational + quality + security hooks
@@ -183,7 +183,7 @@ Per O2, every server in `.mcp.json` carries a `timeoutMs` value and a pinned ver
 
 ### 3.2 v0.2 candidates (4)
 
-`awslabs.aws-api-mcp-server` (general AWS API operations — gated by §7 write-guard hooks reaching production stability) · `awslabs.amazon-bedrock-agentcore-mcp-server` (added with the `claude-aws-architect-bedrock` Power) · `awslabs.dynamodb-mcp-server` (added when a specialist agent needs authoritative DDB modeling) · `awslabs.aws-serverless-mcp-server` (SAM lifecycle, added with `claude-aws-architect-iac-foundations`).
+`awslabs.aws-api-mcp-server` (general AWS API operations — gated by §7 write-guard hooks reaching production stability) · `awslabs.amazon-bedrock-agentcore-mcp-server` (added with the `claude-aws-architect-bedrock` Recipe) · `awslabs.dynamodb-mcp-server` (added when a specialist agent needs authoritative DDB modeling) · `awslabs.aws-serverless-mcp-server` (SAM lifecycle, added with `claude-aws-architect-iac-foundations`).
 
 ### 3.3 Deferred (revisit at v0.3+)
 
@@ -246,10 +246,10 @@ These encode pillar-specific review checklists, decision questions, and groundin
 
 #### Deferred (v0.2)
 
-| #   | Skill                 | Tier | Purpose (declarative)                                                                                                                                     | Required references                                               | Required templates                             | Invoked by                                                |
-| --- | --------------------- | ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------- |
-| 13  | `aws-hook-authoring`  | v0.2 | Generate hook script headers; lint exit-code contract; detect AWS write verbs; validate `hooks.json` entries (§9.2).                                      | `hook-events.md`, `aws-write-verbs.md`, `hook-script-contract.md` | `hook-script.sh.tmpl`, `hooks.json.entry.tmpl` | Plugin authors at build time; orchestrator at runtime     |
-| 14  | `aws-power-authoring` | v0.2 | Validate `powers/*.power.json` (§9.1) and the plugin manifest (`plugin.json`); enforce name/version/description, MCP/skill/hook/command cross-references. | `power-schema.md`, `manifest-schema.md`                           | `power.json.tmpl`                              | Plugin authors at build time; `/aws-power` command (v0.2) |
+| #   | Skill                  | Tier   | Purpose (declarative)                                                                                                                                                                                                                                | Required references                                               | Required templates                             | Invoked by                                            |
+| --- | ---------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------- |
+| 13  | `aws-hook-authoring`   | v0.2   | Generate hook script headers; lint exit-code contract; detect AWS write verbs; validate `hooks.json` entries (§9.2).                                                                                                                                 | `hook-events.md`, `aws-write-verbs.md`, `hook-script-contract.md` | `hook-script.sh.tmpl`, `hooks.json.entry.tmpl` | Plugin authors at build time; orchestrator at runtime |
+| 14  | `aws-recipe-authoring` | v0.1.0 | Build, update, and use recipe bundles under `recipes/*.recipe.json`. Validate the §9.1 schema, check MCP/skill/hook/command cross-references, run gate 6, and document the three invocation patterns (playbook, `@`-reference, orchestrator-routed). | `recipe-schema.md`, `build-checklist.md`, `usage-patterns.md`     | —                                              | Plugin authors at build time; users at session time   |
 
 `aws-bedrock-validation` and a test-design skill remain tracked under §4.4.
 
@@ -289,7 +289,7 @@ Each `SKILL.md` must declare:
 - Multi-account contract-test pattern (cross-account IAM/STS/AssumeRole) — defer to a future skill once a real-user need surfaces (§S2).
 - Plugin marketplace listing validation — depends on Claude Code marketplace contract finalising.
 - Synthetic-load and chaos-test plan generation — deferred.
-- `aws-bedrock-validation` skill — deferred to v0.2 with the `claude-aws-architect-bedrock` Power.
+- `aws-bedrock-validation` skill — deferred to v0.2 with the `claude-aws-architect-bedrock` Recipe.
 
 ---
 
@@ -488,9 +488,9 @@ Every hook script must declare in a header comment block:
 
 ## 9. Canonical schemas
 
-### 9.1 `powers/<name>.power.json`
+### 9.1 `recipes/<name>.recipe.json`
 
-Required keys: `name` (matches filename without `.power.json`), `version` (SemVer), `description` (one sentence), `mcpServers` (array, ≥1, names match `.mcp.json`), `skills` (array, names exist under `skills/`), `hooks` (array, names exist in `hooks/hooks.json`), `commands` (array, names exist under `commands/`).
+Required keys: `name` (matches filename without `.recipe.json`), `version` (SemVer), `description` (one sentence), `mcpServers` (array, ≥1, names match `.mcp.json`), `skills` (array, names exist under `skills/`), `hooks` (array, names exist in `hooks/hooks.json`), `commands` (array, names exist under `commands/`).
 
 ### 9.2 `hooks/hooks.json` entry
 
@@ -559,7 +559,7 @@ Gates split into **deterministic** (runnable locally and in CI without a live mo
 3. No absolute paths anywhere in `claude-aws-architect/`.
 4. `shellcheck` clean across every bash script.
 5. Every Markdown with `---` frontmatter parses as YAML.
-6. Every `powers/*.power.json` matches §9.1.
+6. Every `recipes/*.recipe.json` matches §9.1.
 7. Every `hooks/hooks.json` entry matches §9.2.
 8. Every rule file under `rules/` matches §6.1 (frontmatter + 2–6 bullets, ≤200 words, no example code).
 9. Every agent file under `agents/` matches §5.1 (frontmatter + H2 ordering + section constraints).
@@ -648,9 +648,9 @@ Each numbered item is intended to land as a single PR ≤500 net lines of change
 
 23. `feat(plugin): add 3 commands (/aws, /aws-spec, /aws-doctor)`.
 
-### 12.F Powers, hooks, scripts (parallelisable)
+### 12.F Recipes, hooks, scripts (parallelisable)
 
-24. `feat(plugin): add 3 Powers (cdk, cost, security)`.
+24. `feat(plugin): add 3 Recipes (cdk, cost, security)`.
 25. `feat(plugin): add hooks registry, hook dispatcher, secret-scanner, aws-api-write-guard`.
 26. `feat(plugin): add 4 secondary hook scripts (cdk-write, iam-write, bedrock-prompt-write, test-coverage)`.
 27. `feat(plugin): add init, doctor, install, uninstall scripts; pass install-safety gates 30–33`.
@@ -701,15 +701,15 @@ This section enumerates every skill the v0.1.0 orchestrator + agents reference, 
 
 #### v0.2 deferred
 
-| Skill                 | Authored under                                     | Authoring tier | Used by                     |
-| --------------------- | -------------------------------------------------- | -------------- | --------------------------- |
-| `aws-hook-authoring`  | `claude-aws-architect/skills/aws-hook-authoring/`  | v0.2           | plugin-author workflow only |
-| `aws-power-authoring` | `claude-aws-architect/skills/aws-power-authoring/` | v0.2           | plugin-author workflow only |
+| Skill                  | Authored under                                      | Authoring tier | Used by                                 |
+| ---------------------- | --------------------------------------------------- | -------------- | --------------------------------------- |
+| `aws-hook-authoring`   | `claude-aws-architect/skills/aws-hook-authoring/`   | v0.2           | plugin-author workflow only             |
+| `aws-recipe-authoring` | `claude-aws-architect/skills/aws-recipe-authoring/` | v0.1.0         | recipe lifecycle (build / update / use) |
 
 **Skills explicitly NOT authored at v0.1.0** (and not referenced by any v0.1.0 agent):
 
 - IAM-specialist skill, cost-estimator skill, IaC skill, diagram-styling skill, AgentCore knowledge skill, OWASP scanner skill, TypeScript skills, markdown-authoring skill, gap-audit skill, devils-advocate skill, plan-md-schema skill, etc. — every one of these is replaced at v0.1.0 by the rule files in §6 plus the MCP servers in §3.1 plus the relevant WAF pillar skill where applicable. Agents call MCPs directly for AWS knowledge rather than going through skill indirection.
-- `aws-bedrock-validation` — deferred to v0.2 with the Bedrock Power.
+- `aws-bedrock-validation` — deferred to v0.2 with the Bedrock Recipe.
 
 This is the substrate-iceberg control: the orchestrator can only declare dependencies on skills in this table. Anything else is an authoring backlog item, gated by §S2.
 

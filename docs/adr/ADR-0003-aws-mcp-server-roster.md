@@ -39,9 +39,9 @@ The roster maps cleanly to the v0.1.0 specialist set:
 **v0.2 expansion list (4)** is recorded in §3.2 as a deliberate pre-commit, not a wishlist:
 
 - `aws-api-mcp-server` — gated on §7 write-guard hooks reaching production stability (most write-capable surface; needs the strongest hook coverage).
-- `bedrock-agentcore` — bundled with the deferred `claude-aws-architect-bedrock` Power.
+- `bedrock-agentcore` — bundled with the deferred `claude-aws-architect-bedrock` Recipe.
 - `dynamodb` — added when a specialist actually needs authoritative DDB modelling.
-- `aws-serverless` — added with `claude-aws-architect-iac-foundations` Power.
+- `aws-serverless` — added with `claude-aws-architect-iac-foundations` Recipe.
 
 **Deferred to v0.3+ (§3.3)**: docs offline mirror, billing-cost-management, lambda/stepfunctions tool servers, mcp-proxy. **Skipped (§3.4)**: container plane, non-DDB data planes, cache plane, Bedrock subordinates, niche servers, domain-specific health servers, deprecated `ccapi`. The skip list is an explicit non-goal so it isn't relitigated each release.
 
@@ -53,7 +53,7 @@ Every v0.1.0 server entry carries an explicit `version` pin (per §16.2) and a `
 - **Minimalist roster (only `aws-knowledge`).** Rejected: collapses grounding to docs-only and forces the implementation agent to fabricate IaC validation, pricing, and IAM checks — exactly the failure mode the plugin exists to prevent.
 - **Include `aws-api-mcp-server` at v0.1.0.** Rejected: it exposes broad write capability. v0.1.0 cannot land it before the §7 write-guard hooks have real-world coverage. Pre-committed for v0.2 once the guard surface is proven (§3.2).
 - **Include a container-plane server (EKS or ECS) at v0.1.0.** Rejected: container topology is a substantial surface that would dominate v0.1.0's specialist time budget without serving the WAF pillars proportionally. Deferred to v0.3+ via §3.4.
-- **Include `bedrock-kb-retrieval` and Bedrock subordinates.** Rejected at v0.1.0: AgentCore alone covers the GenAI surface needed for most prompts; subordinates are only useful inside larger Bedrock builds, which arrive with the v0.2 Bedrock Power.
+- **Include `bedrock-kb-retrieval` and Bedrock subordinates.** Rejected at v0.1.0: AgentCore alone covers the GenAI surface needed for most prompts; subordinates are only useful inside larger Bedrock builds, which arrive with the v0.2 Bedrock Recipe.
 - **Skip the security pillar server, rely on rules + IAM only.** Rejected: removes WAF findings and GuardDuty / Security Hub triage from the security pillar's review surface, which contradicts §F22 and gates 1–4 of §11.A.
 
 ## Consequences

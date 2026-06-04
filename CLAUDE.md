@@ -69,7 +69,7 @@ plugins or a user's global `~/.claude/` config:
   Heavy prefix is intentional — agent IDs surface in transcripts and
   the longer name keeps them unambiguous in a multi-plugin session.
 - **Rules** (`rules/*.instructions.md`): `aws-` prefix.
-- **Powers** (`powers/*.power.json`): `claude-aws-architect-` prefix.
+- **Recipes** (`recipes/*.recipe.json`): `claude-aws-architect-` prefix.
 - **Hooks** (`hooks/hooks.json` `name` field AND the matching
   `hooks/scripts/*.sh` filename): `aws-` prefix on both. The `name`
   field and the script filename **must match** so log lines are

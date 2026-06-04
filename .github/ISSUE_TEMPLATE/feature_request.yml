@@ -54,7 +54,7 @@ body:
       options:
         - Agent
         - Skill
-        - Power
+        - Recipe
         - Hook
         - Script
         - Rule

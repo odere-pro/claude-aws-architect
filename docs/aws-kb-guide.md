@@ -2,7 +2,7 @@
 
 A read-only lookup surface for AWS docs, CLI reference, recipe-style SOPs, comparisons, onboarding pointers, and "what should I learn next" recommendations. Stateless per turn; never writes spec artefacts.
 
-> **Audience:** plugin users running `/aws-kb` in any Claude Code session that has the `claude-aws-architect-kb` Power loaded (or any session that loads the plugin's full Power set).
+> **Audience:** plugin users running `/aws-kb` in any Claude Code session that has the `claude-aws-architect-kb` Recipe loaded (or any session that loads the plugin's full Recipe set).
 
 ---
 
@@ -95,11 +95,11 @@ The `Citations` line is mandatory whenever any KB retrieval succeeded. If every 
 
 ---
 
-## Loading the Power
+## Loading the Recipe
 
-The `claude-aws-architect-kb` Power bundles the `kb` MCP server, the `aws-kb-navigator` skill, the supporting `aws-mcp-routing` / `aws-spec-grounding` / `aws-grounding-cache` skills, the two default PreToolUse hooks (`aws-secret-scanner`, `aws-api-write-guard`), and the `/aws-kb` command into one opt-in unit.
+The `claude-aws-architect-kb` Recipe bundles the `kb` MCP server, the `aws-kb-navigator` skill, the supporting `aws-mcp-routing` / `aws-spec-grounding` / `aws-grounding-cache` skills, the two default PreToolUse hooks (`aws-secret-scanner`, `aws-api-write-guard`), and the `/aws-kb` command into one opt-in unit.
 
-On a host that uses per-Power loading, add `claude-aws-architect-kb` to the loaded Power list. The full inventory of Powers shipped by this plugin lives in `docs/powers-guide.md`. The Power deliberately does NOT include `/aws`, `/aws-spec`, `/aws-doctor`, or the IaC / cost / security / IAM / CloudWatch MCP servers — it is a focused lookup bundle, not a full SDLC bundle.
+On a host that uses per-Recipe loading, add `claude-aws-architect-kb` to the loaded Recipe list. The full inventory of Recipes shipped by this plugin lives in `docs/recipes-guide.md`. The Recipe deliberately does NOT include `/aws`, `/aws-spec`, `/aws-doctor`, or the IaC / cost / security / IAM / CloudWatch MCP servers — it is a focused lookup bundle, not a full SDLC bundle.
 
 ---
 
@@ -129,7 +129,7 @@ On a host that uses per-Power loading, add `claude-aws-architect-kb` to the load
 
 ## See also
 
-- [`docs/powers-guide.md`](./powers-guide.md) — Powers inventory, schema, gate, and load mechanism.
+- [`docs/recipes-guide.md`](./recipes-guide.md) — Recipes inventory, schema, gate, and load mechanism.
 - [`docs/mcp-servers-guide.md`](./mcp-servers-guide.md) — `kb` server reference and timeout policy.
 - [`docs/validation-gates-guide.md`](./validation-gates-guide.md) — gates that validate the kb-navigator artefacts.
 - [`SPEC.md`](../SPEC.md) and [`docs/plan/SPEC-v4.md`](./plan/SPEC-v4.md) — full plugin spec, including depth classification and merge contract for `/aws`.

@@ -1,6 +1,6 @@
 # `claude-aws-architect-cost` — playbook
 
-Cost-only review power. Bundles `cost`, `kb` MCP servers, the `aws-waf-cost-optimization-skill`, the routing / grounding / cache skills, the `aws-secret-scanner` PreToolUse hook, and the `/aws`, `/aws-spec` commands. Deliberately does NOT include `iac`, `sec`, `iam`, or `cw` — the focus is the FinOps surface.
+Cost-only review recipe. Bundles `cost`, `kb` MCP servers, the `aws-waf-cost-optimization-skill`, the routing / grounding / cache skills, the `aws-secret-scanner` PreToolUse hook, and the `/aws`, `/aws-spec` commands. Deliberately does NOT include `iac`, `sec`, `iam`, or `cw` — the focus is the FinOps surface.
 
 ---
 

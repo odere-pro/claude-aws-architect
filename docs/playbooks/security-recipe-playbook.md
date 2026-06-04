@@ -1,6 +1,6 @@
 # `claude-aws-architect-security` — playbook
 
-Security-only review power. Bundles `sec`, `iam`, `kb` MCP servers, the `aws-waf-security-skill`, the routing / grounding / cache skills, both default PreToolUse hooks (`aws-secret-scanner`, `aws-api-write-guard`), and the `/aws`, `/aws-spec`, `/aws-doctor` commands. Deliberately excludes `iac`, `cost`, and `cw` to keep the surface focused on identity, encryption, network perimeter, and findings triage.
+Security-only review recipe. Bundles `sec`, `iam`, `kb` MCP servers, the `aws-waf-security-skill`, the routing / grounding / cache skills, both default PreToolUse hooks (`aws-secret-scanner`, `aws-api-write-guard`), and the `/aws`, `/aws-spec`, `/aws-doctor` commands. Deliberately excludes `iac`, `cost`, and `cw` to keep the surface focused on identity, encryption, network perimeter, and findings triage.
 
 ---
 

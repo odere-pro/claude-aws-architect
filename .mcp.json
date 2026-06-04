@@ -8,14 +8,14 @@
     },
     "iac": {
       "command": "uvx",
-      "args": ["--from", "awslabs.aws-iac-mcp-server==1.0.17", "awslabs.aws-iac-mcp-server"],
-      "version": "1.0.17",
+      "args": ["--from", "awslabs.aws-iac-mcp-server==1.0.19", "awslabs.aws-iac-mcp-server"],
+      "version": "1.0.19",
       "timeoutMs": 60000
     },
     "cost": {
       "command": "uvx",
-      "args": ["--from", "awslabs.aws-pricing-mcp-server==1.0.28", "awslabs.aws-pricing-mcp-server"],
-      "version": "1.0.28",
+      "args": ["--from", "awslabs.aws-pricing-mcp-server==1.0.30", "awslabs.aws-pricing-mcp-server"],
+      "version": "1.0.30",
       "timeoutMs": 30000
     },
     "sec": {
@@ -26,14 +26,14 @@
     },
     "iam": {
       "command": "uvx",
-      "args": ["--from", "awslabs.iam-mcp-server==1.0.18", "awslabs.iam-mcp-server"],
-      "version": "1.0.18",
+      "args": ["--from", "awslabs.iam-mcp-server==1.0.20", "awslabs.iam-mcp-server"],
+      "version": "1.0.20",
       "timeoutMs": 30000
     },
     "cw": {
       "command": "uvx",
-      "args": ["--from", "awslabs.cloudwatch-mcp-server==0.0.26", "awslabs.cloudwatch-mcp-server"],
-      "version": "0.0.26",
+      "args": ["--from", "awslabs.cloudwatch-mcp-server==0.1.4", "awslabs.cloudwatch-mcp-server"],
+      "version": "0.1.4",
       "timeoutMs": 30000
     }
   }

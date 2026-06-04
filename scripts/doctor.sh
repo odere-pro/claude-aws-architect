@@ -7,6 +7,9 @@
 #   3. Every stdio MCP server in .mcp.json resolves via `uvx --from <pkg> --help`.
 #   4. `aws sts get-caller-identity` succeeds.
 #   5. Minimum-IAM policy reference file is present (per N12).
+#   6. Every MCP server declared in .mcp.json is enabled (or approval-pending)
+#      per the consumer's .claude/settings*.json — flags servers explicitly
+#      disabled in settings.
 #
 # Flags:
 #   --json    Emit a single JSON object on stdout (no colour, no human lines).
@@ -19,6 +22,7 @@
 #   3  MCP package failed to resolve
 #   4  STS get-caller-identity failed
 #   5  minimum-IAM policy file absent (N12)
+#   6  MCP server declared in .mcp.json is disabled in consumer settings
 
 # shellcheck source=SCRIPTDIR/lib/common.sh disable=SC1091
 source "$(dirname "${BASH_SOURCE[0]}")/lib/common.sh"
@@ -85,6 +89,54 @@ if command -v jq >/dev/null 2>&1 && [[ -f "$mcp_file" ]]; then
   ' "$mcp_file")
 fi
 
+# 3b. MCP enablement — for each declared server, check consumer's
+#     .claude/settings*.json (project then user-global) to determine if it
+#     is enabled, disabled, or approval-pending.
+mcp_disabled_count=0
+mcp_settings_lookup() {
+  # Args: $1 = server name. Echoes one of: enabled | disabled | pending.
+  local server="$1"
+  local files=(
+    "${CONSUMER_ROOT:-$PWD}/.claude/settings.local.json"
+    "${CONSUMER_ROOT:-$PWD}/.claude/settings.json"
+    "${HOME}/.claude/settings.json"
+  )
+  local enable_all=0 in_enabled=0 in_disabled=0 verdict
+  local f
+  for f in "${files[@]}"; do
+    [[ -f "$f" ]] || continue
+    verdict=$(jq -r --arg s "$server" '
+      [
+        (if (.enableAllProjectMcpServers // false) then "all" else empty end),
+        (if ((.disabledMcpjsonServers // []) | index($s)) != null then "dis" else empty end),
+        (if ((.enabledMcpjsonServers  // []) | index($s)) != null then "en"  else empty end)
+      ] | join(",")
+    ' "$f" 2>/dev/null) || verdict=""
+    [[ "$verdict" == *"all"* ]] && enable_all=1
+    [[ "$verdict" == *"dis"* ]] && in_disabled=1
+    [[ "$verdict" == *"en"*  ]] && in_enabled=1
+  done
+  if [[ $in_disabled -eq 1 ]]; then
+    echo "disabled"
+  elif [[ $in_enabled -eq 1 || $enable_all -eq 1 ]]; then
+    echo "enabled"
+  else
+    echo "pending"
+  fi
+}
+
+if command -v jq >/dev/null 2>&1 && [[ -f "$mcp_file" ]]; then
+  while IFS= read -r name; do
+    [[ -z "$name" ]] && continue
+    state=$(mcp_settings_lookup "$name")
+    case "$state" in
+      enabled)  record "mcp-enabled:$name" "enabled in settings" ;;
+      disabled) record "mcp-enabled:$name" "DISABLED in settings"; mcp_disabled_count=$((mcp_disabled_count + 1)) ;;
+      pending)  record "mcp-enabled:$name" "not in settings — may be approved via /mcp UI; run /mcp to verify" ;;
+    esac
+  done < <(jq -r '.mcpServers | keys[]' "$mcp_file" 2>/dev/null)
+fi
+
 # 4. STS
 sts_ok=1
 if command -v aws >/dev/null 2>&1; then
@@ -132,7 +184,8 @@ emit_human() {
     kind=${findings_kind[$i]}
     msg=${findings_msg[$i]}
     case "$msg" in
-      MISSING|UNRESOLVED*|FAILED) log_err "$kind: $msg" ;;
+      MISSING|UNRESOLVED*|FAILED|"DISABLED in settings") log_err "$kind: $msg" ;;
+      "pending approval"*) log_warn "$kind: $msg" ;;
       *) log_ok "$kind: $msg" ;;
     esac
   done
@@ -162,4 +215,5 @@ done
 [[ $mcp_failed -eq 1 ]] && exit 3
 [[ $sts_ok -eq 0 ]] && exit 4
 [[ "$iam_status" = "missing" ]] && exit 5
+[[ $mcp_disabled_count -gt 0 ]] && exit 6
 exit 0

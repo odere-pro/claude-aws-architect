@@ -35,10 +35,10 @@ Install the plugin into a consumer project's `.claude/`.
 
 ### Modes (mutually exclusive)
 
-| Mode        | Behaviour                                                                                                                                                                                                                              | When to use                                                                  |
-| ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `--symlink` | (default) Creates one symlink at `.claude/plugins/claude-aws-architect/` pointing at the plugin root. Updates ride on `git pull`.                                                                                                      | Day-to-day development; you want the plugin to track upstream automatically. |
-| `--copy`    | Copies seven plugin trees (`commands`, `agents`, `skills`, `rules`, `hooks`, `powers`, `templates`) into `.claude/<tree>/`. Files that already exist in the consumer tree are **never** overwritten — those slots stay consumer-owned. | Snapshot-style installs (CI, immutable consumer environments).               |
+| Mode        | Behaviour                                                                                                                                                                                                                               | When to use                                                                  |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `--symlink` | (default) Creates one symlink at `.claude/plugins/claude-aws-architect/` pointing at the plugin root. Updates ride on `git pull`.                                                                                                       | Day-to-day development; you want the plugin to track upstream automatically. |
+| `--copy`    | Copies seven plugin trees (`commands`, `agents`, `skills`, `rules`, `hooks`, `recipes`, `templates`) into `.claude/<tree>/`. Files that already exist in the consumer tree are **never** overwritten — those slots stay consumer-owned. | Snapshot-style installs (CI, immutable consumer environments).               |
 
 ### Idempotency
 
